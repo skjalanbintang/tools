@@ -37,10 +37,21 @@ Jika halaman tersangkut di skrin sambungan, mesej ralat dipaparkan di situ. Punc
 1. **Pengurusan & Admin > Setup sistem**: isi nama sekolah, sesi dan bilangan perjumpaan yang disasarkan bagi setiap unit. Semak markah peringkat dan jawatan.
 2. **Daftar unit**: tambah unit bagi empat kategori (Badan Beruniform, Kelab & Persatuan, Sukan & Permainan, Rumah Sukan).
 3. **Data murid**: import daripada Excel atau CSV (muat turun templat dahulu). Lajur unit (`bb`, `kp`, `sp`, `rumah`) mengikut nama unit dan boleh dikosongkan. Murid sedia ada dikemas kini melalui No. KP.
-4. **Data guru**: tambah guru dengan kata laluan sementara. Mereka menukarnya semasa log masuk pertama.
+4. **Data guru**: boleh tambah seorang demi seorang, atau import beramai-ramai (lihat di bawah).
 5. Guru boleh terus merekod laporan perjumpaan, program dan pencapaian.
 
 Markah murid dikira daripada markah jawatan yang dipegang dan markah peringkat bagi setiap program selesai yang disertai. Nilai lalai hanyalah cadangan awal, sila laraskan mengikut garis panduan sekolah.
+
+## Daftar guru secara pukal
+
+**Pengurusan & Admin > Data guru > Import guru (Excel / CSV)**.
+
+1. Klik **Templat CSV**, buka dalam Excel dan isi lajur `nama` (wajib), `nokp` (pilihan) dan `peranan` (`guru` atau `admin`; kosong bermaksud guru). Simpan sebagai `.xlsx`, `.xls` atau `.csv`.
+2. Pilih fail. Satu paparan pratonton menunjukkan bilangan akaun baharu, akaun yang dikemas kini dan baris yang dilangkau (tiada nama atau pendua).
+3. Sahkan. Setiap akaun baharu mendapat kata laluan sementara rawak. Senarai nama, No. KP dan kata laluan dipaparkan **sekali sahaja**, dengan butang untuk memuat turun CSV. Edarkan kepada guru dan padam fail itu.
+4. Guru diminta menukar kata laluan semasa log masuk pertama. Akaun yang belum log masuk ditanda "Menunggu log masuk pertama".
+
+Guru sedia ada dipadankan melalui No. KP (atau nama jika tiada No. KP). Kata laluan mereka tidak diubah, dan peranan anda sendiri tidak boleh diturunkan. Fail `.xlsx`/`.xls` memerlukan sambungan internet kerana pustaka pembacanya dimuat dari CDN; fail CSV berfungsi tanpa internet.
 
 ## Keselamatan: sila baca sebelum menggunakan data murid sebenar
 

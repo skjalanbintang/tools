@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#043d2f">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%2312b37f'/%3E%3Cpath d='M8 24c0-9 5-15 16-15 0 11-6 16-15 16' fill='none' stroke='%23032b20' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E">
 <title>eKOKU – Laporan Perjumpaan Kokurikulum</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -14,7 +15,7 @@
   --bg:#f2f8f5;--card:#fff;--ink:#0c2a22;--mut:#58766c;--line:#d9e8e1;--line2:#e7f1ec;
   --gold:#a87a10;--gold-bg:#fbf1d6;--rose:#be3455;--rose-bg:#fde8ed;
   --ring:rgba(18,179,127,.3);--sh:0 1px 2px rgba(4,61,47,.06),0 10px 26px -14px rgba(4,61,47,.22);
-  --fd:'Bricolage Grotesque','Figtree',system-ui,sans-serif;--fb:'Figtree',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --fd:'Bricolage Grotesque','Figtree',system-ui,Arial,sans-serif;--fb:'Figtree',system-ui,-apple-system,'Segoe UI',Arial,sans-serif;
 }
 [data-theme=dark]{--bg:#07150f;--card:#0d221a;--ink:#e3f4ec;--mut:#8db3a5;--line:#1b3a2e;--line2:#143026;--zam-50:#0f2b21;--zam-100:#14402f;--gold:#e3b64a;--gold-bg:#3a2f10;--rose:#f08aa2;--rose-bg:#3b1621;--sh:0 1px 2px #0006,0 10px 26px -14px #000b}
 *{box-sizing:border-box}
@@ -178,7 +179,39 @@ dialog::backdrop{background:#021a13aa;backdrop-filter:blur(3px)}
 .qr button{display:flex;gap:10px;align-items:center;border:0;background:transparent;text-align:left;padding:9px 10px;border-radius:10px}
 .qr button:hover,.qr button.on{background:var(--zam-50)}.qr small{margin-left:auto}
 .editrow{display:grid;grid-template-columns:1fr 110px 36px;gap:8px;margin-bottom:8px}
+/* penambahbaikan visual */
+.card{border-radius:18px}
+.card .wrap{border:1px solid var(--line2);border-radius:12px}
+.tbl th{background:var(--zam-50)}
+.tbl thead th:first-child{border-top-left-radius:11px}.tbl thead th:last-child{border-top-right-radius:11px}
+.tbl td{padding:11px 12px}.tbl tbody tr:last-child td{border-bottom:0}
+.btn{box-shadow:0 1px 0 #ffffff2e inset,0 2px 6px -3px rgba(6,122,88,.6)}.btn.ghost,.btn.soft,.btn.danger{box-shadow:none}
+.pt{display:flex;gap:14px;align-items:center}
+.pi{width:48px;height:48px;border-radius:15px;background:linear-gradient(135deg,var(--zam-100),var(--zam-50));color:var(--zam-700);display:grid;place-items:center;flex:none;border:1px solid var(--line2)}
+[data-theme=dark] .pi{color:var(--zam-300)}
+.ng{padding:16px 12px 5px;font-size:11.5px;font-weight:600;color:#6fb89c}
+.tt{display:flex;flex-direction:column;line-height:1.2}.tt b{font:700 17px var(--fd)}.tt small{font-size:12px}
+.avs{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font-weight:700;font-size:13px;flex:none}
+.nmw{display:flex;gap:10px;align-items:center}
+.ei{width:60px;height:60px;border-radius:18px;background:var(--zam-100);color:var(--zam-700);display:grid;place-items:center;margin:0 auto 12px}
+[data-theme=dark] .ei{color:var(--zam-300)}
+.kcards{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:16px}
+.kcard{background:var(--card);border:1px solid var(--line);border-top:4px solid var(--kc);border-radius:14px;padding:14px;box-shadow:var(--sh)}
+.kcard b{font:800 26px var(--fd);display:block;line-height:1.15;margin-top:8px}.kcard small{display:block}
+.qa{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
+.btn.lt{background:#fff;color:var(--zam-900);box-shadow:none}.btn.lt:hover{background:var(--zam-100)}
+.btn.lt2{background:#ffffff1f;color:#fff;border-color:#ffffff40;box-shadow:none}.btn.lt2:hover{background:#ffffff33}
+.foot{text-align:center;color:var(--mut);font-size:12px;margin-top:34px}
+.cred{font:600 14px ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;letter-spacing:.04em}
+.lwrap{display:grid;grid-template-columns:1.1fr 1fr;width:min(960px,100%);border-radius:26px;overflow:hidden;box-shadow:0 40px 90px -30px #000c}
+.lbrand{background:radial-gradient(520px 300px at 0 0,#12b37f55,transparent 60%),linear-gradient(160deg,var(--zam-800),var(--zam-950));color:#d9f4e8;padding:40px 36px;display:flex;flex-direction:column;justify-content:center;gap:24px}
+.lbrand h2{font-size:36px;font-weight:800;color:#fff}.lbrand p{margin:4px 0 0;color:#a9dcc6}
+.lbrand ul{list-style:none;margin:0;padding:0;display:grid;gap:12px}
+.lbrand li{display:flex;gap:11px;align-items:center}.lbrand li span{width:32px;height:32px;border-radius:10px;background:#ffffff1a;display:grid;place-items:center;color:var(--zam-300);flex:none}
+.lwrap .lcard{width:auto;border-radius:0;box-shadow:none;display:flex;flex-direction:column;justify-content:center;padding:40px 36px}
+.lwrap .lcard h1{font-size:26px}
 @media(max-width:900px){
+  .lwrap{grid-template-columns:1fr}.lbrand{padding:26px 24px}.lbrand ul{display:none}.lbrand h2{font-size:28px}.lwrap .lcard{padding:26px 24px}.top .sch,.tt small{display:none}
   aside{transform:translateX(-100%)}body.nav-open aside{transform:none}
   #scrim{display:block;position:fixed;inset:0;background:#021a1388;z-index:35;opacity:0;pointer-events:none;transition:opacity .25s}
   body.nav-open #scrim{opacity:1;pointer-events:auto}
@@ -193,16 +226,26 @@ dialog::backdrop{background:#021a13aa;backdrop-filter:blur(3px)}
 <div id="boot"><div><div class="pulse"></div><p id="bootmsg">Menyambung ke pangkalan data…</p><p class="err" id="booterr"></p></div></div>
 
 <div id="login" hidden>
-  <form class="lcard" onsubmit="doLogin(event)">
-    <div class="logo" id="lg-logo"></div>
-    <h1>eKOKU</h1>
-    <p id="lg-school">Laporan perjumpaan kokurikulum</p>
-    <div class="f"><label for="lg-user">Nama guru</label><select class="in" id="lg-user" required></select></div>
-    <div class="f"><label for="lg-pw">Kata laluan</label><input class="in" id="lg-pw" type="password" autocomplete="current-password" required></div>
-    <button class="btn" style="width:100%;justify-content:center;margin-top:6px">Log masuk</button>
-    <div class="lerr" id="lg-err" role="alert"></div>
-    <small id="lg-mode"></small>
-  </form>
+  <div class="lwrap">
+    <section class="lbrand">
+      <div class="logo" id="lg-logo"></div>
+      <div><h2>eKOKU</h2><p>Laporan perjumpaan kokurikulum sekolah</p></div>
+      <ul>
+        <li><span id="lg-i1"></span>Rekod laporan setiap perjumpaan unit</li>
+        <li><span id="lg-i2"></span>Semak kehadiran murid dalam satu paparan</li>
+        <li><span id="lg-i3"></span>Cetak laporan program dan kad profil murid</li>
+      </ul>
+    </section>
+    <form class="lcard" onsubmit="doLogin(event)">
+      <h1>Log masuk</h1>
+      <p id="lg-school">Laporan perjumpaan kokurikulum</p>
+      <div class="f"><label for="lg-user">Nama guru</label><select class="in" id="lg-user" required></select></div>
+      <div class="f"><label for="lg-pw">Kata laluan</label><input class="in" id="lg-pw" type="password" autocomplete="current-password" required></div>
+      <button class="btn" style="width:100%;justify-content:center;margin-top:6px">Log masuk</button>
+      <div class="lerr" id="lg-err" role="alert"></div>
+      <small id="lg-mode"></small>
+    </form>
+  </div>
 </div>
 
 <div id="app">
@@ -218,8 +261,9 @@ dialog::backdrop{background:#021a13aa;backdrop-filter:blur(3px)}
   <main>
     <header class="top">
       <button class="iconbtn" id="menu" onclick="document.body.classList.add('nav-open')" aria-label="Buka menu"></button>
-      <button class="qs" onclick="openSearch()" id="b-qs"></button>
+      <div class="tt"><b id="top-title"></b><small id="top-date"></small></div>
       <div class="sp"></div>
+      <button class="qs" onclick="openSearch()" id="b-qs"></button>
       <span class="sch" id="top-school"></span>
       <button class="iconbtn" onclick="toggleTheme()" id="b-theme" aria-label="Tukar tema"></button>
     </header>
@@ -400,7 +444,7 @@ function boot(){
   if(g){ME=g;enterApp()}else{$('#login').hidden=false;fillLogin()}
 }
 function paintChrome(){
-  ['#lg-logo','#side-logo'].forEach(s=>$(s).innerHTML=ic('leaf',22));
+  ['#lg-logo','#side-logo'].forEach(s=>$(s).innerHTML=ic('leaf',22));[['#lg-i1','clip'],['#lg-i2','check'],['#lg-i3','print']].forEach(([s,i])=>$(s).innerHTML=ic(i,16));try{$('#top-date').textContent=new Date().toLocaleDateString('ms-MY',{weekday:'long',day:'numeric',month:'long',year:'numeric'})}catch{}
   $('#menu').innerHTML=ic('menu');$('#b-qs').innerHTML=`${ic('search',16)}<span>Carian pantas</span><kbd>Ctrl K</kbd>`;
   $('#b-pw').innerHTML=`${ic('key',14)}Kata laluan`;$('#b-out').innerHTML=`${ic('out',14)}Keluar`;
   $('#b-theme').innerHTML=document.documentElement.dataset.theme==='dark'?ic('sun'):ic('moon')
@@ -495,12 +539,14 @@ function render(){
   if(!ME){if(!$('#login').hidden)fillLogin();return}
   const cur=get('guru',ME.id);if(cur)ME=cur;else if(S.guru.length){logout();return}
   const r=ROUTES.find(x=>x.id===route);
-  $('#nav').innerHTML=ROUTES.filter(x=>!x.admin||ME.peranan==='admin').map(x=>`<a href="#/${x.id}" class="${x.id===route?'on':''}"${x.id===route?' aria-current="page"':''}>${ic(x.i)}<span>${x.t}</span></a>`).join('');
+  const NG=[['',['utama']],['Aktiviti kokurikulum',['perjumpaan','kehadiran','program','jawatan','ekstra']],['Pencapaian',['pencapaian','sekolah']],['Sistem',['admin']]];
+  $('#nav').innerHTML=NG.map(([t,ids])=>{const rs=ids.map(i=>ROUTES.find(x=>x.id===i)).filter(x=>x&&(!x.admin||ME.peranan==='admin'));return rs.length?(t?`<div class="ng">${t}</div>`:'')+rs.map(x=>`<a href="#/${x.id}" class="${x.id===route?'on':''}"${x.id===route?' aria-current="page"':''}>${ic(x.i)}<span>${x.t}</span></a>`).join(''):''}).join('');
+  $('#top-title').textContent=r.t;
   $('#me-av').textContent=(ME.nama||'?').trim()[0]||'?';$('#me-n').textContent=ME.nama;$('#me-r').textContent=ME.peranan==='admin'?'Pentadbir':'Guru';
   $('#side-school').textContent=CFG.namaSekolah;$('#top-school').textContent=`${CFG.namaSekolah}, sesi ${CFG.sesi}`;document.title=`${r.t} – eKOKU`;
   const m=$('#main'),a=document.activeElement,keep=a&&a.id&&m.contains(a)?{id:a.id,s:a.selectionStart,e:a.selectionEnd}:null;
   const was=ENTER,html=r.v();ENTER=false;
-  m.innerHTML=`<section class="view${was?' enter':''}">${html}</section>`;
+  m.innerHTML=`<section class="view${was?' enter':''}">${html}</section><div class="foot">eKOKU, ${esc(CFG.namaSekolah)}, sesi ${esc(CFG.sesi)}</div>`;
   if(keep){const el=document.getElementById(keep.id);if(el){el.focus();try{el.setSelectionRange(keep.s,keep.e)}catch{}}}
   $$('.ring .v').forEach(e=>{if(was&&!reduceMotion())requestAnimationFrame(()=>requestAnimationFrame(()=>e.style.strokeDashoffset=e.dataset.t));else e.style.strokeDashoffset=e.dataset.t});
   $$('.cnt').forEach(el=>{const to=+el.dataset.v;if(!was||!to||reduceMotion()){el.textContent=to;return}const t0=performance.now(),st=t=>{const k=Math.min(1,(t-t0)/750);el.textContent=Math.round(to*(1-Math.pow(1-k,3)));if(k<1)requestAnimationFrame(st)};requestAnimationFrame(st)})
@@ -509,8 +555,12 @@ addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()===
 $('#nav').addEventListener('click',()=>document.body.classList.remove('nav-open'));
 
 /* pembantu paparan */
-const pageHead=(t,s,a='')=>`<div class="ph"><div><h1>${t}</h1>${s?`<p>${s}</p>`:''}</div><div class="pa">${a}</div></div>`;
-const empty=(t,s,a='')=>`<div class="empty"><h3>${t}</h3><p>${s}</p>${a}</div>`;
+const pageHead=(t,s,a='')=>{const r=ROUTES.find(x=>x.id===route);return `<div class="ph"><div class="pt"><span class="pi">${ic(r?r.i:'leaf',22)}</span><div><h1>${t}</h1>${s?`<p>${s}</p>`:''}</div></div><div class="pa">${a}</div></div>`};
+const empty=(t,s,a='')=>`<div class="empty"><div class="ei">${ic('leaf',26)}</div><h3>${t}</h3><p>${s}</p>${a}</div>`;
+const AVC=['#0a9468','#3b72b8','#b0720f','#b4486a','#6b5bb5','#0a8a7a'];
+const avs=n=>{n=String(n||'?').trim();let h=0;for(const c of n)h=(h*31+c.charCodeAt(0))>>>0;const c=AVC[h%AVC.length];return `<span class="avs" style="background:color-mix(in srgb,${c} 16%,transparent);color:${c}">${esc(n[0]||'?')}</span>`};
+const nmCell=m=>`<div class="nmw">${avs(m.nama)}<div class="nm"><b>${esc(m.nama)}</b><small>${esc(kelasOf(m))}</small></div></div>`;
+const avName=n=>`<div class="nmw">${avs(n)}<b>${esc(n)}</b></div>`;
 const tabsH=(k,list,cur)=>`<div class="tabs" role="tablist">${list.map(([id,t,n])=>`<button role="tab" aria-selected="${id===cur}" class="${id===cur?'on':''}" onclick="T('${k}','${id}')">${t}${n!=null?`<b>${n}</b>`:''}</button>`).join('')}</div>`;
 const qIn=(ph,k='q')=>`<label class="srch">${ic('search',16)}<input id="q_${k}" value="${esc(V()[k]||'')}" placeholder="${esc(ph)}" oninput="U('${k}',this.value)" aria-label="${esc(ph)}"></label>`;
 const fSel=(k,opts,ph,val)=>`<select class="in" onchange="T('${k}',this.value)" aria-label="${esc(ph||k)}">${ph?`<option value="">${esc(ph)}</option>`:''}${opts.map(o=>{const [a,b]=Array.isArray(o)?o:[o,o];return `<option value="${esc(a)}"${String(a)===String(val??V()[k]??'')?' selected':''}>${esc(b)}</option>`}).join('')}</select>`;
@@ -545,8 +595,11 @@ function vUtama(){
   let done=0;for(const u of S.unit)done+=Math.min(N,new Set(S.perjumpaan.filter(t=>t.unitId===u.id).map(t=>+t.bil)).size);
   const need=S.unit.length*N,pct=need?Math.round(done/need*100):0,first=(ME.nama||'').split(' ')[0];
   const nAch=[...M.values()].reduce((a,s)=>a+s.ach.length,0),v=V(),kat=v.kat||'',units=S.unit.filter(u=>!kat||u.kategori===kat).sort(byNama);
+  const pcs=[...M.values()].map(pctOf).filter(x=>x!=null),avg=pcs.length?Math.round(pcs.reduce((a,b)=>a+b,0)/pcs.length):0;
+  const kcs=KK.map(k=>{const us=S.unit.filter(u=>u.kategori===k),ahli=new Set(us.flatMap(u=>membersOf(u.id).map(x=>x.id))).size;let h=0,d=0;for(const u of us){const ts=S.perjumpaan.filter(t=>t.unitId===u.id);d+=membersOf(u.id).length*ts.length;h+=ts.reduce((a,t)=>a+(t.hadir||[]).length,0)}return {k,n:us.length,ahli,p:d?Math.round(h/d*100):null}});
   const feed=[...S.perjumpaan.map(t=>({d:t.tarikh,t:`Perjumpaan ${unitNm(t.unitId)} bil. ${t.bil}`,s:t.aktiviti,p:0})),...S.program.map(p=>({d:p.mula,t:p.nama,s:`${p.peringkat||''} ${p.status==='selesai'?'(selesai)':''}`,p:1}))].sort((a,b)=>(b.d||'').localeCompare(a.d||'')).slice(0,6);
   return `<div class="hero"><div><h1>Selamat datang, ${esc(first)}</h1><p>${tot?`${tot} murid, ${S.unit.length} unit kokurikulum`:'Mulakan dengan menambah murid dan unit di Pengurusan & Admin'}</p>
+   <div class="qa"><button class="btn lt" onclick="mtgForm()">${ic('plus',16)}Laporan perjumpaan</button><button class="btn lt2" onclick="progForm()">${ic('cal',16)}Daftar program</button></div>
    <div class="rg"><div class="t">${ring(pct,128,12)}<div><span class="cnt" data-v="${pct}">${pct}</span>%<small>siap</small></div></div><span>${done} daripada ${need} laporan perjumpaan telah direkodkan (sasaran ${N} bagi setiap unit).</span></div></div>
    <div class="gen"><div class="row"><div><span>Lelaki</span><span>${L} murid</span></div><div class="bar"><i style="width:${tot?L/tot*100:0}%;background:var(--zam-300)"></i></div></div>
    <div class="row"><div><span>Perempuan</span><span>${Pn} murid</span></div><div class="bar"><i style="width:${tot?Pn/tot*100:0}%;background:#f3c969"></i></div></div></div></div>
@@ -554,7 +607,9 @@ function vUtama(){
    <button class="tile" onclick="location.hash='#/admin'"><span class="i">${ic('users')}</span><div><b>${tot}</b><span>Murid</span></div></button>
    <button class="tile" onclick="location.hash='#/jawatan'"><span class="i">${ic('badge')}</span><div><b>${S.unit.length}</b><span>Unit kokurikulum</span></div></button>
    <button class="tile" onclick="location.hash='#/program'"><span class="i">${ic('cal')}</span><div><b>${S.program.length}</b><span>Program</span></div></button>
+   <button class="tile" onclick="location.hash='#/kehadiran'"><span class="i">${ic('check')}</span><div><b>${avg}%</b><span>Purata kehadiran</span></div></button>
    <button class="tile gold" onclick="location.hash='#/sekolah'"><span class="i">${ic('trophy')}</span><div><b>${nAch}</b><span>Pencapaian</span></div></button></div>
+  <div class="kcards">${kcs.map(c=>`<div class="kcard k-${c.k}"><span class="kt k-${c.k}">${KAT[c.k].n}</span><b>${c.n} unit</b><small>${c.ahli} murid${c.p==null?'':`, kehadiran ${c.p}%`}</small></div>`).join('')}</div>
   <div class="two"><div class="card"><div class="tools" style="justify-content:space-between"><h3 style="margin:0">Rumusan unit</h3>${fSel('kat',katOpts(),'Semua kategori')}</div>
    ${units.length?units.map(u=>{const ms=membersOf(u.id),l=ms.filter(x=>x.jantina==='Lelaki').length,p=ms.length-l;return `<div class="ubar"><b title="${esc(u.nama)}">${esc(u.nama)}</b><div class="bar" title="Lelaki ${l}, Perempuan ${p}"><i style="width:${ms.length?l/ms.length*100:0}%;background:var(--zam-500)"></i><i style="width:${ms.length?p/ms.length*100:0}%;background:#e3b64a"></i></div><b class="r" style="text-align:right">${ms.length}</b></div>`}).join('')+`<small>Hijau: lelaki. Kuning: perempuan.</small>`:empty('Belum ada unit','Tambah unit di Pengurusan & Admin.')}</div>
    <div class="card"><h3>Terkini</h3>${feed.length?`<ul class="feed">${feed.map(f=>`<li><span class="d${f.p?' p':''}"></span><div><b>${esc(f.t)}</b><br><small>${fmtD(f.d)}${f.s?', '+esc(f.s):''}</small></div></li>`).join('')}</ul>`:empty('Belum ada aktiviti','Perjumpaan dan program akan muncul di sini.')}</div></div>`
@@ -619,7 +674,7 @@ function vKehadiran(){
   const head=pageHead('Kehadiran perjumpaan','Matriks kehadiran murid bagi setiap perjumpaan unit.',`<button class="btn ghost" onclick="exportKeh('${uid}')">${ic('down',16)}Muat turun CSV</button>`);
   return head+`<div class="card"><div class="tools"><select class="in" onchange="kehKat(this.value)" aria-label="Kategori">${katOpts().map(([a,b])=>`<option value="${a}"${a===kat?' selected':''}>${b}</option>`).join('')}</select><select class="in" onchange="T('unit',this.value)" aria-label="Unit">${us.map(u=>`<option value="${u.id}"${u.id===uid?' selected':''}>${esc(u.nama)}</option>`).join('')}</select>${fSel('kls',tings,'Semua kelas')}${qIn('Cari nama atau No. KP')}</div>
   <div class="stats" style="margin:0 0 14px"><div class="tile"><span class="i">${ic('users')}</span><div><b>${all.length}</b><span>Jumlah murid</span></div></div><div class="tile"><span class="i">${ic('check')}</span><div><b>${avg}%</b><span>Purata hadir</span></div></div><div class="tile"><span class="i">${ic('clip')}</span><div><b>${ts.length}</b><span>Perjumpaan direkod</span></div></div><div class="tile gold"><span class="i">${ic('badge')}</span><div><b>${full}</b><span>Hadir penuh</span></div></div></div>`+
-  tbl(['Bil','Nama',...cols.map(c=>'c:'+c),'c:Hadir','c:%'],ms.map((m,i)=>{const s=M.get(m.id),p=pctOf(s);return [i+1,`<div class="nm"><b>${esc(m.nama)}</b><small>${esc(kelasOf(m))}</small></div>`,...cols.map(b=>{const t=byBil.get(b);return !t?'<span class="na">–</span>':(t.hadir||[]).includes(m.id)?'<span class="ok">✓</span>':'<span class="no">✗</span>'}),s?`${s.hadir} / ${s.mtg}`:'-',p==null?'-':`<span class="badge ${p>=80?'':p>=50?'gold':'rose'}">${p}%</span>`]}),
+  tbl(['Bil','Nama',...cols.map(c=>'c:'+c),'c:Hadir','c:%'],ms.map((m,i)=>{const s=M.get(m.id),p=pctOf(s);return [i+1,nmCell(m),...cols.map(b=>{const t=byBil.get(b);return !t?'<span class="na">–</span>':(t.hadir||[]).includes(m.id)?'<span class="ok">✓</span>':'<span class="no">✗</span>'}),s?`${s.hadir} / ${s.mtg}`:'-',p==null?'-':`<span class="badge ${p>=80?'':p>=50?'gold':'rose'}">${p}%</span>`]}),
   us.length?empty('Tiada murid','Unit ini belum mempunyai ahli yang sepadan dengan penapis.'):empty('Belum ada unit dalam kategori ini','Tambah unit di Pengurusan & Admin.'))+`</div>`
 }
 function exportKeh(uid){
@@ -748,7 +803,7 @@ function pcProfil(){
   const tot=[...M.values()],chips=[['','Semua murid'],['ALL','Terbaik keseluruhan'],['BB','Terbaik BB'],['KP','Terbaik KP'],['SP','Terbaik SP']];
   return `<div class="stats"><div class="tile"><span class="i">${ic('users')}</span><div><b>${S.murid.length}</b><span>Jumlah murid</span></div></div><div class="tile gold"><span class="i">${ic('trophy')}</span><div><b>${tot.reduce((a,s)=>a+s.ach.length,0)}</b><span>Pencapaian</span></div></div><div class="tile"><span class="i">${ic('cal')}</span><div><b>${tot.reduce((a,s)=>a+s.prog.length,0)}</b><span>Penglibatan program</span></div></div><div class="tile"><span class="i">${ic('badge')}</span><div><b>${S.jawatan.length}</b><span>Jawatan dilantik</span></div></div></div>
   <div class="card"><div class="tools">${qIn('Cari nama atau No. KP')}${fSel('ting',tings,'Semua tahun / tingkatan')}${fSel('kls',klas,'Semua kelas')}</div><div class="tools">${chips.map(([k,t])=>`<button class="btn ${mode===k?'':'ghost'} sm" onclick="T('mode','${k}')">${t}</button>`).join('')}</div>`+
-  tbl(['Bil','Nama murid','Unit','c:Markah','c:Pencapaian','c:Program','c:Jawatan','c:Hadir','c:Ekstra',''],l.map((m,i)=>{const s=M.get(m.id),p=pctOf(s);return [i+1,`<div class="nm"><b>${esc(m.nama)}</b><small>${esc(kelasOf(m))}</small></div>`,['BB','KP','SP'].map(k=>m.u?.[k]?`<span class="kt k-${k}" title="${esc(unitNm(m.u[k]))}">${esc(unitNm(m.u[k]))}</span>`:'').join(' '),`<b>${sc(m)}</b>`,s.ach.length,s.prog.length,s.jaw.length,p==null?'-':p+'%',s.eks.length,rowAct(ibtn(`profil('${m.id}')`,'eye','Lihat profil'))]}),S.murid.length?empty('Tiada murid sepadan','Ubah penapis atau kata carian.'):empty('Belum ada murid','Tambah atau import murid di Pengurusan & Admin.'))+`</div>`
+  tbl(['Bil','Nama murid','Unit','c:Markah','c:Pencapaian','c:Program','c:Jawatan','c:Hadir','c:Ekstra',''],l.map((m,i)=>{const s=M.get(m.id),p=pctOf(s);return [i+1,nmCell(m),['BB','KP','SP'].map(k=>m.u?.[k]?`<span class="kt k-${k}" title="${esc(unitNm(m.u[k]))}">${esc(unitNm(m.u[k]))}</span>`:'').join(' '),`<b>${sc(m)}</b>`,s.ach.length,s.prog.length,s.jaw.length,p==null?'-':p+'%',s.eks.length,rowAct(ibtn(`profil('${m.id}')`,'eye','Lihat profil'))]}),S.murid.length?empty('Tiada murid sepadan','Ubah penapis atau kata carian.'):empty('Belum ada murid','Tambah atau import murid di Pengurusan & Admin.'))+`</div>`
 }
 function pcUnit(){
   const {M,mem}=stats(),rows=S.unit.slice().sort((a,b)=>KK.indexOf(a.kategori)-KK.indexOf(b.kategori)||byNama(a,b)).map(u=>{const ms=mem.get(u.id)||[],ts=S.perjumpaan.filter(t=>t.unitId===u.id),h=ms.reduce((a,m)=>a+M.get(m.id).hadir,0),d=ms.length*ts.length,ach=ms.flatMap(m=>M.get(m.id).ach.filter(a=>a.unitId===u.id||(!a.unitId&&false)));
@@ -811,7 +866,7 @@ function admMurid(){
   const v=V(),q=(v.q||'').toLowerCase(),tings=[...new Set(S.murid.map(m=>m.tingkatan).filter(Boolean))].sort();
   const l=S.murid.filter(m=>(!v.ting||m.tingkatan===v.ting)&&(!q||(m.nama+' '+m.nokp).toLowerCase().includes(q))).sort((a,b)=>(a.tingkatan||'').localeCompare(b.tingkatan||'')||(a.kelas||'').localeCompare(b.kelas||'')||byNama(a,b));
   return `<div class="card"><div class="tools">${qIn('Cari nama atau No. KP')}${fSel('ting',tings,'Semua tahun / tingkatan')}<button class="btn ghost" onclick="muridTemplate()">${ic('down',16)}Templat CSV</button><label class="btn ghost" style="cursor:pointer">${ic('up',16)}Import Excel / CSV<input type="file" accept=".csv,.xlsx,.xls" hidden onchange="importMurid(this)"></label><button class="btn" onclick="muridForm()">${ic('plus',16)}Tambah murid</button></div>`+
-  tbl(['Nama','No. KP','Jantina','Kelas','BB','KP','SP','Rumah',''],l.map(m=>[`<b>${esc(m.nama)}</b>`,esc(m.nokp),esc(m.jantina),esc(kelasOf(m)),...KK.map(k=>m.u?.[k]?esc(unitNm(m.u[k])):'<span class="na">–</span>'),rowAct(ibtn(`muridForm('${m.id}')`,'edit','Edit'),ibtn(`delItem('murid','${m.id}')`,'trash','Padam'))]),
+  tbl(['Nama','No. KP','Jantina','Kelas','BB','KP','SP','Rumah',''],l.map(m=>[avName(m.nama),esc(m.nokp),esc(m.jantina),esc(kelasOf(m)),...KK.map(k=>m.u?.[k]?esc(unitNm(m.u[k])):'<span class="na">–</span>'),rowAct(ibtn(`muridForm('${m.id}')`,'edit','Edit'),ibtn(`delItem('murid','${m.id}')`,'trash','Padam'))]),
    S.murid.length?empty('Tiada murid sepadan','Ubah penapis atau kata carian.'):empty('Belum ada murid','Import senarai murid daripada Excel atau CSV, atau tambah satu persatu.',`<button class="btn" onclick="muridForm()">${ic('plus',16)}Tambah murid</button> ${FB?`<button class="btn ghost" onclick="loadDemo()">Muat data contoh</button>`:''}`))+
   (S.murid.length?`<div style="margin-top:14px;text-align:right"><button class="btn ghost sm" onclick="clearMurid()">Kosongkan semua data murid</button></div>`:'')+`</div>`
 }
@@ -832,12 +887,13 @@ function clearMurid(){
 function muridTemplate(){downloadCsv('templat-murid.csv',[['nama','nokp','jantina','tingkatan','kelas','bb','kp','sp','rumah'],['AIMAN HAKIM BIN RAZAK','100101010101','Lelaki','Tingkatan 1','Amanah','PENGAKAP','BAHASA MELAYU','BOLA SEPAK','BIRU']])}
 function parseCsv(t){const rows=[];let r=[],c='',q=false;for(let i=0;i<t.length;i++){const ch=t[i];if(q){if(ch==='"'){if(t[i+1]==='"'){c+='"';i++}else q=false}else c+=ch}else if(ch==='"')q=true;else if(ch===','||ch===';'||ch==='\t'){r.push(c);c=''}else if(ch==='\n'){r.push(c);rows.push(r);r=[];c=''}else if(ch!=='\r')c+=ch}if(c||r.length){r.push(c);rows.push(r)}return rows.filter(r=>r.some(x=>String(x).trim()))}
 const loadScript=src=>new Promise((ok,no)=>{const s=document.createElement('script');s.src=src;s.onload=ok;s.onerror=()=>no(new Error('Gagal memuatkan '+src));document.head.appendChild(s)});
+async function readSheet(file){
+  if(/\.xlsx?$/i.test(file.name)){if(!window.XLSX)await loadScript('https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js');const wb=XLSX.read(await file.arrayBuffer());return XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]],{header:1,raw:false,defval:''})}
+  return parseCsv(await file.text())
+}
 async function importMurid(inp){
   const file=inp.files[0];inp.value='';if(!file)return;let rows;
-  try{
-    if(/\.xlsx?$/i.test(file.name)){if(!window.XLSX)await loadScript('https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js');const wb=XLSX.read(await file.arrayBuffer());rows=XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]],{header:1,raw:false,defval:''})}
-    else rows=parseCsv(await file.text())
-  }catch(e){toast('Fail tidak dapat dibaca: '+e.message,'err');return}
+  try{rows=await readSheet(file)}catch(e){toast('Fail tidak dapat dibaca: '+e.message,'err');return}
   const norm=s=>String(s).toLowerCase().replace(/[^a-z0-9]/g,''),al={nama:['nama','namamurid','name'],nokp:['nokp','nokadpengenalan','kp','nomborkp','ic','nokpmurid'],jantina:['jantina','gender','lp'],tingkatan:['tingkatan','tahun','darjah','tahuntingkatan'],kelas:['kelas','namakelas'],BB:['bb','badanberuniform'],KP:['kp2','kelab','kelabpersatuan','kelabdanpersatuan'],SP:['sp','sukan','sukanpermainan','sukandanpermainan'],RS:['rumah','rumahsukan','rs']};
   const hd=(rows[0]||[]).map(norm),col={};for(const k in al){let i=hd.findIndex(h=>al[k].includes(h));if(k==='KP'&&i<0){const seen=hd.indexOf('kp');if(seen>=0&&hd.indexOf('nokp')>=0)i=seen}col[k]=i}
   if(col.nama<0||col.nokp<0){toast('Lajur "nama" dan "nokp" diperlukan. Muat turun templat untuk rujukan.','err');return}
@@ -869,8 +925,8 @@ function saveAhli(){
   closeModal();run(saveMany('murid',ch),`${ch.length} perubahan disimpan`)
 }
 function admGuru(){
-  return `<div class="card"><div class="tools"><div style="flex:1"></div><button class="btn" onclick="guruForm()">${ic('plus',16)}Tambah guru</button></div>`+
-  tbl(['Nama','No. KP','Peranan','Unit penasihat',''],S.guru.slice().sort(byNama).map(g=>[`<b>${esc(g.nama)}</b>`,esc(g.nokp||'-'),`<span class="badge ${g.peranan==='admin'?'gold':''}">${g.peranan==='admin'?'Pentadbir':'Guru'}</span>`,esc(S.unit.filter(u=>(u.guruIds||[]).includes(g.id)).map(u=>u.nama).join(', ')||'-'),rowAct(ibtn(`guruForm('${g.id}')`,'edit','Edit'),ibtn(`delGuru('${g.id}')`,'trash','Padam'))]),empty('Belum ada guru','Tambah guru supaya mereka boleh log masuk.'))+`</div>`
+  return `<div class="card"><div class="tools"><div style="flex:1"></div><button class="btn ghost" onclick="guruTemplate()">${ic('down',16)}Templat CSV</button><label class="btn soft" style="cursor:pointer">${ic('up',16)}Import guru (Excel / CSV)<input type="file" accept=".csv,.xlsx,.xls" hidden onchange="importGuru(this)"></label><button class="btn" onclick="guruForm()">${ic('plus',16)}Tambah guru</button></div>`+
+  tbl(['Nama','No. KP','Peranan','Unit penasihat',''],S.guru.slice().sort(byNama).map(g=>[avName(g.nama),esc(g.nokp||'-'),`<span class="badge ${g.peranan==='admin'?'gold':''}">${g.peranan==='admin'?'Pentadbir':'Guru'}</span>${g.tukar?' <span class="badge gray">Menunggu log masuk pertama</span>':''}`,esc(S.unit.filter(u=>(u.guruIds||[]).includes(g.id)).map(u=>u.nama).join(', ')||'-'),rowAct(ibtn(`guruForm('${g.id}')`,'edit','Edit'),ibtn(`delGuru('${g.id}')`,'trash','Padam'))]),empty('Belum ada guru','Tambah guru supaya mereka boleh log masuk.'))+`</div>`
 }
 function guruForm(id){
   const g=id?get('guru',id):{peranan:'guru'};
@@ -886,6 +942,46 @@ function delGuru(id){
   if(id===ME.id){toast('Anda tidak boleh memadam akaun yang sedang digunakan.','err');return}
   if(get('guru',id).peranan==='admin'&&S.guru.filter(g=>g.peranan==='admin').length<2){toast('Mesti ada sekurang-kurangnya seorang pentadbir.','err');return}
   ask('Padam akaun guru ini?',()=>run(remove('guru',id),'Guru dipadam'))
+}
+
+/* ---------- import guru pukal ---------- */
+let GCRED=null;
+const PWCH='abcdefghjkmnpqrstuvwxyz23456789';
+const tmpPw=()=>Array.from(crypto.getRandomValues(new Uint8Array(8)),b=>PWCH[b%PWCH.length]).join('');
+function guruTemplate(){downloadCsv('templat-guru.csv',[['nama','nokp','peranan'],['CIKGU AMINAH BINTI HASSAN','800101015555','guru'],['CIKGU RAZAK BIN ISMAIL','820202025555','guru']])}
+async function importGuru(inp){
+  const file=inp.files[0];inp.value='';if(!file)return;let rows;
+  try{rows=await readSheet(file)}catch(e){toast('Fail tidak dapat dibaca: '+e.message,'err');return}
+  const norm=x=>String(x).toLowerCase().replace(/[^a-z0-9]/g,''),hd=(rows[0]||[]).map(norm),ci=a=>hd.findIndex(h=>a.includes(h));
+  const cN=ci(['nama','namaguru','name']),cK=ci(['nokp','kp','nokadpengenalan','nomborkp','ic']),cP=ci(['peranan','role']);
+  if(cN<0){toast('Lajur "nama" diperlukan. Muat turun templat untuk rujukan.','err');return}
+  const byKp=new Map(S.guru.filter(g=>g.nokp).map(g=>[g.nokp,g])),byNm=new Map(S.guru.map(g=>[g.nama.trim().toUpperCase(),g])),seen=new Set(),out=[];let upd=0,skip=0;
+  for(const r of rows.slice(1)){
+    const nama=String(r[cN]||'').trim(),nokp=cK>=0?String(r[cK]||'').trim().replace(/[-\s]/g,''):'';
+    if(!nama){skip++;continue}
+    const key=nokp||nama.toUpperCase();if(seen.has(key)){skip++;continue}seen.add(key);
+    const pr=cP>=0?String(r[cP]||'').trim().toLowerCase():'',role=/^(admin|pentadbir)/.test(pr)?'admin':'guru',old=(nokp&&byKp.get(nokp))||byNm.get(nama.toUpperCase());
+    if(old){upd++;out.push({...old,nama,nokp:nokp||old.nokp||'',peranan:old.id===ME.id?old.peranan:(pr?role:old.peranan)})}
+    else out.push({nama,nokp,peranan:role,_pw:tmpPw()})
+  }
+  const final=[...S.guru.filter(g=>!out.some(o=>o.id===g.id)),...out];
+  if(!final.some(g=>g.peranan==='admin')){toast('Import dibatalkan: mesti ada sekurang-kurangnya seorang pentadbir.','err');return}
+  GCRED={list:out};
+  const baru=out.length-upd;
+  modal({title:'Sahkan import guru',body:`<p><b>${baru}</b> akaun guru baharu akan dicipta dan <b>${upd}</b> akaun sedia ada dikemas kini (dipadankan melalui No. KP, atau nama jika No. KP tiada). Kata laluan sedia ada tidak diubah.${skip?` ${skip} baris dilangkau (tiada nama atau pendua).`:''}</p>${baru?'<p class="mut">Kata laluan sementara dijana rawak bagi setiap akaun baharu. Ia dipaparkan sekali sahaja selepas import supaya anda boleh memuat turunnya.</p>':''}${out.slice(0,5).map(o=>`<p class="mut" style="margin:2px 0">${esc(o.nama)} ${o.peranan==='admin'?'(Pentadbir)':''}${o._pw?'':' (kemas kini)'}</p>`).join('')}${out.length>5?`<p class="mut">dan ${out.length-5} lagi</p>`:''}`,
+   foot:`<button class="btn ghost" onclick="GCRED=null;closeModal()">Batal</button><button class="btn" ${out.length?'':'disabled'} onclick="doGuruImport()">Import ${out.length} guru</button>`})
+}
+async function doGuruImport(){
+  const list=GCRED.list,creds=[],save=[];closeModal();
+  try{
+    for(const o of list){const x={...o};delete x._pw;if(o._pw){x.salt=rnd();x.hash=await sha(x.salt+o._pw);x.tukar=true;creds.push([x.nama,x.nokp,o._pw])}save.push(x)}
+    await saveMany('guru',save)
+  }catch(e){toast('Import gagal: '+e.message,'err');GCRED=null;return}
+  GCRED={creds};
+  if(!creds.length){GCRED=null;toast(`${save.length} akaun guru dikemas kini`);return}
+  modal({title:'Import selesai',sub:`${creds.length} akaun baharu dicipta`,wide:true,
+   body:`<div class="alert">Kata laluan sementara ini dipaparkan sekali sahaja. Muat turun fail sekarang dan edarkan kepada setiap guru secara peribadi. Guru akan diminta menukarnya semasa log masuk pertama.</div>`+tbl(['Nama','No. KP','Kata laluan sementara'],creds.map(c=>[avName(c[0]),esc(c[1]||'-'),`<span class="cred">${esc(c[2])}</span>`])),
+   foot:`<button class="btn ghost" onclick="GCRED=null;closeModal()">Tutup</button><button class="btn" onclick="downloadCsv('kata-laluan-sementara.csv',[['Nama','No. KP','Kata laluan sementara'],...GCRED.creds])">${ic('down',16)}Muat turun CSV</button>`})
 }
 
 /* ---------- carian pantas ---------- */
