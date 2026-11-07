@@ -1,0 +1,11 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // eKOKU log masuk ke Firebase secara tanpa nama (Anonymous sign-in) apabila halaman dibuka.
+    // Peraturan ini menutup pangkalan data kepada klien yang tidak melalui aplikasi,
+    // tetapi BUKAN kawalan akses bagi setiap guru. Lihat README untuk penjelasan.
+    match /{document=**} {
+      allow read, write: if request.auth != null;
+    }
+  }
+}
