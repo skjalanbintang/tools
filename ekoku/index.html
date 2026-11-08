@@ -35,6 +35,7 @@ small,.mut{color:var(--mut)}
 @keyframes pulse{50%{transform:scale(.8);opacity:.6}}
 #login{min-height:100vh;display:grid;place-items:center;padding:20px;background:radial-gradient(1100px 560px at 12% -5%,#0a6a4c66,transparent 60%),radial-gradient(700px 420px at 100% 100%,#06513d88,transparent 60%),var(--zam-950)}
 .lcard{width:min(410px,100%);background:var(--card);border-radius:22px;padding:32px 30px;box-shadow:0 40px 90px -30px #000c}
+.seg{display:grid;grid-template-columns:1fr 1fr;gap:4px;background:var(--line2);padding:4px;border-radius:12px;margin:0 0 14px}.seg button{border:0;background:transparent;padding:9px;border-radius:9px;font-weight:700;color:var(--mut);cursor:pointer}.seg button.on{background:var(--card);color:var(--zam-800);box-shadow:var(--sh)}
 .lcard .logo{margin-bottom:14px}.lcard h1{font-size:30px;font-weight:800}.lcard p{margin:4px 0 18px;color:var(--mut)}
 .lerr{color:var(--rose);min-height:20px;margin:10px 0 0;font-size:13px}
 .logo img{width:100%;height:100%;object-fit:contain;border-radius:inherit}.logo.has{background:#fff}.logoup{display:flex;gap:14px;align-items:center;flex-wrap:wrap}.logoup .pv{width:72px;height:72px;border:1px dashed var(--line);border-radius:14px;display:grid;place-items:center;background:var(--zam-50);overflow:hidden}.logoup .pv img{width:100%;height:100%;object-fit:contain}.logo{width:42px;height:42px;border-radius:13px;background:var(--zam-500);display:grid;place-items:center;color:#032b20}
@@ -267,7 +268,9 @@ dialog::backdrop{background:#021a13aa;backdrop-filter:blur(3px)}
     <form class="lcard" onsubmit="doLogin(event)">
       <h1>Log masuk</h1>
       <p id="lg-school">Laporan perjumpaan kokurikulum</p>
-      <div class="f"><label for="lg-user">Nama guru</label><select class="in" id="lg-user" required></select></div>
+      <div class="seg" id="lg-seg" role="tablist"><button type="button" class="on" data-m="admin" onclick="lgMode('admin')">Pentadbir</button><button type="button" data-m="guru" onclick="lgMode('guru')">Guru</button></div>
+      <div class="f" id="lg-f-admin"><label for="lg-user">Nama pentadbir</label><select class="in" id="lg-user" required></select></div>
+      <div class="f" id="lg-f-guru" hidden><label for="lg-kp">No. kad pengenalan</label><input class="in" id="lg-kp" inputmode="numeric" autocomplete="username" placeholder="Contoh: 800101015555"></div>
       <div class="f"><label for="lg-pw">Kata laluan</label><input class="in" id="lg-pw" type="password" autocomplete="current-password" required></div>
       <button class="btn" style="width:100%;justify-content:center;margin-top:6px">Log masuk</button>
       <div class="lerr" id="lg-err" role="alert"></div>
@@ -454,24 +457,30 @@ async function seedSample(){
 /* =============== sesi & log masuk =============== */
 function fillLogin(){
   const sel=$('#lg-user'),cur=sel.value;
-  sel.innerHTML=S.guru.slice().sort(byNama).map(g=>`<option value="${g.id}">${esc(g.nama)} (${g.peranan==='admin'?'Pentadbir':'Guru'})</option>`).join('');
+  const ad=S.guru.filter(g=>g.peranan==='admin').sort(byNama);
+  sel.innerHTML=(ad.length?ad:S.guru.slice().sort(byNama)).map(g=>`<option value="${g.id}">${esc(g.nama)}</option>`).join('');
   if(cur)sel.value=cur;
   $('#lg-school').textContent=CFG.namaSekolah;applyLogo();
   $('#lg-mode').textContent=FB?'Disambung ke Firebase':FBC.apiKey?'Config Firebase ditemui tetapi pustaka Firebase gagal dimuatkan. Semak sambungan internet, kemudian muat semula.':'Mod demo: data disimpan dalam pelayar ini sahaja.'
 }
+let LGM='admin';
+function lgMode(m){LGM=m;$$('#lg-seg button').forEach(b=>b.classList.toggle('on',b.dataset.m===m));$('#lg-f-admin').hidden=m!=='admin';$('#lg-f-guru').hidden=m!=='guru';$('#lg-user').required=m==='admin';$('#lg-kp').required=m==='guru';$('#lg-err').textContent='';const f=m==='admin'?$('#lg-user'):$('#lg-kp');if(matchMedia('(hover:hover)').matches)f.focus()}
+const normKp=v=>String(v||'').replace(/\D/g,'');
 async function doLogin(e){
-  e.preventDefault();const g=get('guru',$('#lg-user').value),err=$('#lg-err');err.textContent='';
-  if(!g){err.textContent='Pilih nama guru.';return}
+  e.preventDefault();const err=$('#lg-err');err.textContent='';let g;
+  if(LGM==='guru'){const kp=normKp($('#lg-kp').value);if(kp.length<6){err.textContent='Masukkan No. kad pengenalan anda.';return}
+    g=S.guru.find(x=>normKp(x.nokp)===kp);if(!g){err.textContent='No. KP atau kata laluan tidak betul.';return}}
+  else{g=get('guru',$('#lg-user').value);if(!g){err.textContent='Pilih nama pentadbir.';return}}
   try{
-    if(g.hash!==await sha((g.salt||'')+$('#lg-pw').value)){err.textContent='Kata laluan tidak betul.';return}
+    if(g.hash!==await sha((g.salt||'')+$('#lg-pw').value)){err.textContent=LGM==='guru'?'No. KP atau kata laluan tidak betul.':'Kata laluan tidak betul.';return}
   }catch{err.textContent='Pelayar ini tidak menyokong log masuk selamat. Buka eKOKU melalui https.';return}
-  ME=g;try{sessionStorage.setItem('ekoku_uid',g.id)}catch{}$('#lg-pw').value='';enterApp()
+  ME=g;try{sessionStorage.setItem('ekoku_uid',g.id)}catch{}$('#lg-pw').value='';$('#lg-kp').value='';enterApp()
 }
 function enterApp(){
   $('#login').hidden=true;document.body.classList.add('in');ENTER=true;routeChange();
   if(ME.tukar)pwModal(true)
 }
-function logout(){ME=null;try{sessionStorage.removeItem('ekoku_uid')}catch{}document.body.classList.remove('in');closeModal();$('#login').hidden=false;fillLogin()}
+function logout(){ME=null;try{sessionStorage.removeItem('ekoku_uid')}catch{}document.body.classList.remove('in');closeModal();$('#login').hidden=false;fillLogin();lgMode('admin')}
 function boot(){
   if(booted)return;booted=true;$('#boot').hidden=true;
   paintChrome();const uid=(()=>{try{return sessionStorage.getItem('ekoku_uid')}catch{}})(),g=uid&&get('guru',uid);
@@ -1186,7 +1195,7 @@ function saveAhli(){
 }
 function admGuru(){
   return `<div class="card"><div class="tools"><div style="flex:1"></div><button class="btn ghost" onclick="guruTemplate()">${ic('down',16)}Templat CSV</button><label class="btn soft" style="cursor:pointer">${ic('up',16)}Import guru (Excel / CSV)<input type="file" accept=".csv,.xlsx,.xls" hidden onchange="importGuru(this)"></label><button class="btn" onclick="guruForm()">${ic('plus',16)}Tambah guru</button></div>`+
-  tbl(['Nama','No. KP','Peranan','Komponen & unit',''],S.guru.slice().sort(byNama).map(g=>[avName(g.nama),esc(g.nokp||'-'),`<span class="badge ${g.peranan==='admin'?'gold':''}">${g.peranan==='admin'?'Pentadbir':'Guru'}</span>${g.tukar?' <span class="badge gray">Menunggu log masuk pertama</span>':''}`,gUnits(g.id),rowAct(ibtn(`guruForm('${g.id}')`,'edit','Edit'),ibtn(`delGuru('${g.id}')`,'trash','Padam'))]),empty('Belum ada guru','Tambah guru supaya mereka boleh log masuk.'))+`</div>`
+  tbl(['Nama','No. KP','Peranan','Komponen & unit',''],S.guru.slice().sort(byNama).map(g=>[avName(g.nama),(g.nokp?esc(g.nokp):(g.peranan==='admin'?'-':'<span class="badge rose">Tiada No. KP</span>')),`<span class="badge ${g.peranan==='admin'?'gold':''}">${g.peranan==='admin'?'Pentadbir':'Guru'}</span>${g.tukar?' <span class="badge gray">Menunggu log masuk pertama</span>':''}`,gUnits(g.id),rowAct(ibtn(`guruForm('${g.id}')`,'edit','Edit'),ibtn(`delGuru('${g.id}')`,'trash','Padam'))]),empty('Belum ada guru','Tambah guru supaya mereka boleh log masuk.'))+`</div>`
 }
 function gUnits(gid){const us=S.unit.filter(u=>(u.guruIds||[]).includes(gid)).sort((a,b)=>KK.indexOf(a.kategori)-KK.indexOf(b.kategori)||byNama(a,b));return us.length?us.map(u=>`<div style="margin:2px 0">${kchip(u.kategori)} ${esc(u.nama)}</div>`).join(''):'<span class="mut">Belum ditetapkan</span>'}
 function guruUnitOf(gid,k){return (S.unit.find(u=>u.kategori===k&&(u.guruIds||[]).includes(gid))||{}).id||''}
@@ -1202,11 +1211,14 @@ function applyGuruUnits(gid,picks){
 }
 function guruForm(id){
   const g=id?get('guru',id):{peranan:'guru'};
-  modal({title:id?'Edit guru':'Tambah guru',body:`<form id="f" onsubmit="event.preventDefault();saveGuru('${id||''}')">${F('Nama *',tx('nama',g.nama||'',{req:1}))}${F('No. KP',tx('nokp',g.nokp||''))}${F('Peranan',sel('peranan',[['guru','Guru'],['admin','Pentadbir']],g.peranan,{ph:null}))}${F('Komponen dan unit (minimum 2 komponen, satu unit bagi setiap komponen) <small id="kompN" class="mut"></small>',`<div id="ukBox" class="ukgrid">${KK.map(k=>`<label><span>${KAT[k].n}</span>${sel('uk_'+k,S.unit.filter(u=>u.kategori===k).sort(byNama).map(u=>[u.id,u.nama]),id?guruUnitOf(id,k):'',{ph:'Tiada'}).replace('<select','<select onchange="kompLimit()"')}</label>`).join('')}</div>`)}${F(id?'Kata laluan baharu (kosongkan jika tidak diubah)':'Kata laluan sementara * (guru akan menukarnya semasa log masuk pertama)',`<input class="in" name="pw" type="password" minlength="6" autocomplete="new-password" ${id?'':'required'}>`)}</form>`,foot:`<button class="btn ghost" onclick="closeModal()">Batal</button><button class="btn" form="f">Simpan guru</button>`});kompLimit()
+  modal({title:id?'Edit guru':'Tambah guru',body:`<form id="f" onsubmit="event.preventDefault();saveGuru('${id||''}')">${F('Nama *',tx('nama',g.nama||'',{req:1}))}${F('No. KP (digunakan guru untuk log masuk)',tx('nokp',g.nokp||'',{ph:'Contoh: 800101015555'}))}${F('Peranan',sel('peranan',[['guru','Guru'],['admin','Pentadbir']],g.peranan,{ph:null}))}${F('Komponen dan unit (minimum 2 komponen, satu unit bagi setiap komponen) <small id="kompN" class="mut"></small>',`<div id="ukBox" class="ukgrid">${KK.map(k=>`<label><span>${KAT[k].n}</span>${sel('uk_'+k,S.unit.filter(u=>u.kategori===k).sort(byNama).map(u=>[u.id,u.nama]),id?guruUnitOf(id,k):'',{ph:'Tiada'}).replace('<select','<select onchange="kompLimit()"')}</label>`).join('')}</div>`)}${F(id?'Kata laluan baharu (kosongkan jika tidak diubah)':'Kata laluan sementara * (guru akan menukarnya semasa log masuk pertama)',`<input class="in" name="pw" type="password" minlength="6" autocomplete="new-password" ${id?'':'required'}>`)}</form>`,foot:`<button class="btn ghost" onclick="closeModal()">Batal</button><button class="btn" form="f">Simpan guru</button>`});kompLimit()
 }
 async function saveGuru(id){
   const f=readForm($('#f')),o={...(id?get('guru',id):{}),nama:f.nama.trim(),nokp:f.nokp.trim(),peranan:f.peranan};delete o.komponen;
   if(!id)o.id=newId();
+  const kp=normKp(o.nokp);o.nokp=kp||o.nokp;
+  if(o.peranan!=='admin'&&kp.length<6){toast('No. KP diperlukan (sekurang-kurangnya 6 digit) kerana guru log masuk menggunakan No. KP.','err');return}
+  if(kp&&S.guru.some(x=>x.id!==o.id&&normKp(x.nokp)===kp)){toast('No. KP ini sudah digunakan oleh guru lain.','err');return}
   const picks={};KK.forEach(k=>{picks[k]=f['uk_'+k]||''});
   if(o.peranan!=='admin'&&Object.values(picks).filter(Boolean).length<MIN_KOMP){toast('Guru mesti dilantik dalam sekurang-kurangnya 2 komponen (pilih unit bagi setiap komponen).','err');return}
   if(id&&o.peranan!=='admin'&&S.guru.filter(g=>g.peranan==='admin'&&g.id!==id).length===0){toast('Mesti ada sekurang-kurangnya seorang pentadbir.','err');return}
@@ -1239,6 +1251,9 @@ async function importGuru(inp){
     if(!nama){skip++;continue}
     const key=nokp||nama.toUpperCase();if(seen.has(key)){skip++;continue}seen.add(key);
     const pr=cP>=0?String(r[cP]||'').trim().toLowerCase():'',role=/^(admin|pentadbir)/.test(pr)?'admin':'guru',old=(nokp&&byKp.get(nokp))||byNm.get(nama.toUpperCase());
+    const fkp=normKp(nokp||old?.nokp),isAdm=old?(pr?role:old.peranan)==='admin':role==='admin';
+    if(!isAdm&&fkp.length<6){rej.push(`${nama}: tiada No. KP (guru log masuk menggunakan No. KP)`);continue}
+    if(fkp&&S.guru.some(x=>x.id!==old?.id&&normKp(x.nokp)===fkp)){rej.push(`${nama}: No. KP sudah digunakan oleh guru lain`);continue}
     const picks={};for(const k of KK){if(!(k in cU))continue;const nm=sp(r[cU[k]]);if(!nm)continue;const u=uByName.get(k+'|'+nm.toUpperCase());if(u)picks[k]=u.id;else warn.push(`${nama}: unit "${nm}" tidak dijumpai dalam ${KAT[k].n}`)}
     const have=new Set(S.unit.filter(u=>old&&(u.guruIds||[]).includes(old.id)).map(u=>u.kategori));Object.keys(picks).forEach(k=>have.add(k));
     const adm=old?(pr?role:old.peranan)==='admin':role==='admin';
@@ -1250,7 +1265,7 @@ async function importGuru(inp){
   if(!final.some(g=>g.peranan==='admin')){toast('Import dibatalkan: mesti ada sekurang-kurangnya seorang pentadbir.','err');return}
   GCRED={list:out};
   const baru=out.length-upd,nu=out.filter(o=>Object.keys(o._u||{}).length).length;
-  modal({title:'Sahkan import guru',body:`<p><b>${baru}</b> akaun guru baharu akan dicipta dan <b>${upd}</b> akaun sedia ada dikemas kini (dipadankan melalui No. KP, atau nama jika No. KP tiada). Kata laluan sedia ada tidak diubah.${skip?` ${skip} baris dilangkau (tiada nama atau pendua).`:''}${nu?` Unit ditetapkan bagi <b>${nu}</b> guru.`:''}</p>${rej.length?`<div class="alert" style="border-color:#b42318"><b>${rej.length} baris ditolak (guru mesti dilantik dalam sekurang-kurangnya 2 komponen):</b><br>${rej.slice(0,8).map(esc).join('<br>')}${rej.length>8?`<br>dan ${rej.length-8} lagi`:''}</div>`:''}${warn.length?`<div class="alert"><b>${warn.length} amaran:</b><br>${warn.slice(0,8).map(esc).join('<br>')}${warn.length>8?`<br>dan ${warn.length-8} lagi`:''}</div>`:''}${baru?'<p class="mut">Kata laluan sementara dijana rawak bagi setiap akaun baharu. Ia dipaparkan sekali sahaja selepas import supaya anda boleh memuat turunnya.</p>':''}${out.slice(0,5).map(o=>`<p class="mut" style="margin:2px 0">${esc(o.nama)} ${o.peranan==='admin'?'(Pentadbir)':''}${o._pw?'':' (kemas kini)'}</p>`).join('')}${out.length>5?`<p class="mut">dan ${out.length-5} lagi</p>`:''}`,
+  modal({title:'Sahkan import guru',body:`<p><b>${baru}</b> akaun guru baharu akan dicipta dan <b>${upd}</b> akaun sedia ada dikemas kini (dipadankan melalui No. KP, atau nama jika No. KP tiada). Kata laluan sedia ada tidak diubah.${skip?` ${skip} baris dilangkau (tiada nama atau pendua).`:''}${nu?` Unit ditetapkan bagi <b>${nu}</b> guru.`:''}</p>${rej.length?`<div class="alert" style="border-color:#b42318"><b>${rej.length} baris ditolak (No. KP atau komponen tidak mencukupi):</b><br>${rej.slice(0,8).map(esc).join('<br>')}${rej.length>8?`<br>dan ${rej.length-8} lagi`:''}</div>`:''}${warn.length?`<div class="alert"><b>${warn.length} amaran:</b><br>${warn.slice(0,8).map(esc).join('<br>')}${warn.length>8?`<br>dan ${warn.length-8} lagi`:''}</div>`:''}${baru?'<p class="mut">Kata laluan sementara dijana rawak bagi setiap akaun baharu. Ia dipaparkan sekali sahaja selepas import supaya anda boleh memuat turunnya.</p>':''}${out.slice(0,5).map(o=>`<p class="mut" style="margin:2px 0">${esc(o.nama)} ${o.peranan==='admin'?'(Pentadbir)':''}${o._pw?'':' (kemas kini)'}</p>`).join('')}${out.length>5?`<p class="mut">dan ${out.length-5} lagi</p>`:''}`,
    foot:`<button class="btn ghost" onclick="GCRED=null;closeModal()">Batal</button><button class="btn" ${out.length?'':'disabled'} onclick="doGuruImport()">Import ${out.length} guru</button>`})
 }
 async function doGuruImport(){
@@ -1271,7 +1286,7 @@ async function doGuruImport(){
 function showCreds(creds,sub,note=''){
   GCRED={creds};
   modal({title:'Import selesai',sub,wide:true,
-   body:note+`<div class="alert">Kata laluan sementara ini dipaparkan sekali sahaja. Muat turun fail sekarang dan edarkan kepada setiap guru secara peribadi. Guru akan diminta menukarnya semasa log masuk pertama.</div>`+tbl(['Nama','No. KP','Kata laluan sementara'],creds.map(c=>[avName(c[0]),esc(c[1]||'-'),`<span class="cred">${esc(c[2])}</span>`])),
+   body:note+`<div class="alert">Kata laluan sementara ini dipaparkan sekali sahaja. Muat turun fail sekarang dan edarkan kepada setiap guru secara peribadi. Guru log masuk di tab <b>Guru</b> menggunakan No. KP dan kata laluan sementara ini, dan akan diminta menukarnya semasa log masuk pertama.</div>`+tbl(['Nama','No. KP','Kata laluan sementara'],creds.map(c=>[avName(c[0]),esc(c[1]||'-'),`<span class="cred">${esc(c[2])}</span>`])),
    foot:`<button class="btn ghost" onclick="GCRED=null;closeModal()">Tutup</button><button class="btn" onclick="downloadCsv('kata-laluan-sementara.csv',[['Nama','No. KP','Kata laluan sementara'],...GCRED.creds])">${ic('down',16)}Muat turun CSV</button>`})
 }
 
@@ -1382,7 +1397,7 @@ async function doSekolah(){
     await saveMany('guru',gs);await saveMany('unit',R.unit);await saveMany('murid',R.murid);await saveMany('perjumpaan',R.perjumpaan);await saveMany('jawatan',R.jawatan);await saveMany('program',R.program);await saveMany('ekstra',R.ekstra);await saveCfg(R.cfg)
   }catch(e){closeModal();toast('Import gagal: '+e.message,'err');return}
   SCH=null;
-  if(creds.length)showCreds(creds,`${creds.length} akaun guru baharu`,`<p>Data sekolah berjaya diimport: ${R.unit.length} unit, ${R.murid.length} murid, ${R.perjumpaan.length} perjumpaan.</p>`);
+  if(creds.length)showCreds(creds,`${creds.length} akaun guru baharu`,`<p>Data sekolah berjaya diimport: ${R.unit.length} unit, ${R.murid.length} murid, ${R.perjumpaan.length} perjumpaan.</p><div class="alert"><b>Penting:</b> fail MENU.xlsx tiada No. KP guru. Guru log masuk menggunakan No. KP, jadi lengkapkan No. KP di Pengurusan & Admin > Data guru, atau import CSV (nama, nokp) untuk memadankan guru mengikut nama.</div>`);
   else{closeModal();toast('Data sekolah berjaya diimport')}
 }
 

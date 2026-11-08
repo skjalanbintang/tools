@@ -98,3 +98,7 @@ Halaman Rumusan Kehadiran mempunyai butang **Muat turun JPEG** (selain Cetak/PDF
 ## Kembali ke ICT Hub
 
 Apabila eKOKU dihoskan di dalam folder `ekoku/` pada tapak ICT Hub (`.../destarx/ekoku/index.html`), butang **Kembali ke ICT Hub** dipaparkan di bahagian atas bar sisi (juga dalam menu telefon) dan di bawah borang log masuk. Ia menuju ke `../index.html`. Butang ini disembunyikan jika aplikasi dibuka daripada lokasi lain atau secara fail setempat.
+
+## Log masuk
+
+Skrin log masuk mempunyai dua tab. **Pentadbir** (tab pertama dan lalai) memilih nama pentadbir daripada senarai dan memasukkan kata laluan. **Guru** log masuk menggunakan **No. kad pengenalan** dan kata laluan yang dijana admin (satu demi satu di Data guru, atau pukal melalui import Excel / CSV; kata laluan sementara dipaparkan sekali selepas import). Senarai nama guru tidak lagi dipaparkan pada skrin log masuk. No. KP diperlukan bagi setiap akaun guru dan mestilah unik; baris import tanpa No. KP ditolak. Fail MENU.xlsx tiada No. KP guru, jadi lengkapkan melalui import CSV (dipadankan mengikut nama).
