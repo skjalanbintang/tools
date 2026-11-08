@@ -149,7 +149,7 @@ button.tile:hover{transform:translateY(-2px);border-color:var(--zam-500)}
 .chip{display:flex;gap:8px;align-items:center;padding:8px 12px;border:1px solid var(--line);border-radius:12px;background:var(--card);transition:border-color .15s,background .15s}
 .chip:hover{border-color:var(--zam-500)}.chip.on{border-color:var(--zam-600);background:var(--zam-50);box-shadow:0 0 0 3px var(--ring)}
 .chip small{font-size:12px}
-.stepper{display:flex;gap:6px;margin:0 0 16px}.stepper .st{flex:1;display:flex;gap:8px;align-items:center;justify-content:center;padding:9px 6px;border:1px solid var(--line);border-radius:12px;background:var(--card);color:var(--mut);font:600 13px var(--fb);cursor:pointer}.stepper .st i{width:22px;height:22px;border-radius:50%;background:var(--line);color:#fff;display:grid;place-items:center;font-style:normal;font-size:12px}.stepper .st.done i{background:var(--zam-500)}.stepper .st.on{border-color:var(--zam-600);background:var(--zam-50);color:var(--zam-700,#0b6b4f);box-shadow:0 0 0 3px var(--ring)}.stepper .st.on i{background:var(--zam-600)}.sp[hidden]{display:none}.img.wide{max-width:360px;margin:0 0 14px}.img.wide .addimg{aspect-ratio:16/7}.ro{padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:var(--zam-50);font-weight:600}.sig-pad{position:relative}.sig-pad canvas{width:100%;height:110px;border:1px dashed var(--zam-500);border-radius:12px;background:#fff;touch-action:none;display:block}.sig-pad .btn{position:absolute;right:6px;top:6px}.imgs{display:grid;grid-template-columns:1fr 1fr;gap:12px}.img{display:flex;flex-direction:column;gap:8px}.img img{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:12px;border:1px solid var(--line)}.img textarea{min-height:60px}.addimg{display:flex;flex-direction:column;gap:4px;align-items:center;justify-content:center;aspect-ratio:4/3;border:2px dashed var(--line);border-radius:12px;color:var(--zam-600);cursor:pointer;text-align:center;padding:8px}.addimg:hover{border-color:var(--zam-500);background:var(--zam-50)}.addimg small{color:var(--mut)}
+.stepper{display:flex;gap:6px;margin:0 0 16px}.stepper .st{flex:1;display:flex;gap:8px;align-items:center;justify-content:center;padding:9px 6px;border:1px solid var(--line);border-radius:12px;background:var(--card);color:var(--mut);font:600 13px var(--fb);cursor:pointer}.stepper .st i{width:22px;height:22px;border-radius:50%;background:var(--line);color:#fff;display:grid;place-items:center;font-style:normal;font-size:12px}.stepper .st.done i{background:var(--zam-500)}.stepper .st.on{border-color:var(--zam-600);background:var(--zam-50);color:var(--zam-700,#0b6b4f);box-shadow:0 0 0 3px var(--ring)}.stepper .st.on i{background:var(--zam-600)}.sp[hidden]{display:none}.sgrp{margin:14px 0 6px;display:flex;flex-direction:column;gap:2px}.sgrp span{color:var(--mut);font-size:13px}.img.wide{max-width:360px;margin:0 0 14px}.img.wide .addimg{aspect-ratio:16/7}.ro{padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:var(--zam-50);font-weight:600}.sig-pad{position:relative}.sig-pad canvas{width:100%;height:110px;border:1px dashed var(--zam-500);border-radius:12px;background:#fff;touch-action:none;display:block}.sig-pad .btn{position:absolute;right:6px;top:6px}.imgs{display:grid;grid-template-columns:1fr 1fr;gap:12px}.img{display:flex;flex-direction:column;gap:8px}.img img{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:12px;border:1px solid var(--line)}.img textarea{min-height:60px}.addimg{display:flex;flex-direction:column;gap:4px;align-items:center;justify-content:center;aspect-ratio:4/3;border:2px dashed var(--line);border-radius:12px;color:var(--zam-600);cursor:pointer;text-align:center;padding:8px}.addimg:hover{border-color:var(--zam-500);background:var(--zam-50)}.addimg small{color:var(--mut)}
 @media(max-width:560px){.stepper .st span{display:none}.addimg small{display:none}.mf .btn{padding-inline:14px}}
 .sec{margin:18px 0 8px;font:700 15px var(--fd);display:flex;gap:8px;align-items:center}
 /* dialog */
@@ -672,7 +672,8 @@ const MTG_STEPS=['Maklumat','Kehadiran','Laporan','Gambar','Pengesahan'];
 const IMG_LBL=['Laporan murid','Gambar KBAT','Gambar 1','Gambar 2','Gambar 3','Gambar 4'];
 function kbatOpts(kb){const l=(kb||'').charAt(0);return l?KBAT[l].map(v=>l+'. '+v):[]}
 function mtgForm(id,uid,bil){
-  const t=id?get('perjumpaan',id):{unitId:uid||'',bil:bil||(uid?nextBil(uid):1),tarikh:today(),guruId:uid?(get('unit',uid)?.guruIds||[])[0]||ME.id:ME.id};
+  const t=id?get('perjumpaan',id):{unitId:uid||'',bil:bil||(uid?nextBil(uid):1),tarikh:today(),guruIds:uid?[...(get('unit',uid)?.guruIds||[])]:[],sedia:ME.id};
+  if(id&&!t.guruIds)t.guruIds=t.guruId?[t.guruId]:[];if(id&&!t.sedia)t.sedia=t.guruId||ME.id;
   MS.mtgChecked=new Set(t.hadir||[]);MS.mtgImgs=[t.lapMurid||null,t.kbatImg||null,...[0,1,2,3].map(i=>(t.gambar||[])[i]||null)];MS.mtgSig=[t.ttSedia||'',t.ttSemak||'',t.ttSah||''];MS.mtgStep=1;MS.mtgId=id||'';
   const sv=new Set(t.sivik||[]),kv=new Set(t.kmh||[]);
   modal({title:id?'Kemas kini laporan perjumpaan':'Laporan perjumpaan baharu',sub:'Isi mengikut langkah. Medan bertanda * wajib.',wide:true,
@@ -680,7 +681,7 @@ function mtgForm(id,uid,bil){
    <form id="f" novalidate onsubmit="event.preventDefault();mtgNext()">
     <section class="sp" data-n="1"><div class="g3">${F('Unit *',sel('unitId',unitOpts(),t.unitId,{req:1,on:'mtgUnit(this.value)'}))}${F('Perjumpaan bil. *',tx('bil',t.bil,{type:'number',min:1,req:1}))}${F('Tarikh *',tx('tarikh',t.tarikh,{type:'date',req:1}))}</div>
      <div class="g3">${F('Masa mula',tx('mula',t.mula||'',{type:'time'}))}${F('Masa tamat',tx('tamat',t.tamat||'',{type:'time'}))}${F('Tempat',tx('tempat',t.tempat||'',{ph:'Contoh: Padang sekolah'}))}</div>
-     ${F('Guru pembimbing',sel('guruId',guruOpts(),t.guruId||''))}</section>
+     ${F('Guru pembimbing (tick guru yang terlibat)',`<div id="gurubox">${guruBox(t.unitId,new Set(t.guruIds||[]))}</div>`)}</section>
     <section class="sp" data-n="2"><div id="hadirbox">${hadirHtml(t.unitId)}</div></section>
     <section class="sp" data-n="3">${F('Tajuk aktiviti *',tx('aktiviti',t.aktiviti||'',{req:1,ph:'Contoh: Latihan asas kawad kaki'}))}
      ${F('Huraian aktiviti *',ta('ringkasan',t.ringkasan||'',1))}
@@ -692,11 +693,12 @@ function mtgForm(id,uid,bil){
      ${F('Refleksi dan impak',ta('refleksi',t.refleksi||''))}
      <div class="img wide" id="im0">${imgSlot(0)}</div></section>
     <section class="sp" data-n="4"><p class="mut" style="margin:0 0 10px">Gambar aktiviti (sehingga 4). Gambar dikecilkan secara automatik dan semuanya pilihan.</p><div class="imgs">${[2,3,4,5].map(i=>`<div class="img" id="im${i}">${imgSlot(i)}</div>`).join('')}</div></section>
-    <section class="sp" data-n="5"><div class="g2">${F('Disediakan oleh',`<div class="ro">${esc(get('guru',t.guruId||ME.id)?.nama||ME.nama||'')}</div>`)}<div></div></div>${sigPad(0,'Tandatangan disediakan')}
-     <div class="g2">${F('Disemak oleh',tx('disemak',t.disemak||'',{ph:'Nama guru penyemak'}))}${F('Disahkan oleh',tx('disahkan',t.disahkan||'',{ph:'Nama pengesah'}))}</div>${sigPad(1,'Tandatangan disemak')}${sigPad(2,'Tandatangan disahkan')}</section>
+    <section class="sp" data-n="5">${F('Disediakan oleh *',`<select class="in" name="sedia" id="sediaSel" required></select>`)}${sigPad(0,'Tandatangan disediakan')}
+     <div class="sgrp"><b>Disemak oleh</b><span>Guru Penolong Kanan Kokurikulum</span></div>${sigPad(1,'Tandatangan disemak')}
+     <div class="sgrp"><b>Disahkan oleh</b><span>Guru Besar / Pengetua</span></div>${sigPad(2,'Tandatangan disahkan')}</section>
    </form>`,
    foot:`<button class="btn ghost" onclick="closeModal()">Batal</button><span style="flex:1"></span><button type="button" class="btn ghost" id="mb" onclick="mtgGo(MS.mtgStep-1,1)">Kembali</button><button type="button" class="btn" id="mn" onclick="mtgNext()">Seterusnya</button>`});
-  pickCount();sigInit();mtgGo(1,1)
+  pickCount();sigInit();mtgGo(1,1);sediaFill(t.sedia)
 }
 function imgSlot(i){const g=MS.mtgImgs[i],L=IMG_LBL[i];return g?`<b>${L}</b><img src="${g.d}" alt="${L}">${i===0?'':`<textarea class="in" placeholder="Ulasan ${L.toLowerCase()}" oninput="MS.mtgImgs[${i}].u=this.value">${esc(g.u||'')}</textarea>`}<button type="button" class="btn ghost sm" onclick="mtgImgDel(${i})">Buang gambar</button>`:`<label class="addimg">${ic('plus',22)}<b>${L}</b><small>Ketik untuk pilih / ambil gambar</small><input type="file" accept="image/*" hidden onchange="mtgImg(${i},this)"></label>`}
 function sigPad(i,l){return F(l,`<div class="sig-pad"><canvas id="sg${i}" width="600" height="200"></canvas><button type="button" class="btn ghost sm" onclick="sigClear(${i})">Padam</button></div>`)}
@@ -723,28 +725,41 @@ function mtgGo(n,chk){
   $$('#stp .st').forEach(b=>{const k=+b.dataset.n;b.classList.toggle('on',k===n);b.classList.toggle('done',k<n)});
   const mb=$('#mb'),mn=$('#mn');if(mb)mb.hidden=n===1;if(mn)mn.textContent=n===5?'Simpan':'Seterusnya'
 }
+function guruBox(uid,ck){
+  const u=uid&&get('unit',uid);if(!uid)return '<p class="mut">Pilih unit dahulu.</p>';
+  const gs=(u?.guruIds||[]).map(i=>get('guru',i)).filter(Boolean).sort(byNama);
+  return gs.length?`<div class="pick-list" style="max-height:170px">${gs.map(g=>`<label class="pk"><input type="checkbox" name="guruIds" value="${g.id}"${ck.has(g.id)?' checked':''} onchange="sediaFill()"><span>${esc(g.nama)}</span></label>`).join('')}</div>`:'<p class="mut">Belum ada guru ditetapkan pada unit ini. Tetapkan di Pengurusan & Admin, Daftar Unit.</p>'
+}
+function sediaFill(cur){
+  const el=$('#sediaSel');if(!el)return;cur=cur||el.value;
+  let ids=$$('#f input[name=guruIds]:checked').map(i=>i.value);if(!ids.length)ids=guruOpts().map(x=>x[0]);
+  if(cur&&!ids.includes(cur)&&get('guru',cur))ids.push(cur);
+  const opts=ids.map(i=>get('guru',i)).filter(Boolean).sort(byNama);
+  el.innerHTML='<option value="">Pilih…</option>'+opts.map(g=>`<option value="${g.id}"${g.id===cur?' selected':''}>${esc(g.nama)}</option>`).join('');
+  if(!el.value&&cur===undefined)el.value=''
+}
 function mtgNext(){if(MS.mtgStep<5){mtgGo(MS.mtgStep+1,1)}else saveMtg(MS.mtgId||'')}
 function saveMtg(id){
   for(let k=1;k<=5;k++){const b=mtgBad(k);if(b){mtgGo(k);b.reportValidity();return}}
   const f=readForm($('#f')),dup=S.perjumpaan.find(t=>t.unitId===f.unitId&&+t.bil===+f.bil&&t.id!==id);
   if(dup){mtgGo(1);toast(`Perjumpaan bil. ${f.bil} bagi unit ini sudah direkodkan.`,'err');return}
   const gambar=MS.mtgImgs.slice(2).filter(Boolean);
-  const o={...(id?get('perjumpaan',id):{}),unitId:f.unitId,bil:+f.bil,tarikh:f.tarikh,mula:f.mula,tamat:f.tamat,tempat:f.tempat,aktiviti:f.aktiviti.trim(),ringkasan:f.ringkasan.trim(),guruId:f.guruId,hadir:pickIds(),pikebm:f.pikebm||'',kb:f.kb||'',kbat:f.kbat||'',sivik:[].concat(f.sivik||[]),refleksi:(f.refleksi||'').trim(),kmh:[].concat(f.kmh||[]),gambar,lapMurid:MS.mtgImgs[0],kbatImg:MS.mtgImgs[1],disemak:(f.disemak||'').trim(),disahkan:(f.disahkan||'').trim(),ttSedia:MS.mtgSig[0],ttSemak:MS.mtgSig[1],ttSah:MS.mtgSig[2]};
+  const o={...(id?get('perjumpaan',id):{}),unitId:f.unitId,bil:+f.bil,tarikh:f.tarikh,mula:f.mula,tamat:f.tamat,tempat:f.tempat,aktiviti:f.aktiviti.trim(),ringkasan:f.ringkasan.trim(),guruIds:[].concat(f.guruIds||[]),guruId:[].concat(f.guruIds||[])[0]||'',sedia:f.sedia,hadir:pickIds(),pikebm:f.pikebm||'',kb:f.kb||'',kbat:f.kbat||'',sivik:[].concat(f.sivik||[]),refleksi:(f.refleksi||'').trim(),kmh:[].concat(f.kmh||[]),gambar,lapMurid:MS.mtgImgs[0],kbatImg:MS.mtgImgs[1],ttSedia:MS.mtgSig[0],ttSemak:MS.mtgSig[1],ttSah:MS.mtgSig[2]};
   if(JSON.stringify(o).length>900000){toast('Gambar terlalu besar. Buang beberapa gambar.','err');mtgGo(4);return}
   closeModal();run(save('perjumpaan',o),'Laporan perjumpaan disimpan')
 }
 function hadirHtml(uid){if(!uid)return '<p class="mut">Pilih unit untuk menyenaraikan murid.</p>';const ms=membersOf(uid);return ms.length?pickBody(mItems(ms),MS.mtgChecked):'<p class="mut">Unit ini belum mempunyai ahli. Tetapkan ahli di Pengurusan & Admin, Daftar Unit.</p>'}
-function mtgUnit(uid){MS.mtgChecked=new Set();$('#hadirbox').innerHTML=hadirHtml(uid);pickCount();const b=$('#f [name=bil]');if(b&&uid)b.value=nextBil(uid);const g=$('#f [name=guruId]'),u=get('unit',uid);if(g&&u&&(u.guruIds||[])[0])g.value=u.guruIds[0]}
+function mtgUnit(uid){MS.mtgChecked=new Set();$('#hadirbox').innerHTML=hadirHtml(uid);pickCount();const b=$('#f [name=bil]');if(b&&uid)b.value=nextBil(uid);const u=get('unit',uid);$('#gurubox').innerHTML=guruBox(uid,new Set(u?.guruIds||[]));sediaFill(ME.id)}
 function delItem(c,id){ask('Padam rekod ini? Tindakan ini tidak boleh dibatalkan.',()=>run(remove(c,id),'Rekod dipadam'))}
 function printMtg(id){
-  const t=get('perjumpaan',id),u=get('unit',t.unitId),ms=membersOf(t.unitId).slice().sort(byNama),h=new Set(t.hadir||[]),gn=get('guru',t.guruId)?.nama||'',gb=t.gambar||[];
+  const t=get('perjumpaan',id),u=get('unit',t.unitId),ms=membersOf(t.unitId).slice().sort(byNama),h=new Set(t.hadir||[]),gn=get('guru',t.sedia||t.guruId)?.nama||'',gp=(t.guruIds||(t.guruId?[t.guruId]:[])).map(i=>get('guru',i)?.nama).filter(Boolean).join(', '),gb=t.gambar||[];
   const row=(k,v)=>v?`<tr><td>${k}</td><td>${esc(v)}</td></tr>`:'';
-  printHtml('Laporan perjumpaan',`${pHead('LAPORAN PERJUMPAAN UNIT KOKURIKULUM')}<table class="kv"><tr><td>Unit</td><td>${esc(u?.nama)} (${esc(KAT[u?.kategori]?.n||'')})</td></tr><tr><td>Perjumpaan bil.</td><td>${t.bil}</td></tr><tr><td>Tarikh</td><td>${fmtD(t.tarikh)}${t.mula?`, ${esc(t.mula)}${t.tamat?' hingga '+esc(t.tamat):''}`:''}</td></tr>${row('Tempat',t.tempat)}<tr><td>Tajuk aktiviti</td><td>${esc(t.aktiviti)}</td></tr>${row('PikeBM',t.pikebm)}${row('Kemahiran masa hadapan',(t.kmh||[]).join(', '))}${row('Nilai sivik',(t.sivik||[]).join(', '))}${row('Kemahiran berfikir / KBAT',[t.kb,t.kbat].filter(Boolean).join(' - '))}<tr><td>Guru pembimbing</td><td>${esc(gn)}</td></tr></table>
+  printHtml('Laporan perjumpaan',`${pHead('LAPORAN PERJUMPAAN UNIT KOKURIKULUM')}<table class="kv"><tr><td>Unit</td><td>${esc(u?.nama)} (${esc(KAT[u?.kategori]?.n||'')})</td></tr><tr><td>Perjumpaan bil.</td><td>${t.bil}</td></tr><tr><td>Tarikh</td><td>${fmtD(t.tarikh)}${t.mula?`, ${esc(t.mula)}${t.tamat?' hingga '+esc(t.tamat):''}`:''}</td></tr>${row('Tempat',t.tempat)}<tr><td>Tajuk aktiviti</td><td>${esc(t.aktiviti)}</td></tr>${row('PikeBM',t.pikebm)}${row('Kemahiran masa hadapan',(t.kmh||[]).join(', '))}${row('Nilai sivik',(t.sivik||[]).join(', '))}${row('Kemahiran berfikir / KBAT',[t.kb,t.kbat].filter(Boolean).join(' - '))}<tr><td>Guru pembimbing</td><td>${esc(gp)}</td></tr></table>
    <h3>Huraian aktiviti</h3><p>${esc(t.ringkasan)}</p>${t.refleksi?`<h3>Refleksi dan impak</h3><p>${esc(t.refleksi)}</p>`:''}
    ${t.lapMurid?`<h3>Laporan murid</h3><img src="${t.lapMurid.d}" style="width:60%;border:1px solid #444">`:''}${t.kbatImg?`<h3>Gambar KBAT</h3><img src="${t.kbatImg.d}" style="width:60%;border:1px solid #444">${t.kbatImg.u?`<p>${esc(t.kbatImg.u)}</p>`:''}`:''}
    ${gb.length?`<h3>Gambar</h3><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">${gb.map(g=>`<div style="break-inside:avoid"><img src="${g.d}" style="width:100%;border:1px solid #444">${g.u?`<p style="font-size:10pt">${esc(g.u)}</p>`:''}</div>`).join('')}</div>`:''}
    <h3>Kehadiran murid (${h.size} / ${ms.length})</h3><div class="two">${ms.map(m=>`<div>${h.has(m.id)?'\u2611':'\u2610'} ${esc(m.nama)}</div>`).join('')}</div>
-   <div class="sig" style="gap:10px"><div>Disediakan oleh:${t.ttSedia?`<img src="${t.ttSedia}" style="height:44px;display:block">`:''}<i style="margin-top:${t.ttSedia?4:48}px">${esc(gn)}</i></div><div>Disemak oleh:${t.ttSemak?`<img src="${t.ttSemak}" style="height:44px;display:block">`:''}<i style="margin-top:${t.ttSemak?4:48}px">${esc(t.disemak||'')}</i></div><div>Disahkan oleh:${t.ttSah?`<img src="${t.ttSah}" style="height:44px;display:block">`:''}<i style="margin-top:${t.ttSah?4:48}px">${esc(t.disahkan||'')}</i></div></div>`)
+   <div class="sig" style="gap:10px"><div>Disediakan oleh:${t.ttSedia?`<img src="${t.ttSedia}" style="height:44px;display:block">`:''}<i style="margin-top:${t.ttSedia?4:48}px">${esc(gn)}</i></div><div>Disemak oleh:${t.ttSemak?`<img src="${t.ttSemak}" style="height:44px;display:block">`:''}<i style="margin-top:${t.ttSemak?4:48}px">Guru Penolong Kanan Kokurikulum</i></div><div>Disahkan oleh:${t.ttSah?`<img src="${t.ttSah}" style="height:44px;display:block">`:''}<i style="margin-top:${t.ttSah?4:48}px">Guru Besar / Pengetua</i></div></div>`)
 }
 
 /* ---------- Kehadiran ---------- */
