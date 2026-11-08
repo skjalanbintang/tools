@@ -85,3 +85,8 @@ Senarai **Kemahiran Masa Hadapan** diurus oleh admin di Pengurusan & Admin > Set
 Seorang guru mesti dilantik dalam **sekurang-kurangnya 2 komponen** (tiada had maksimum; boleh semua 4), dan dalam setiap komponen hanya **satu unit**. Tetapkan di Pengurusan & Admin > Data guru (satu dropdown unit bagi setiap komponen). Borang guru ditolak jika kurang 2 komponen. Akaun pentadbir dikecualikan daripada syarat minimum. Di Daftar Unit, sistem hanya menolak unit kedua dalam komponen yang sama.
 
 Import guru pukal (Excel / CSV) menerima lajur unit: `unit beruniform`, `unit kelab & persatuan`, `unit sukan & permainan`, `unit rumah sukan` (nama unit mesti sama dengan yang didaftarkan; huruf besar/kecil tidak penting). Baris yang jumlah komponennya (termasuk unit sedia ada guru itu) kurang daripada 2 **ditolak** dan disenaraikan dalam pratonton; baris lain tetap diimport. Sel kosong tidak mengubah tetapan unit sedia ada. Muat turun templat CSV untuk contoh.
+
+## Logo sekolah dan peratusan keseluruhan
+
+- **Logo sekolah:** muat naik di Pengurusan & Admin > Setup sistem > Profil sekolah (dikecilkan automatik kepada 256px). Dipaparkan pada skrin log masuk, bar sisi dan kepala cetakan laporan.
+- **Peratusan keseluruhan kehadiran** (Utama, Rumusan Kehadiran, cetakan dan CSV) hanya mengira 3 komponen: Badan Beruniform, Kelab & Persatuan, dan Sukan & Permainan. Rumah Sukan tidak dikira, tetapi masih dipaparkan sebagai kad komponen sendiri apabila ditapis.

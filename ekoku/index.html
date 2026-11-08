@@ -37,7 +37,7 @@ small,.mut{color:var(--mut)}
 .lcard{width:min(410px,100%);background:var(--card);border-radius:22px;padding:32px 30px;box-shadow:0 40px 90px -30px #000c}
 .lcard .logo{margin-bottom:14px}.lcard h1{font-size:30px;font-weight:800}.lcard p{margin:4px 0 18px;color:var(--mut)}
 .lerr{color:var(--rose);min-height:20px;margin:10px 0 0;font-size:13px}
-.logo{width:42px;height:42px;border-radius:13px;background:var(--zam-500);display:grid;place-items:center;color:#032b20}
+.logo img{width:100%;height:100%;object-fit:contain;border-radius:inherit}.logo.has{background:#fff}.logoup{display:flex;gap:14px;align-items:center;flex-wrap:wrap}.logoup .pv{width:72px;height:72px;border:1px dashed var(--line);border-radius:14px;display:grid;place-items:center;background:var(--zam-50);overflow:hidden}.logoup .pv img{width:100%;height:100%;object-fit:contain}.logo{width:42px;height:42px;border-radius:13px;background:var(--zam-500);display:grid;place-items:center;color:#032b20}
 /* shell */
 #app{display:none}body.in #app{display:block}
 aside{position:fixed;inset:0 auto 0 0;width:256px;background:linear-gradient(180deg,var(--zam-900),var(--zam-950));color:#bfe6d6;display:flex;flex-direction:column;padding:16px 12px;z-index:40;transition:transform .28s cubic-bezier(.3,.7,.2,1)}
@@ -388,6 +388,7 @@ async function removeMany(c,ids){
   const s=new Set(ids);setCol(c,S[c].filter(x=>!s.has(x.id)));localPersist(c);schedule()
 }
 const remove=(c,id)=>removeMany(c,[id]);
+function applyLogo(){['#lg-logo','#side-logo'].forEach(q=>{const e=$(q);if(!e)return;const k=CFG.logo||'';if(e.dataset.l===k&&e.innerHTML)return;e.dataset.l=k;e.classList.toggle('has',!!k);e.innerHTML=k?`<img src="${k}" alt="Logo sekolah">`:ic('leaf',22)})}
 function saveCfg(p){
   CFG={...CFG,...p};ver++;
   if(FB)return fdb.collection('tetapan').doc('umum').set(clean(CFG));
@@ -449,7 +450,7 @@ function fillLogin(){
   const sel=$('#lg-user'),cur=sel.value;
   sel.innerHTML=S.guru.slice().sort(byNama).map(g=>`<option value="${g.id}">${esc(g.nama)} (${g.peranan==='admin'?'Pentadbir':'Guru'})</option>`).join('');
   if(cur)sel.value=cur;
-  $('#lg-school').textContent=CFG.namaSekolah;
+  $('#lg-school').textContent=CFG.namaSekolah;applyLogo();
   $('#lg-mode').textContent=FB?'Disambung ke Firebase':FBC.apiKey?'Config Firebase ditemui tetapi pustaka Firebase gagal dimuatkan. Semak sambungan internet, kemudian muat semula.':'Mod demo: data disimpan dalam pelayar ini sahaja.'
 }
 async function doLogin(e){
@@ -570,7 +571,7 @@ function render(){
   $('#nav').innerHTML=NG.map(([t,ids])=>{const rs=ids.map(i=>ROUTES.find(x=>x.id===i)).filter(x=>x&&(!x.admin||ME.peranan==='admin'));return rs.length?(t?`<div class="ng">${t}</div>`:'')+rs.map(x=>`<a href="#/${x.id}" class="${x.id===route?'on':''}"${x.id===route?' aria-current="page"':''}>${ic(x.i)}<span>${x.t}</span></a>`).join(''):''}).join('');
   $('#top-title').textContent=r.t;
   $('#me-av').textContent=(ME.nama||'?').trim()[0]||'?';$('#me-n').textContent=ME.nama;$('#me-r').textContent=ME.peranan==='admin'?'Pentadbir':'Guru';
-  $('#side-school').textContent=CFG.namaSekolah;$('#top-school').textContent=`${CFG.namaSekolah}, sesi ${CFG.sesi}`;document.title=`${r.t} – eKOKU`;
+  applyLogo();$('#side-school').textContent=CFG.namaSekolah;$('#top-school').textContent=`${CFG.namaSekolah}, sesi ${CFG.sesi}`;document.title=`${r.t} – eKOKU`;
   const m=$('#main'),a=document.activeElement,keep=a&&a.id&&m.contains(a)?{id:a.id,s:a.selectionStart,e:a.selectionEnd}:null;
   const was=ENTER,html=r.v();ENTER=false;
   m.innerHTML=`<section class="view${was?' enter':''}">${html}</section><div class="foot">eKOKU, ${esc(CFG.namaSekolah)}, sesi ${esc(CFG.sesi)}</div>`;
@@ -614,15 +615,15 @@ function printHtml(title,body){
   const d=f.contentWindow.document;d.open();d.write(`<!doctype html><html lang="ms"><head><meta charset="utf-8"><title>${esc(title)}</title><style>${PRINT_CSS}</style></head><body>${body}</body></html>`);d.close();
   setTimeout(()=>{f.contentWindow.focus();f.contentWindow.print();setTimeout(()=>f.remove(),3000)},300)
 }
-const pHead=t=>`<h1>${t}</h1><h2>${esc(CFG.namaSekolah)}${CFG.alamat?`<br><span style="font-weight:400">${esc(CFG.alamat)}</span>`:''}</h2>`;
+const pHead=t=>`${CFG.logo?`<div style="text-align:center"><img src="${CFG.logo}" style="height:70px;margin-bottom:6px"></div>`:''}<h1>${t}</h1><h2>${esc(CFG.namaSekolah)}${CFG.alamat?`<br><span style="font-weight:400">${esc(CFG.alamat)}</span>`:''}</h2>`;
 
 /* ---------- Utama ---------- */
 function vUtama(){
   const {M}=stats(),N=CFG.bilPerjumpaan,m=S.murid,L=m.filter(x=>x.jantina==='Lelaki').length,Pn=m.filter(x=>x.jantina==='Perempuan').length,tot=m.length;
-  let done=0;for(const u of S.unit)done+=Math.min(N,new Set(S.perjumpaan.filter(t=>t.unitId===u.id).map(t=>+t.bil)).size);
-  const actK=new Set(S.perjumpaan.map(t=>get('unit',t.unitId)?.kategori)),need=(actK.size?S.unit.filter(u=>actK.has(u.kategori)):S.unit).length*N,pct=need?Math.round(done/need*100):0,first=(ME.nama||'').split(' ')[0];
+  let done=0;for(const u of S.unit.filter(x=>kira(x.kategori)))done+=Math.min(N,new Set(S.perjumpaan.filter(t=>t.unitId===u.id).map(t=>+t.bil)).size);
+  const actK=new Set(S.perjumpaan.map(t=>get('unit',t.unitId)?.kategori)),need=(actK.size?S.unit.filter(u=>actK.has(u.kategori)&&kira(u.kategori)):S.unit.filter(u=>kira(u.kategori))).length*N,pct=need?Math.round(done/need*100):0,first=(ME.nama||'').split(' ')[0];
   const nAch=[...M.values()].reduce((a,s)=>a+s.ach.length,0),v=V(),kat=v.kat||'',units=S.unit.filter(u=>!kat||u.kategori===kat).sort(byNama);
-  const pcs=[...M.values()].map(pctOf).filter(x=>x!=null),avg=pcs.length?Math.round(pcs.reduce((a,b)=>a+b,0)/pcs.length):0;
+  const avgA=aggOvr(attData().units),avg=avgA.p==null?0:Math.round(avgA.p);
   const kcs=KK.map(k=>{const us=S.unit.filter(u=>u.kategori===k),ahli=new Set(us.flatMap(u=>membersOf(u.id).map(x=>x.id))).size;let h=0,d=0;for(const u of us){const ts=S.perjumpaan.filter(t=>t.unitId===u.id);d+=membersOf(u.id).length*ts.length;h+=ts.reduce((a,t)=>a+(t.hadir||[]).length,0)}return {k,n:us.length,ahli,p:d?Math.round(h/d*100):null}});
   const feed=[...S.perjumpaan.map(t=>({d:t.tarikh,t:`Perjumpaan ${unitNm(t.unitId)} bil. ${t.bil}`,s:t.aktiviti,p:0})),...S.program.map(p=>({d:p.mula,t:p.nama,s:`${p.peringkat||''} ${p.status==='selesai'?'(selesai)':''}`,p:1}))].sort((a,b)=>(b.d||'').localeCompare(a.d||'')).slice(0,6);
   return `<div class="hero"><div><h1>Selamat datang, ${esc(first)}</h1><p>${tot?`${tot} murid, ${S.unit.length} unit kokurikulum`:'Mulakan dengan menambah murid dan unit di Pengurusan & Admin'}</p>
@@ -796,6 +797,8 @@ function attData(){
   amemo={ver,units};return amemo
 }
 const aggAtt=a=>{let h=0,s=0,mt=0;const b=[0,0,0,0];a.forEach(x=>{h+=x.h;s+=x.slot;mt+=x.mtg;x.bands.forEach((n,i)=>b[i]+=n)});return {h,s,mt,b,p:s?h/s*100:null,n:a.length}};
+const KIRA=['BB','KP','SP'];const kira=k=>KIRA.includes(k);
+const aggOvr=a=>{const f=a.filter(x=>kira(x.k));return aggAtt(f.length?f:a)};
 const rp=x=>x==null?'-':(+x).toFixed(2)+'%';
 const tone=p=>p==null?'gray':p>=80?'':p>=50?'gold':'rose';
 function lineChart(ser,N){
@@ -809,13 +812,13 @@ function lineChart(ser,N){
   return `<svg class="lc" viewBox="0 0 ${W} ${H}" role="img" aria-label="Graf trend kehadiran mengikut bilangan perjumpaan">${grid}${xl}${lines}</svg>`
 }
 function vRumusan(){
-  const v=V(),kat=v.kat||'',D=attData(),us=D.units.filter(x=>!kat||x.k===kat),ks=kat?[kat]:KK,TG=CFG.bilPerjumpaan,A=aggAtt(us);
+  const v=V(),kat=v.kat||'',D=attData(),us=D.units.filter(x=>!kat||x.k===kat),ks=kat?[kat]:KK,TG=CFG.bilPerjumpaan,A=aggOvr(us),UC=us.filter(x=>kira(x.k)||kat==='RS');
   const head=pageHead('Rumusan kehadiran','Ringkasan kehadiran murid bagi setiap unit, dikelompokkan mengikut komponen kategori.',`<button class="btn ghost" onclick="exportRum()">${ic('down',16)}Muat turun CSV</button><button class="btn" onclick="printRum()">${ic('print',16)}Cetak</button>`);
   const filt=`<div class="tools">${fSel('kat',katOpts(),'Semua komponen')}</div>`;
   if(!A.s)return head+filt+`<div class="card">${empty('Belum ada data kehadiran','Rekod laporan perjumpaan dan tandakan kehadiran murid untuk melihat rumusan di sini.',`<button class="btn" onclick="location.hash='#/perjumpaan'">${ic('plus',16)}Laporan perjumpaan</button>`)}</div>`;
-  const bad=A.s-A.h,act=us.filter(x=>D.units.some(y=>y.k===x.k&&y.mtg>0)),tgt=act.length*TG;
+  const bad=A.s-A.h,act=UC.filter(x=>D.units.some(y=>y.k===x.k&&y.mtg>0)),tgt=act.length*TG;
   const hero=`<div class="rk"><div class="rw">${ring(A.p,170,16)}<div class="rc"><b>${rp(A.p)}</b><small>kehadiran</small></div></div>
-   <div><h2>Kehadiran keseluruhan${kat?`, ${esc(KAT[kat].n)}`:' semua unit'}</h2><p>${act.length} unit aktif, ${A.mt} perjumpaan direkod daripada sasaran ${tgt}.${act.length<A.n?` ${A.n-act.length} unit dalam komponen tanpa perjumpaan tidak dikira.`:''}</p>
+   <div><h2>Kehadiran keseluruhan${kat?`, ${esc(KAT[kat].n)}`:' semua unit (tidak termasuk Rumah Sukan)'}</h2><p>${act.length} unit aktif, ${A.mt} perjumpaan direkod daripada sasaran ${tgt}.${act.length<A.n?` ${A.n-act.length} unit dalam komponen tanpa perjumpaan tidak dikira.`:''}</p>
    <div class="rk-g"><div><b>${A.h.toLocaleString('ms-MY')}</b><small>kehadiran direkod</small></div><div><b>${A.mt} / ${tgt}</b><small>perjumpaan direkod</small></div><div><b>${A.b[0]}</b><small>murid hadir penuh</small></div><div><b>${A.b[3]}</b><small>murid bawah 50%</small></div></div>
    <div class="bar lg" role="img" aria-label="Hadir ${A.h}, tidak hadir ${bad}"><i style="width:${A.h/A.s*100}%;background:var(--zam-300)"></i><i style="width:${bad/A.s*100}%;background:#f08aa2"></i></div>
    <div class="lg2"><span><i style="background:var(--zam-300)"></i>Hadir ${A.h}</span><span><i style="background:#f08aa2"></i>Tidak hadir ${bad}</span><span>daripada ${A.s} slot (murid × perjumpaan)</span></div></div></div>`;
@@ -836,11 +839,11 @@ function vRumusan(){
 function rumRows(){const kat=V().kat||'',D=attData();return KK.filter(k=>!kat||k===kat).flatMap(k=>D.units.filter(x=>x.k===k).sort(byNama2).map(x=>({k,...x})))}
 const byNama2=(a,b)=>byNama(a.u,b.u);
 function exportRum(){
-  const rows=rumRows(),A=aggAtt(rows);
-  downloadCsv('rumusan-kehadiran.csv',[['Komponen','Unit','Bil. murid','Perjumpaan direkod','Sasaran','Kehadiran','Jumlah slot','Peratus'],...rows.map(x=>[KAT[x.k].n,x.u.nama,x.ahli,x.mtg,CFG.bilPerjumpaan,x.h,x.slot,x.p==null?'':x.p.toFixed(2)]),['Keseluruhan','','','','',A.h,A.s,A.p==null?'':A.p.toFixed(2)]])
+  const rows=rumRows(),A=aggOvr(rows);
+  downloadCsv('rumusan-kehadiran.csv',[['Komponen','Unit','Bil. murid','Perjumpaan direkod','Sasaran','Kehadiran','Jumlah slot','Peratus'],...rows.map(x=>[KAT[x.k].n,x.u.nama,x.ahli,x.mtg,CFG.bilPerjumpaan,x.h,x.slot,x.p==null?'':x.p.toFixed(2)]),['Keseluruhan (tidak termasuk Rumah Sukan)','','','','',A.h,A.s,A.p==null?'':A.p.toFixed(2)]])
 }
 function printRum(){
-  const rows=rumRows(),A=aggAtt(rows),kat=V().kat||'',TG=CFG.bilPerjumpaan;
+  const rows=rumRows(),A=aggOvr(rows),kat=V().kat||'',TG=CFG.bilPerjumpaan;
   printHtml('Rumusan kehadiran',`${pHead('RUMUSAN KEHADIRAN PERJUMPAAN UNIT KOKURIKULUM')}<p><b>Sesi ${esc(CFG.sesi)}</b>${kat?`, komponen ${esc(KAT[kat].n)}`:''}</p><h3>Kehadiran keseluruhan: ${rp(A.p)}</h3><p>${A.h} kehadiran daripada ${A.s} slot, ${A.mt} perjumpaan direkod.</p>`+
    KK.filter(k=>!kat||k===kat).map(k=>{const g=rows.filter(x=>x.k===k);if(!g.length)return '';const a=aggAtt(g);return `<h3>${esc(KAT[k].n)} (purata ${rp(a.p)})</h3><table><tr><th>Unit</th><th>Murid</th><th>Perjumpaan</th><th>Kehadiran</th><th>%</th></tr>${g.map(x=>`<tr><td>${esc(x.u.nama)}</td><td>${x.ahli}</td><td>${x.mtg} / ${TG}</td><td>${x.h} / ${x.slot}</td><td>${rp(x.p)}</td></tr>`).join('')}</table>`}).join(''))
 }
@@ -1015,18 +1018,25 @@ function vAdmin(){
 }
 const editRow=(a,n,m)=>`<div class="editrow"><input class="in" name="${a}n" value="${esc(n)}" placeholder="Nama" required><input class="in" name="${a}m" type="number" min="0" value="${m}" placeholder="Markah" aria-label="Markah"><button type="button" class="btn ghost sm ic-only" onclick="this.parentNode.remove()" aria-label="Buang">${ic('trash',15)}</button></div>`;
 function admSetup(){
-  return `${schoolCard()}<form onsubmit="event.preventDefault();saveSetup(this)"><div class="card"><h3>Profil sekolah</h3><div class="g2">${F('Nama sekolah',tx('namaSekolah',CFG.namaSekolah,{req:1}))}${F('Sesi',tx('sesi',CFG.sesi,{req:1}))}</div>${F('Alamat',tx('alamat',CFG.alamat))}${F('Bilangan perjumpaan yang disasarkan bagi setiap unit',tx('bil',CFG.bilPerjumpaan,{type:'number',min:1,req:1}),'')}</div>
+  MS.logo=undefined;
+  return `${schoolCard()}<form onsubmit="event.preventDefault();saveSetup(this)"><div class="card"><h3>Profil sekolah</h3><div class="g2">${F('Nama sekolah',tx('namaSekolah',CFG.namaSekolah,{req:1}))}${F('Sesi',tx('sesi',CFG.sesi,{req:1}))}</div>${F('Alamat',tx('alamat',CFG.alamat))}${F('Logo sekolah',`<div class="logoup"><div class="pv" id="logoPv">${CFG.logo?`<img src="${CFG.logo}" alt="">`:ic('leaf',26)}</div><label class="btn ghost sm" style="cursor:pointer">${ic('up',14)}Muat naik logo<input type="file" accept="image/*" hidden onchange="logoPick(this)"></label><button type="button" class="btn ghost sm" onclick="logoPick(null)">Buang logo</button><small class="mut">Dikecilkan secara automatik. Dipaparkan pada skrin log masuk, sisi aplikasi dan cetakan.</small></div>`)}${F('Bilangan perjumpaan yang disasarkan bagi setiap unit',tx('bil',CFG.bilPerjumpaan,{type:'number',min:1,req:1}),'')}</div>
   <div class="g2" style="gap:16px"><div class="card"><h3>Peringkat program dan markah</h3><div id="rows-p">${CFG.peringkat.map(p=>editRow('p',p.n,p.m)).join('')}</div><button type="button" class="btn ghost sm" onclick="addRow('p')">${ic('plus',14)}Tambah peringkat</button></div>
   <div class="card"><h3>Jawatan dan markah</h3><div id="rows-j">${CFG.jawatan.map(p=>editRow('j',p.n,p.m)).join('')}</div><button type="button" class="btn ghost sm" onclick="addRow('j')">${ic('plus',14)}Tambah jawatan</button></div></div>
   <div class="card"><h3>Kemahiran masa hadapan</h3><p class="mut" style="margin-top:0">Senarai pilihan dalam laporan perjumpaan. Tambah, ubah atau buang elemen mengikut keperluan sekolah.</p><div id="rows-k">${(CFG.kmh||[]).map(kRow).join('')}</div><button type="button" class="btn ghost sm" onclick="addK()">${ic('plus',14)}Tambah elemen</button></div>
   <p class="mut">Markah murid dikira daripada jawatan yang dipegang dan markah peringkat bagi setiap program selesai yang disertai. Nilai lalai ialah cadangan awal, sila laraskan mengikut garis panduan sekolah.</p><button class="btn">Simpan tetapan</button></form>`
 }
 const kRow=n=>`<div class="editrow" style="grid-template-columns:1fr auto"><input class="in" name="kn" value="${esc(n)}" placeholder="Nama elemen" required><button type="button" class="btn ghost sm ic-only" onclick="this.parentNode.remove()" aria-label="Buang">${ic('trash',15)}</button></div>`;
+function logoPick(inp){
+  const show=d=>{MS.logo=d;$('#logoPv').innerHTML=d?`<img src="${d}" alt="">`:ic('leaf',26)};
+  if(!inp){show('');return}
+  const file=inp.files[0];inp.value='';if(!file)return;const r=new FileReader();
+  r.onload=()=>{const im=new Image();im.onload=()=>{const M=256,k=Math.min(1,M/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=Math.round(im.width*k);c.height=Math.round(im.height*k);c.getContext('2d').drawImage(im,0,0,c.width,c.height);let d=c.toDataURL('image/png');if(d.length>180000)d=c.toDataURL('image/jpeg',.85);show(d)};im.onerror=()=>toast('Fail bukan gambar yang sah.','err');im.src=r.result};r.readAsDataURL(file)
+}
 function addK(){$('#rows-k').insertAdjacentHTML('beforeend',kRow(''))}
 function addRow(a){$('#rows-'+a).insertAdjacentHTML('beforeend',editRow(a,'',0))}
 function saveSetup(form){
   const rows=a=>$$('#rows-'+a+' .editrow',form).map(r=>({n:$('[name='+a+'n]',r).value.trim(),m:+$('[name='+a+'m]',r).value||0})).filter(x=>x.n),f=readForm(form);
-  run(saveCfg({namaSekolah:f.namaSekolah.trim(),sesi:f.sesi.trim(),alamat:f.alamat.trim(),bilPerjumpaan:Math.max(1,+f.bil||3),peringkat:rows('p'),jawatan:rows('j'),kmh:[...new Set($$('#rows-k [name=kn]',form).map(i=>i.value.trim()).filter(Boolean))]}),'Tetapan disimpan')
+  run(saveCfg({namaSekolah:f.namaSekolah.trim(),sesi:f.sesi.trim(),alamat:f.alamat.trim(),logo:MS.logo!==undefined?MS.logo:(CFG.logo||''),bilPerjumpaan:Math.max(1,+f.bil||3),peringkat:rows('p'),jawatan:rows('j'),kmh:[...new Set($$('#rows-k [name=kn]',form).map(i=>i.value.trim()).filter(Boolean))]}),'Tetapan disimpan')
 }
 function admMurid(){
   const v=V(),q=(v.q||'').toLowerCase(),tings=[...new Set(S.murid.map(m=>m.tingkatan).filter(Boolean))].sort();
