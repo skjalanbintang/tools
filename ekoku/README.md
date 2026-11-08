@@ -82,6 +82,6 @@ Senarai **Kemahiran Masa Hadapan** diurus oleh admin di Pengurusan & Admin > Set
 
 ## Komponen dan unit guru
 
-Seorang guru boleh dilantik dalam **maksimum 3 komponen**, dan dalam setiap komponen hanya **satu unit**. Tetapkan di Pengurusan & Admin > Data guru (borang guru: satu dropdown unit bagi setiap komponen) atau di Daftar Unit. Sistem menolak unit kedua dalam komponen yang sama atau komponen keempat.
+Seorang guru mesti dilantik dalam **sekurang-kurangnya 2 komponen** (tiada had maksimum; boleh semua 4), dan dalam setiap komponen hanya **satu unit**. Tetapkan di Pengurusan & Admin > Data guru (satu dropdown unit bagi setiap komponen). Borang guru ditolak jika kurang 2 komponen. Akaun pentadbir dikecualikan daripada syarat minimum. Di Daftar Unit, sistem hanya menolak unit kedua dalam komponen yang sama.
 
-Import guru pukal (Excel / CSV) menerima lajur unit: `unit beruniform`, `unit kelab & persatuan`, `unit sukan & permainan`, `unit rumah sukan` (nama unit mesti sama dengan yang didaftarkan; huruf besar/kecil tidak penting). Lebih daripada 3 komponen dalam satu baris: tiga yang pertama digunakan. Sel kosong tidak mengubah tetapan unit sedia ada. Muat turun templat CSV untuk contoh.
+Import guru pukal (Excel / CSV) menerima lajur unit: `unit beruniform`, `unit kelab & persatuan`, `unit sukan & permainan`, `unit rumah sukan` (nama unit mesti sama dengan yang didaftarkan; huruf besar/kecil tidak penting). Baris yang jumlah komponennya (termasuk unit sedia ada guru itu) kurang daripada 2 **ditolak** dan disenaraikan dalam pratonton; baris lain tetap diimport. Sel kosong tidak mengubah tetapan unit sedia ada. Muat turun templat CSV untuk contoh.
