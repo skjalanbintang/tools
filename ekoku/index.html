@@ -219,6 +219,29 @@ dialog::backdrop{background:#021a13aa;backdrop-filter:blur(3px)}
   .hero{grid-template-columns:1fr}.two{grid-template-columns:1fr}.qs span,.qs kbd{display:none}.qs{padding:0 10px}
 }
 @media(max-width:560px){.stats{grid-template-columns:1fr 1fr;gap:8px}.tile{padding:10px;gap:9px}.tile .i{width:34px;height:34px}.tile b{font-size:20px}.tools .in,.tools .srch{flex:1 1 100%}.g2,.g3{grid-template-columns:1fr}.pick-list{grid-template-columns:1fr}.ph h1{font-size:23px}.ubar{grid-template-columns:100px 1fr 36px}.pf{flex-wrap:wrap}.pf .n{margin:0}}
+/* rumusan kehadiran */
+.rk{display:grid;grid-template-columns:auto 1fr;gap:30px;align-items:center;background:radial-gradient(600px 300px at 100% 0,#12b37f44,transparent 65%),linear-gradient(135deg,var(--zam-800),var(--zam-950));color:#e6f8f0;border-radius:22px;padding:26px 28px;margin-bottom:16px;box-shadow:var(--sh)}
+.rk h2{color:#fff;font-size:21px;font-weight:800}.rk p{margin:3px 0 0;color:#a9dcc6}
+.rw{position:relative;display:grid;place-items:center}.rc{position:absolute;text-align:center;line-height:1}.rc b{font:800 34px var(--fd);color:#fff}.rc small{display:block;font-size:11px;color:#a9dcc6;margin-top:4px}
+.rk-g{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:16px}
+.rk-g div{background:#ffffff14;border:1px solid #ffffff1f;border-radius:13px;padding:10px 12px}.rk-g b{font:800 20px var(--fd);color:#fff;display:block;line-height:1.15}.rk-g small{color:#a9dcc6;font-size:12px}
+.rk .bar{background:#ffffff22;margin-top:14px}
+.bar.lg{height:14px}.bar.lg i:first-child{border-radius:9px 0 0 9px}.bar.lg i:last-child{border-radius:0 9px 9px 0}
+.lg2{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:#a9dcc6;margin-top:7px}.lg2 i,.lgd i{display:inline-block;width:9px;height:9px;border-radius:3px;margin-right:6px}
+.kcard.kr{display:flex;gap:14px;align-items:center}.kcard.kr .rw{flex:none}.kcard.kr .rc b{font-size:20px;color:var(--ink)}.kcard.kr b.n{font:800 20px var(--fd);margin:6px 0 0}
+.bd{display:grid;grid-template-columns:auto 1fr auto;gap:4px 10px;align-items:center;margin-top:14px}
+.bd span.s{width:12px;height:12px;border-radius:4px}.bd em{font-style:normal;font-weight:500}.bd b{font-variant-numeric:tabular-nums}.bd small{color:var(--mut)}
+.lc{width:100%;height:auto;display:block}.lc .gl{stroke:var(--line);stroke-dasharray:3 4}.lc .gt{fill:var(--mut);font:11px var(--fb)}
+.lc .ln{fill:none;stroke:var(--kc);stroke-width:2.8;stroke-linecap:round;stroke-linejoin:round}.lc .dt{fill:var(--card);stroke:var(--kc);stroke-width:2.5}
+.lgd{display:flex;gap:14px;flex-wrap:wrap;margin-top:8px;font-size:12.5px;color:var(--mut)}.lgd i{background:var(--kc)}
+.ur{display:grid;grid-template-columns:minmax(130px,1.1fr) 2.2fr 74px;gap:6px 14px;align-items:center;padding:9px 0;border-bottom:1px dashed var(--line)}.ur:last-child{border-bottom:0}
+.ur .un b{display:block;line-height:1.25}.ur .un small{color:var(--mut)}.ur .uv{text-align:right}
+.ur .bar{height:12px}.ur .bar i{background:var(--kc);border-radius:9px}
+.uh{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:6px}.uh h3{display:flex;gap:10px;align-items:center;font-size:17px}
+.view.enter .bar i{animation:grow .9s cubic-bezier(.3,.7,.2,1) both;transform-origin:left}@keyframes grow{from{transform:scaleX(0)}}
+.view.enter .lc .ln{stroke-dasharray:2400;animation:draw 1.2s ease-out both}@keyframes draw{from{stroke-dashoffset:2400}to{stroke-dashoffset:0}}
+@media(max-width:900px){.rk{grid-template-columns:1fr;justify-items:center;text-align:center;padding:22px 18px}.rk>div:last-child{width:100%}.rk-g{grid-template-columns:1fr 1fr;text-align:left}.lg2{justify-content:center}}
+@media(max-width:560px){.ur{grid-template-columns:1fr auto}.ur .bx{grid-column:1/-1;order:3}.kcard.kr{flex-direction:row}}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
 </style>
 </head>
@@ -295,6 +318,7 @@ const P={
  home:'<path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/>',
  clip:'<rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2M9 12h6M9 16h4"/>',
  check:'<circle cx="12" cy="12" r="9"/><path d="m8.5 12.5 2.5 2.5 4.5-5"/>',
+ chart:'<path d="M4 20V11M10 20V4M16 20v-7M22 20H2"/>',
  cal:'<rect x="3" y="4" width="18" height="17" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>',
  badge:'<circle cx="12" cy="8" r="5"/><path d="m8.5 12.5-1.5 8.5 5-3 5 3-1.5-8.5"/>',
  layers:'<path d="m12 3 9 5-9 5-9-5z"/><path d="m3 13 9 5 9-5"/>',
@@ -520,7 +544,7 @@ const unitNm=id=>get('unit',id)?.nama||'-';
 /* =============== penghalaan & paparan =============== */
 const ROUTES=[
  {id:'utama',t:'Utama',i:'home',v:()=>vUtama()},{id:'perjumpaan',t:'Laporan Perjumpaan',i:'clip',v:()=>vPerjumpaan()},
- {id:'kehadiran',t:'Kehadiran Perjumpaan',i:'check',v:()=>vKehadiran()},{id:'program',t:'Program & Aktiviti',i:'cal',v:()=>vProgram()},
+ {id:'kehadiran',t:'Kehadiran Perjumpaan',i:'check',v:()=>vKehadiran()},{id:'rumusan',t:'Rumusan Kehadiran',i:'chart',v:()=>vRumusan()},{id:'program',t:'Program & Aktiviti',i:'cal',v:()=>vProgram()},
  {id:'jawatan',t:'Jawatan Unit',i:'badge',v:()=>vJawatan()},{id:'ekstra',t:'Ekstra Kurikulum',i:'layers',v:()=>vEkstra()},
  {id:'pencapaian',t:'Pencapaian Murid',i:'trophy',v:()=>vPencapaian()},{id:'sekolah',t:'Pencapaian Sekolah',i:'school',v:()=>vSekolah()},
  {id:'admin',t:'Pengurusan & Admin',i:'gear',v:()=>vAdmin(),admin:true}];
@@ -539,7 +563,7 @@ function render(){
   if(!ME){if(!$('#login').hidden)fillLogin();return}
   const cur=get('guru',ME.id);if(cur)ME=cur;else if(S.guru.length){logout();return}
   const r=ROUTES.find(x=>x.id===route);
-  const NG=[['',['utama']],['Aktiviti kokurikulum',['perjumpaan','kehadiran','program','jawatan','ekstra']],['Pencapaian',['pencapaian','sekolah']],['Sistem',['admin']]];
+  const NG=[['',['utama']],['Aktiviti kokurikulum',['perjumpaan','kehadiran','rumusan','program','jawatan','ekstra']],['Pencapaian',['pencapaian','sekolah']],['Sistem',['admin']]];
   $('#nav').innerHTML=NG.map(([t,ids])=>{const rs=ids.map(i=>ROUTES.find(x=>x.id===i)).filter(x=>x&&(!x.admin||ME.peranan==='admin'));return rs.length?(t?`<div class="ng">${t}</div>`:'')+rs.map(x=>`<a href="#/${x.id}" class="${x.id===route?'on':''}"${x.id===route?' aria-current="page"':''}>${ic(x.i)}<span>${x.t}</span></a>`).join(''):''}).join('');
   $('#top-title').textContent=r.t;
   $('#me-av').textContent=(ME.nama||'?').trim()[0]||'?';$('#me-n').textContent=ME.nama;$('#me-r').textContent=ME.peranan==='admin'?'Pentadbir':'Guru';
@@ -671,7 +695,7 @@ function vKehadiran(){
   const all=membersOf(uid),tings=[...new Set(all.map(kelasOf))].sort(),q=(v.q||'').toLowerCase();
   const ms=all.filter(m=>(!v.kls||kelasOf(m)===v.kls)&&(!q||(m.nama+' '+m.nokp).toLowerCase().includes(q))).sort(byNama);
   const pcts=ms.map(m=>pctOf(M.get(m.id))).filter(x=>x!=null),avg=pcts.length?Math.round(pcts.reduce((a,b)=>a+b,0)/pcts.length):0,full=pcts.filter(x=>x===100).length;
-  const head=pageHead('Kehadiran perjumpaan','Matriks kehadiran murid bagi setiap perjumpaan unit.',`<button class="btn ghost" onclick="exportKeh('${uid}')">${ic('down',16)}Muat turun CSV</button>`);
+  const head=pageHead('Kehadiran perjumpaan','Matriks kehadiran murid bagi setiap perjumpaan unit.',`<button class="btn soft" onclick="location.hash='#/rumusan'">${ic('chart',16)}Rumusan kehadiran</button><button class="btn ghost" onclick="exportKeh('${uid}')">${ic('down',16)}Muat turun CSV</button>`);
   return head+`<div class="card"><div class="tools"><select class="in" onchange="kehKat(this.value)" aria-label="Kategori">${katOpts().map(([a,b])=>`<option value="${a}"${a===kat?' selected':''}>${b}</option>`).join('')}</select><select class="in" onchange="T('unit',this.value)" aria-label="Unit">${us.map(u=>`<option value="${u.id}"${u.id===uid?' selected':''}>${esc(u.nama)}</option>`).join('')}</select>${fSel('kls',tings,'Semua kelas')}${qIn('Cari nama atau No. KP')}</div>
   <div class="stats" style="margin:0 0 14px"><div class="tile"><span class="i">${ic('users')}</span><div><b>${all.length}</b><span>Jumlah murid</span></div></div><div class="tile"><span class="i">${ic('check')}</span><div><b>${avg}%</b><span>Purata hadir</span></div></div><div class="tile"><span class="i">${ic('clip')}</span><div><b>${ts.length}</b><span>Perjumpaan direkod</span></div></div><div class="tile gold"><span class="i">${ic('badge')}</span><div><b>${full}</b><span>Hadir penuh</span></div></div></div>`+
   tbl(['Bil','Nama',...cols.map(c=>'c:'+c),'c:Hadir','c:%'],ms.map((m,i)=>{const s=M.get(m.id),p=pctOf(s);return [i+1,nmCell(m),...cols.map(b=>{const t=byBil.get(b);return !t?'<span class="na">–</span>':(t.hadir||[]).includes(m.id)?'<span class="ok">✓</span>':'<span class="no">✗</span>'}),s?`${s.hadir} / ${s.mtg}`:'-',p==null?'-':`<span class="badge ${p>=80?'':p>=50?'gold':'rose'}">${p}%</span>`]}),
@@ -680,6 +704,70 @@ function vKehadiran(){
 function exportKeh(uid){
   const {M,byUnit}=stats(),ts=(byUnit.get(uid)||[]).slice().sort((a,b)=>a.bil-b.bil);
   downloadCsv(`kehadiran-${unitNm(uid)}.csv`,[['Nama','No. KP','Kelas',...ts.map(t=>'Bil '+t.bil),'Hadir','Peratus'],...membersOf(uid).slice().sort(byNama).map(m=>{const s=M.get(m.id);return [m.nama,m.nokp,kelasOf(m),...ts.map(t=>(t.hadir||[]).includes(m.id)?'Hadir':'Tidak hadir'),`${s.hadir}/${s.mtg}`,pctOf(s)??'']})])
+}
+
+/* ---------- Rumusan kehadiran ---------- */
+const BANDS=[['Hadir penuh (100%)','var(--zam-500)'],['80% – 99%','var(--zam-300)'],['50% – 79%','#d9a937'],['Bawah 50%','var(--rose)']];
+let amemo={ver:-1};
+function attData(){
+  if(amemo.ver===ver)return amemo;
+  const {mem,byUnit}=stats();
+  const units=S.unit.map(u=>{
+    const ms=mem.get(u.id)||[],ids=new Set(ms.map(m=>m.id)),ts=(byUnit.get(u.id)||[]).slice().sort((a,b)=>a.bil-b.bil),bands=[0,0,0,0],low=[];let h=0;
+    for(const m of ms){if(!ts.length)break;const c=ts.filter(t=>(t.hadir||[]).includes(m.id)).length,p=c/ts.length*100;h+=c;const b=p>=100?0:p>=80?1:p>=50?2:3;bands[b]++;if(b===3)low.push({m,uid:u.id,p,c,n:ts.length})}
+    const per=ts.map(t=>({bil:+t.bil,n:(t.hadir||[]).filter(i=>ids.has(i)).length,tot:ids.size})),slot=ids.size*ts.length;
+    return {u,k:u.kategori,ahli:ids.size,mtg:ts.length,h,slot,p:slot?h/slot*100:null,per,bands,low}
+  });
+  amemo={ver,units};return amemo
+}
+const aggAtt=a=>{let h=0,s=0,mt=0;const b=[0,0,0,0];a.forEach(x=>{h+=x.h;s+=x.slot;mt+=x.mtg;x.bands.forEach((n,i)=>b[i]+=n)});return {h,s,mt,b,p:s?h/s*100:null,n:a.length}};
+const rp=x=>x==null?'-':Math.round(x)+'%';
+const tone=p=>p==null?'gray':p>=80?'':p>=50?'gold':'rose';
+function lineChart(ser,N){
+  const W=620,H=250,L=40,R=14,Tp=14,B=30,iw=W-L-R,ih=H-Tp-B,x=i=>L+(N<2?iw/2:iw*i/(N-1)),y=p=>Tp+ih*(1-p/100);
+  const grid=[0,25,50,75,100].map(g=>`<line x1="${L}" x2="${W-R}" y1="${y(g)}" y2="${y(g)}" class="gl"/><text x="${L-8}" y="${y(g)+4}" text-anchor="end" class="gt">${g}%</text>`).join('');
+  const xl=Array.from({length:N},(_,i)=>`<text x="${x(i)}" y="${H-8}" text-anchor="middle" class="gt">Bil ${i+1}</text>`).join('');
+  const lines=ser.map(s=>{const pts=s.pts.map((p,i)=>p==null?null:[x(i),y(p),p,i]).filter(Boolean);if(!pts.length)return '';
+    const d=pts.map((q,i)=>(i?'L':'M')+q[0].toFixed(1)+' '+q[1].toFixed(1)).join(' '),
+      area=ser.length===1&&pts.length>1?`<path d="${d} L${pts[pts.length-1][0].toFixed(1)} ${y(0)} L${pts[0][0].toFixed(1)} ${y(0)}Z" style="fill:var(--kc);opacity:.13"/>`:'';
+    return `<g class="k-${s.k}">${area}<path d="${d}" class="ln"/>${pts.map(q=>`<circle cx="${q[0].toFixed(1)}" cy="${q[1].toFixed(1)}" r="4.5" class="dt"><title>${esc(KAT[s.k].n)}, bil. ${q[3]+1}: ${Math.round(q[2])}%</title></circle>`).join('')}</g>`}).join('');
+  return `<svg class="lc" viewBox="0 0 ${W} ${H}" role="img" aria-label="Graf trend kehadiran mengikut bilangan perjumpaan">${grid}${xl}${lines}</svg>`
+}
+function vRumusan(){
+  const v=V(),kat=v.kat||'',D=attData(),us=D.units.filter(x=>!kat||x.k===kat),ks=kat?[kat]:KK,TG=CFG.bilPerjumpaan,A=aggAtt(us);
+  const head=pageHead('Rumusan kehadiran','Ringkasan kehadiran murid bagi setiap unit, dikelompokkan mengikut komponen kategori.',`<button class="btn ghost" onclick="exportRum()">${ic('down',16)}Muat turun CSV</button><button class="btn" onclick="printRum()">${ic('print',16)}Cetak</button>`);
+  const filt=`<div class="tools">${fSel('kat',katOpts(),'Semua komponen')}</div>`;
+  if(!A.s)return head+filt+`<div class="card">${empty('Belum ada data kehadiran','Rekod laporan perjumpaan dan tandakan kehadiran murid untuk melihat rumusan di sini.',`<button class="btn" onclick="location.hash='#/perjumpaan'">${ic('plus',16)}Laporan perjumpaan</button>`)}</div>`;
+  const pct=Math.round(A.p),bad=A.s-A.h,tgt=us.length*TG;
+  const hero=`<div class="rk"><div class="rw">${ring(A.p,170,16)}<div class="rc"><b><span class="cnt" data-v="${pct}">${pct}</span>%</b><small>kehadiran</small></div></div>
+   <div><h2>Kehadiran keseluruhan${kat?`, ${esc(KAT[kat].n)}`:' semua unit'}</h2><p>${A.n} unit, ${A.mt} perjumpaan direkod daripada sasaran ${tgt}.</p>
+   <div class="rk-g"><div><b>${A.h.toLocaleString('ms-MY')}</b><small>kehadiran direkod</small></div><div><b>${A.mt} / ${tgt}</b><small>perjumpaan direkod</small></div><div><b>${A.b[0]}</b><small>murid hadir penuh</small></div><div><b>${A.b[3]}</b><small>murid bawah 50%</small></div></div>
+   <div class="bar lg" role="img" aria-label="Hadir ${A.h}, tidak hadir ${bad}"><i style="width:${A.h/A.s*100}%;background:var(--zam-300)"></i><i style="width:${bad/A.s*100}%;background:#f08aa2"></i></div>
+   <div class="lg2"><span><i style="background:var(--zam-300)"></i>Hadir ${A.h}</span><span><i style="background:#f08aa2"></i>Tidak hadir ${bad}</span><span>daripada ${A.s} slot (murid × perjumpaan)</span></div></div></div>`;
+  const kcs=ks.map(k=>{const a=aggAtt(us.filter(x=>x.k===k));return `<div class="kcard kr k-${k}"><div class="rw">${ring(a.p||0,92,10,'var(--kc)','var(--line2)')}<div class="rc"><b>${a.p==null?'-':Math.round(a.p)+'%'}</b></div></div><div><span class="kt k-${k}">${esc(KAT[k].n)}</span><b class="n">${a.n} unit</b><small>${a.s?`${a.h} / ${a.s} kehadiran`:'Belum ada perjumpaan'}</small></div></div>`}).join('');
+  const maxB=Math.max(TG,1,...us.flatMap(x=>x.per.map(t=>t.bil))),ser=ks.map(k=>({k,pts:Array.from({length:maxB},(_,i)=>{let n=0,t=0;us.filter(x=>x.k===k).forEach(x=>x.per.filter(q=>q.bil===i+1).forEach(q=>{n+=q.n;t+=q.tot}));return t?n/t*100:null})}));
+  const tot=A.b.reduce((a,b)=>a+b,0)||1;
+  const trend=`<div class="card"><h3 style="margin:0 0 8px">Trend kehadiran mengikut bilangan perjumpaan</h3>${lineChart(ser,maxB)}<div class="lgd">${ks.map(k=>`<span class="k-${k}"><i></i>${esc(KAT[k].n)}</span>`).join('')}</div></div>`;
+  const dist=`<div class="card"><h3 style="margin:0">Taburan kehadiran murid</h3><small class="mut">Mengikut peratus kehadiran setiap murid dalam unitnya</small>
+   <div class="bar lg" style="margin-top:14px">${A.b.map((n,i)=>`<i style="width:${n/tot*100}%;background:${BANDS[i][1]}" title="${BANDS[i][0]}: ${n}"></i>`).join('')}</div>
+   <div class="bd">${A.b.map((n,i)=>`<span class="s" style="background:${BANDS[i][1]}"></span><em>${BANDS[i][0]}</em><b>${n} <small>(${Math.round(n/tot*100)}%)</small></b>`).join('')}</div></div>`;
+  const secs=ks.map(k=>{const g=us.filter(x=>x.k===k).sort((a,b)=>(b.p??-1)-(a.p??-1)||byNama(a.u,b.u));if(!g.length)return '';const a=aggAtt(g);
+    return `<div class="card k-${k}"><div class="uh"><h3>${kchip(k)}<span>Kehadiran setiap unit</span></h3><span class="badge ${tone(a.p)}">Purata ${rp(a.p)}</span></div>`+
+     g.map(x=>`<div class="ur"><div class="un"><b>${esc(x.u.nama)}</b><small>${x.ahli} murid, ${x.mtg} / ${TG} perjumpaan</small></div><div class="bx">${x.slot?bar(x.p,'var(--kc)'):'<div class="bar"></div>'}</div><div class="uv">${x.slot?`<span class="badge ${tone(x.p)}">${rp(x.p)}</span>`:'<span class="badge gray">Tiada data</span>'}</div></div>`).join('')+`</div>`}).join('');
+  const low=us.flatMap(x=>x.low).sort((a,b)=>a.p-b.p||byNama(a.m,b.m)).slice(0,10);
+  const attn=low.length?`<div class="card"><div class="uh"><h3>${ic('badge',18)}<span>Murid perlu perhatian</span></h3><span class="badge rose">${A.b[3]} murid bawah 50%</span></div>`+tbl(['Murid','Unit','c:Hadir','c:%'],low.map(r=>[nmCell(r.m),esc(unitNm(r.uid)),`${r.c} / ${r.n}`,`<span class="badge rose">${Math.round(r.p)}%</span>`]),'')+(A.b[3]>low.length?`<small class="mut">Dipaparkan ${low.length} paling rendah. Senarai penuh ada dalam halaman Kehadiran Perjumpaan.</small>`:'')+`</div>`:'';
+  return head+filt+hero+`<div class="kcards">${kcs}</div><div class="two">${trend}${dist}</div>${secs}${attn}`
+}
+function rumRows(){const kat=V().kat||'',D=attData();return KK.filter(k=>!kat||k===kat).flatMap(k=>D.units.filter(x=>x.k===k).sort(byNama2).map(x=>({k,...x})))}
+const byNama2=(a,b)=>byNama(a.u,b.u);
+function exportRum(){
+  const rows=rumRows(),A=aggAtt(rows);
+  downloadCsv('rumusan-kehadiran.csv',[['Komponen','Unit','Bil. murid','Perjumpaan direkod','Sasaran','Kehadiran','Jumlah slot','Peratus'],...rows.map(x=>[KAT[x.k].n,x.u.nama,x.ahli,x.mtg,CFG.bilPerjumpaan,x.h,x.slot,x.p==null?'':Math.round(x.p*10)/10]),['Keseluruhan','','','','',A.h,A.s,A.p==null?'':Math.round(A.p*10)/10]])
+}
+function printRum(){
+  const rows=rumRows(),A=aggAtt(rows),kat=V().kat||'',TG=CFG.bilPerjumpaan;
+  printHtml('Rumusan kehadiran',`${pHead('RUMUSAN KEHADIRAN PERJUMPAAN UNIT KOKURIKULUM')}<p><b>Sesi ${esc(CFG.sesi)}</b>${kat?`, komponen ${esc(KAT[kat].n)}`:''}</p><h3>Kehadiran keseluruhan: ${rp(A.p)}</h3><p>${A.h} kehadiran daripada ${A.s} slot, ${A.mt} perjumpaan direkod.</p>`+
+   KK.filter(k=>!kat||k===kat).map(k=>{const g=rows.filter(x=>x.k===k);if(!g.length)return '';const a=aggAtt(g);return `<h3>${esc(KAT[k].n)} (purata ${rp(a.p)})</h3><table><tr><th>Unit</th><th>Murid</th><th>Perjumpaan</th><th>Kehadiran</th><th>%</th></tr>${g.map(x=>`<tr><td>${esc(x.u.nama)}</td><td>${x.ahli}</td><td>${x.mtg} / ${TG}</td><td>${x.h} / ${x.slot}</td><td>${rp(x.p)}</td></tr>`).join('')}</table>`}).join(''))
 }
 
 /* ---------- Program ---------- */

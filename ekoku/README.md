@@ -42,6 +42,10 @@ Jika halaman tersangkut di skrin sambungan, mesej ralat dipaparkan di situ. Punc
 
 Markah murid dikira daripada markah jawatan yang dipegang dan markah peringkat bagi setiap program selesai yang disertai. Nilai lalai hanyalah cadangan awal, sila laraskan mengikut garis panduan sekolah.
 
+## Rumusan kehadiran
+
+Menu **Rumusan Kehadiran** memaparkan graf kehadiran keseluruhan (cincin peratus, hadir berbanding tidak hadir), perbandingan antara empat komponen (Badan Beruniform, Kelab & Persatuan, Sukan & Permainan, Rumah Sukan), trend mengikut bilangan perjumpaan, taburan kehadiran murid, bar kehadiran bagi setiap unit dalam setiap komponen, dan senarai murid bawah 50%. Penapis komponen, muat turun CSV dan cetakan disediakan. Peratus dikira sebagai jumlah kehadiran dibahagi (bilangan murid × perjumpaan direkod); murid dalam beberapa unit dikira dalam setiap unitnya.
+
 ## Daftar guru secara pukal
 
 **Pengurusan & Admin > Data guru > Import guru (Excel / CSV)**.
