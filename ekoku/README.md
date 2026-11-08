@@ -76,6 +76,6 @@ Koleksi Firestore: `guru`, `murid`, `unit`, `perjumpaan`, `program`, `jawatan`, 
 
 ## Laporan perjumpaan (borang berlangkah)
 
-Borang 5 langkah supaya mudah diisi (terutama di telefon), mengikut medan laporan mingguan sistem rujukan: **Maklumat** (unit, bil., tarikh, masa, tempat, guru pembimbing), **Kehadiran**, **Laporan** (tajuk, huraian, PikeBM, **kemahiran masa hadapan**, kemahiran berfikir + kata kerja KBAT, nilai sivik, refleksi dan impak), **Gambar** (laporan murid, gambar KBAT + ulasan, gambar 1-4; dikecilkan automatik) dan **Pengesahan** (disediakan, disemak, disahkan dengan tandatangan jari/tetikus). Langkah tidak boleh dilangkau jika medan wajib kosong. Cetakan memuatkan semua medan, gambar dan tandatangan.
+Borang 5 langkah supaya mudah diisi (terutama di telefon), mengikut medan laporan mingguan sistem rujukan: **Maklumat** (unit, bil., tarikh, masa, tempat, guru pembimbing), **Kehadiran**, **Laporan** (tajuk, huraian, PikeBM, **kemahiran masa hadapan**, kemahiran berfikir + kata kerja KBAT (hanya kata kerja bagi tahap yang dipilih) + gambar KBAT, nilai sivik, refleksi dan impak + gambar laporan murid), **Gambar** (gambar 1-4; dikecilkan automatik) dan **Pengesahan** (disediakan, disemak, disahkan dengan tandatangan jari/tetikus). Langkah tidak boleh dilangkau jika medan wajib kosong. Cetakan memuatkan semua medan, gambar dan tandatangan.
 
 Senarai **Kemahiran Masa Hadapan** diurus oleh admin di Pengurusan & Admin > Setup sistem (tambah, ubah, buang elemen). Senarai awal ialah cadangan; sila laraskan mengikut garis panduan sekolah.
