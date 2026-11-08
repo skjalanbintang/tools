@@ -73,3 +73,7 @@ Guru sedia ada dipadankan melalui No. KP (atau nama jika tiada No. KP). Kata lal
 ## Model data
 
 Koleksi Firestore: `guru`, `murid`, `unit`, `perjumpaan`, `program`, `jawatan`, `ekstra`, `pencapaian`, dan dokumen tetapan `tetapan/umum`. Keahlian unit disimpan pada setiap murid (`u.BB`, `u.KP`, `u.SP`, `u.RS`). Keputusan program disimpan dalam `program.laporan.hasil`.
+
+## Laporan perjumpaan (borang berlangkah)
+
+Borang dibahagi 4 langkah supaya mudah diisi (terutama di telefon): **Maklumat** (unit, bil., tarikh, masa, tempat, guru pembimbing), **Kehadiran** (pilih murid), **Laporan** (tajuk, huraian, PikeBM, kemahiran berfikir + kata kerja KBAT, nilai sivik, refleksi dan impak) dan **Gambar** (sehingga 4 gambar dengan ulasan, dikecilkan automatik kepada 800px). Langkah tidak boleh dilangkau jika medan wajib kosong. Cetakan laporan memuatkan semua medan dan gambar. Bil. perjumpaan dan guru pembimbing diisi automatik apabila unit dipilih.
