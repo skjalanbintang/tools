@@ -429,7 +429,7 @@ function connect(){
   });
   setTimeout(()=>{if(!booted&&!$('#booterr').textContent)$('#booterr').textContent='Sambungan lambat. Semak config Firebase dan sambungan internet.'},9000)
 }
-async function adminRec(){const salt=rnd();return {nama:'Pentadbir Sistem',nokp:'',peranan:'admin',salt,hash:await sha(salt+'admin123'),tukar:true}}
+async function adminRec(){const salt=rnd();return {nama:'Pentadbir Sistem',nokp:'',peranan:'admin',salt,hash:await sha(salt+DEF_PW),tukar:true}}
 async function seedAdmin(){
   const ref=fdb.collection('guru').doc('admin'),rec=await adminRec();
   try{await fdb.runTransaction(async t=>{const d=await t.get(ref);if(!d.exists)t.set(ref,rec)})}catch{}
@@ -504,7 +504,7 @@ function pwModal(force){
 }
 async function savePw(){
   const f=readForm($('#f'));if(f.a!==f.b){$('#pw-err').textContent='Kedua-dua kata laluan mesti sama.';return}
-  if(f.a==='admin123'){$('#pw-err').textContent='Pilih kata laluan yang berbeza daripada kata laluan permulaan.';return}
+  if(f.a===DEF_PW||f.a==='admin123'){$('#pw-err').textContent='Pilih kata laluan yang berbeza daripada kata laluan permulaan.';return}
   const salt=rnd();MS.force=false;closeModal();
   await run(save('guru',{...ME,salt,hash:await sha(salt+f.a),tukar:false}),'Kata laluan dikemas kini')
 }
@@ -1195,11 +1195,21 @@ function saveAhli(){
 }
 function guruKomp(g){return new Set(S.unit.filter(u=>(u.guruIds||[]).includes(g.id)).map(u=>u.kategori)).size}
 const guruPerlu=g=>g.peranan!=='admin'&&guruKomp(g)<MIN_KOMP;
+MS.gsel=new Set();
+function gkAll(b){const ids=$$('input.gk').map(i=>i.value);ids.forEach(i=>b?MS.gsel.add(i):MS.gsel.delete(i));$$('input.gk').forEach(i=>i.checked=b);gkCount()}
+function gkTog(id,b){b?MS.gsel.add(id):MS.gsel.delete(id);gkCount()}
+function gkCount(){const n=MS.gsel.size,e=$('#gkBtn');if(e){e.disabled=!n;e.lastChild.textContent=`Reset kata laluan${n?` (${n})`:''}`}const a=$('#gkAll');if(a){const t=$$('input.gk').length;a.checked=t>0&&$$('input.gk:checked').length===t}}
+function gkReset(){
+  const ids=[...MS.gsel].filter(i=>get('guru',i));if(!ids.length)return;
+  const nm=ids.slice(0,6).map(i=>esc(get('guru',i).nama)).join(', ')+(ids.length>6?` dan ${ids.length-6} lagi`:'');
+  ask(`Reset kata laluan <b>${ids.length}</b> akaun kepada <b>${DEF_PW}</b>? Mereka akan diminta menukarnya semasa log masuk seterusnya.<br><small class="mut">${nm}</small>`,async()=>{
+    try{const l=[];for(const i of ids){const g=get('guru',i),salt=rnd();l.push({...g,salt,hash:await sha(salt+DEF_PW),tukar:true})}await saveMany('guru',l);MS.gsel=new Set();toast(`${l.length} kata laluan direset kepada ${DEF_PW}`)}catch(e){toast('Reset gagal: '+e.message,'err')}},'Reset')
+}
 function admGuru(){
   const nP=S.guru.filter(guruPerlu).length,fp=V().perlu&&nP;
   const warn=nP?`<div class="alert warn" role="status"><b>${nP} guru perlu dilengkapkan.</b> Setiap guru mesti dilantik dalam sekurang-kurangnya ${MIN_KOMP} komponen (satu unit bagi setiap komponen). Klik Edit pada guru berkenaan untuk memilih unit. <button type="button" class="btn ghost sm" onclick="V().perlu=!V().perlu;schedule()">${V().perlu?'Papar semua guru':'Papar yang perlu dilengkapkan sahaja'}</button></div>`:'';
-  return warn+`<div class="card"><div class="tools"><div style="flex:1"></div><button class="btn ghost" onclick="guruTemplate()">${ic('down',16)}Templat CSV</button><label class="btn soft" style="cursor:pointer">${ic('up',16)}Import guru (Excel / CSV)<input type="file" accept=".csv,.xlsx,.xls" hidden onchange="importGuru(this)"></label><button class="btn" onclick="guruForm()">${ic('plus',16)}Tambah guru</button></div>`+
-  tbl(['Nama','No. KP','Peranan','Komponen & unit',''],S.guru.filter(g=>!fp||guruPerlu(g)).sort(byNama).map(g=>[avName(g.nama),(g.nokp?esc(g.nokp):(g.peranan==='admin'?'-':'<span class="badge rose">Tiada No. KP</span>')),`<span class="badge ${g.peranan==='admin'?'gold':''}">${g.peranan==='admin'?'Pentadbir':'Guru'}</span>${g.tukar?' <span class="badge gray">Menunggu log masuk pertama</span>':''}`,gUnits(g.id)+(guruPerlu(g)?`<div style="margin-top:4px"><span class="badge gold" title="Minimum ${MIN_KOMP} komponen diperlukan">${ic('badge',12)} Perlu perhatian: ${guruKomp(g)} / ${MIN_KOMP} komponen</span></div>`:''),rowAct(ibtn(`guruForm('${g.id}')`,'edit','Edit'),ibtn(`delGuru('${g.id}')`,'trash','Padam'))]),empty('Belum ada guru','Tambah guru supaya mereka boleh log masuk.'))+`</div>`
+  return warn+`<div class="card"><div class="tools"><div style="flex:1"></div><button class="btn ghost" id="gkBtn" onclick="gkReset()"${MS.gsel.size?'':' disabled'}>${ic('key',16)}Reset kata laluan${MS.gsel.size?` (${MS.gsel.size})`:''}</button><button class="btn ghost" onclick="guruTemplate()">${ic('down',16)}Templat CSV</button><label class="btn soft" style="cursor:pointer">${ic('up',16)}Import guru (Excel / CSV)<input type="file" accept=".csv,.xlsx,.xls" hidden onchange="importGuru(this)"></label><button class="btn" onclick="guruForm()">${ic('plus',16)}Tambah guru</button></div>`+
+  tbl(['c:<input type="checkbox" id="gkAll" aria-label="Pilih semua" onchange="gkAll(this.checked)">','Nama','No. KP','Peranan','Komponen & unit',''],S.guru.filter(g=>!fp||guruPerlu(g)).sort(byNama).map(g=>[`<input type="checkbox" class="gk" value="${g.id}" aria-label="Pilih ${esc(g.nama)}"${MS.gsel.has(g.id)?' checked':''} onchange="gkTog('${g.id}',this.checked)">`,avName(g.nama),(g.nokp?esc(g.nokp):(g.peranan==='admin'?'-':'<span class="badge rose">Tiada No. KP</span>')),`<span class="badge ${g.peranan==='admin'?'gold':''}">${g.peranan==='admin'?'Pentadbir':'Guru'}</span>${g.tukar?' <span class="badge gray">Menunggu log masuk pertama</span>':''}`,gUnits(g.id)+(guruPerlu(g)?`<div style="margin-top:4px"><span class="badge gold" title="Minimum ${MIN_KOMP} komponen diperlukan">${ic('badge',12)} Perlu perhatian: ${guruKomp(g)} / ${MIN_KOMP} komponen</span></div>`:''),rowAct(ibtn(`guruForm('${g.id}')`,'edit','Edit'),ibtn(`delGuru('${g.id}')`,'trash','Padam'))]),empty('Belum ada guru','Tambah guru supaya mereka boleh log masuk.'))+`</div>`
 }
 function gUnits(gid){const us=S.unit.filter(u=>(u.guruIds||[]).includes(gid)).sort((a,b)=>KK.indexOf(a.kategori)-KK.indexOf(b.kategori)||byNama(a,b));return us.length?us.map(u=>`<div style="margin:2px 0">${kchip(u.kategori)} ${esc(u.nama)}</div>`).join(''):'<span class="mut">Belum ditetapkan</span>'}
 function guruUnitOf(gid,k){return (S.unit.find(u=>u.kategori===k&&(u.guruIds||[]).includes(gid))||{}).id||''}
@@ -1215,7 +1225,7 @@ function applyGuruUnits(gid,picks){
 }
 function guruForm(id){
   const g=id?get('guru',id):{peranan:'guru'};
-  modal({title:id?'Edit guru':'Tambah guru',body:`<form id="f" onsubmit="event.preventDefault();saveGuru('${id||''}')">${F('Nama *',tx('nama',g.nama||'',{req:1}))}${F('No. KP (digunakan guru untuk log masuk)',tx('nokp',g.nokp||'',{ph:'Contoh: 800101015555'}))}${F('Peranan',sel('peranan',[['guru','Guru'],['admin','Pentadbir']],g.peranan,{ph:null}))}${F('Komponen dan unit (minimum 2 komponen, satu unit bagi setiap komponen) <small id="kompN" class="mut"></small>',`<div id="ukBox" class="ukgrid">${KK.map(k=>`<label><span>${KAT[k].n}</span>${sel('uk_'+k,S.unit.filter(u=>u.kategori===k).sort(byNama).map(u=>[u.id,u.nama]),id?guruUnitOf(id,k):'',{ph:'Tiada'}).replace('<select','<select onchange="kompLimit()"')}</label>`).join('')}</div>`)}${F(id?'Kata laluan baharu (kosongkan jika tidak diubah)':'Kata laluan sementara * (guru akan menukarnya semasa log masuk pertama)',`<input class="in" name="pw" type="password" minlength="6" autocomplete="new-password" ${id?'':'required'}>`)}</form>`,foot:`<button class="btn ghost" onclick="closeModal()">Batal</button><button class="btn" form="f">Simpan guru</button>`});kompLimit()
+  modal({title:id?'Edit guru':'Tambah guru',body:`<form id="f" onsubmit="event.preventDefault();saveGuru('${id||''}')">${F('Nama *',tx('nama',g.nama||'',{req:1}))}${F('No. KP (digunakan guru untuk log masuk)',tx('nokp',g.nokp||'',{ph:'Contoh: 800101015555'}))}${F('Peranan',sel('peranan',[['guru','Guru'],['admin','Pentadbir']],g.peranan,{ph:null}))}${F('Komponen dan unit (minimum 2 komponen, satu unit bagi setiap komponen) <small id="kompN" class="mut"></small>',`<div id="ukBox" class="ukgrid">${KK.map(k=>`<label><span>${KAT[k].n}</span>${sel('uk_'+k,S.unit.filter(u=>u.kategori===k).sort(byNama).map(u=>[u.id,u.nama]),id?guruUnitOf(id,k):'',{ph:'Tiada'}).replace('<select','<select onchange="kompLimit()"')}</label>`).join('')}</div>`)}${F(id?'Kata laluan baharu (kosongkan jika tidak diubah)':'Kata laluan sementara (kosongkan untuk guna kata laluan lalai 12345678)',`<input class="in" name="pw" type="text" minlength="6" autocomplete="off" placeholder="${id?'Tidak diubah':'12345678'}">`)}</form>`,foot:`<button class="btn ghost" onclick="closeModal()">Batal</button><button class="btn" form="f">Simpan guru</button>`});kompLimit()
 }
 async function saveGuru(id){
   const f=readForm($('#f')),o={...(id?get('guru',id):{}),nama:f.nama.trim(),nokp:f.nokp.trim(),peranan:f.peranan};delete o.komponen;
@@ -1226,7 +1236,7 @@ async function saveGuru(id){
   const picks={};KK.forEach(k=>{picks[k]=f['uk_'+k]||''});
   if(o.peranan!=='admin'&&Object.values(picks).filter(Boolean).length<MIN_KOMP){toast('Guru mesti dilantik dalam sekurang-kurangnya 2 komponen (pilih unit bagi setiap komponen).','err');return}
   if(id&&o.peranan!=='admin'&&S.guru.filter(g=>g.peranan==='admin'&&g.id!==id).length===0){toast('Mesti ada sekurang-kurangnya seorang pentadbir.','err');return}
-  if(f.pw){o.salt=rnd();o.hash=await sha(o.salt+f.pw);o.tukar=true}
+  if(f.pw||!id){o.salt=rnd();o.hash=await sha(o.salt+(f.pw||DEF_PW));o.tukar=true}
   const us=applyGuruUnits(o.id,picks);
   closeModal();run((async()=>{await save('guru',o);if(us.length)await saveMany('unit',us)})(),'Guru disimpan')
 }
@@ -1239,7 +1249,8 @@ function delGuru(id){
 /* ---------- import guru pukal ---------- */
 let GCRED=null;
 const PWCH='abcdefghjkmnpqrstuvwxyz23456789';
-const tmpPw=()=>Array.from(crypto.getRandomValues(new Uint8Array(8)),b=>PWCH[b%PWCH.length]).join('');
+const DEF_PW='12345678';
+const tmpPw=()=>DEF_PW;
 function guruTemplate(){downloadCsv('templat-guru.csv',[['nama','nokp','peranan','unit beruniform','unit kelab & persatuan','unit sukan & permainan','unit rumah sukan'],['CIKGU AMINAH BINTI HASSAN','800101015555','guru','PENGAKAP','BAHASA INGGERIS','',''],['CIKGU RAZAK BIN ISMAIL','820202025555','guru','','','BOLA SEPAK','MERAH']])}
 async function importGuru(inp){
   const file=inp.files[0];inp.value='';if(!file)return;let rows;
@@ -1266,7 +1277,7 @@ async function importGuru(inp){
   if(!final.some(g=>g.peranan==='admin')){toast('Import dibatalkan: mesti ada sekurang-kurangnya seorang pentadbir.','err');return}
   GCRED={list:out};
   const baru=out.length-upd,nu=out.filter(o=>Object.keys(o._u||{}).length).length;
-  modal({title:'Sahkan import guru',body:`<p><b>${baru}</b> akaun guru baharu akan dicipta dan <b>${upd}</b> akaun sedia ada dikemas kini (dipadankan melalui No. KP, atau nama jika No. KP tiada). Kata laluan sedia ada tidak diubah.${skip?` ${skip} baris dilangkau (tiada nama atau pendua).`:''}${nu?` Unit ditetapkan bagi <b>${nu}</b> guru.`:''}</p>${rej.length?`<div class="alert" style="border-color:#b42318"><b>${rej.length} baris ditolak (No. KP tiada atau pendua):</b><br>${rej.slice(0,8).map(esc).join('<br>')}${rej.length>8?`<br>dan ${rej.length-8} lagi`:''}</div>`:''}${warn.length?`<div class="alert"><b>${warn.length} amaran:</b><br>${warn.slice(0,8).map(esc).join('<br>')}${warn.length>8?`<br>dan ${warn.length-8} lagi`:''}</div>`:''}${baru?'<p class="mut">Kata laluan sementara dijana rawak bagi setiap akaun baharu. Ia dipaparkan sekali sahaja selepas import supaya anda boleh memuat turunnya.</p>':''}${out.slice(0,5).map(o=>`<p class="mut" style="margin:2px 0">${esc(o.nama)} ${o.peranan==='admin'?'(Pentadbir)':''}${o._pw?'':' (kemas kini)'}</p>`).join('')}${out.length>5?`<p class="mut">dan ${out.length-5} lagi</p>`:''}`,
+  modal({title:'Sahkan import guru',body:`<p><b>${baru}</b> akaun guru baharu akan dicipta dan <b>${upd}</b> akaun sedia ada dikemas kini (dipadankan melalui No. KP, atau nama jika No. KP tiada). Kata laluan sedia ada tidak diubah.${skip?` ${skip} baris dilangkau (tiada nama atau pendua).`:''}${nu?` Unit ditetapkan bagi <b>${nu}</b> guru.`:''}</p>${rej.length?`<div class="alert" style="border-color:#b42318"><b>${rej.length} baris ditolak (No. KP tiada atau pendua):</b><br>${rej.slice(0,8).map(esc).join('<br>')}${rej.length>8?`<br>dan ${rej.length-8} lagi`:''}</div>`:''}${warn.length?`<div class="alert"><b>${warn.length} amaran:</b><br>${warn.slice(0,8).map(esc).join('<br>')}${warn.length>8?`<br>dan ${warn.length-8} lagi`:''}</div>`:''}${baru?'<p class="mut">Setiap akaun baharu mendapat kata laluan sementara lalai <b>12345678</b>, dan guru diminta menukarnya semasa log masuk pertama. Senarai dipaparkan selepas import untuk dimuat turun.</p>':''}${out.slice(0,5).map(o=>`<p class="mut" style="margin:2px 0">${esc(o.nama)} ${o.peranan==='admin'?'(Pentadbir)':''}${o._pw?'':' (kemas kini)'}</p>`).join('')}${out.length>5?`<p class="mut">dan ${out.length-5} lagi</p>`:''}`,
    foot:`<button class="btn ghost" onclick="GCRED=null;closeModal()">Batal</button><button class="btn" ${out.length?'':'disabled'} onclick="doGuruImport()">Import ${out.length} guru</button>`})
 }
 async function doGuruImport(){
@@ -1287,7 +1298,7 @@ async function doGuruImport(){
 function showCreds(creds,sub,note=''){
   GCRED={creds};
   modal({title:'Import selesai',sub,wide:true,
-   body:note+`<div class="alert">Kata laluan sementara ini dipaparkan sekali sahaja. Muat turun fail sekarang dan edarkan kepada setiap guru secara peribadi. Guru log masuk di tab <b>Guru</b> menggunakan No. KP dan kata laluan sementara ini, dan akan diminta menukarnya semasa log masuk pertama.</div>`+tbl(['Nama','No. KP','Kata laluan sementara'],creds.map(c=>[avName(c[0]),esc(c[1]||'-'),`<span class="cred">${esc(c[2])}</span>`])),
+   body:note+`<div class="alert">Kata laluan sementara lalai ialah 12345678. Muat turun senarai ini dan maklumkan kepada guru. Guru log masuk di tab <b>Guru</b> menggunakan No. KP dan kata laluan sementara ini, dan akan diminta menukarnya semasa log masuk pertama.</div>`+tbl(['Nama','No. KP','Kata laluan sementara'],creds.map(c=>[avName(c[0]),esc(c[1]||'-'),`<span class="cred">${esc(c[2])}</span>`])),
    foot:`<button class="btn ghost" onclick="GCRED=null;closeModal()">Tutup</button><button class="btn" onclick="downloadCsv('kata-laluan-sementara.csv',[['Nama','No. KP','Kata laluan sementara'],...GCRED.creds])">${ic('down',16)}Muat turun CSV</button>`})
 }
 
@@ -1386,7 +1397,7 @@ function sekolahPreview(){
    <label class="pk" style="padding:10px 0 2px"><input type="checkbox" ${SCH.opt.all?'checked':''} onchange="SCH.opt.all=this.checked;sekolahPreview()"><span>Masukkan juga murid Tahun 1 hingga 3 dan prasekolah daripada APDM (tanpa keahlian unit)</span></label>
    <label class="pk" style="padding:2px 0"><input type="checkbox" ${SCH.opt.replace?'checked':''} onchange="SCH.opt.replace=this.checked;sekolahPreview()"><span>Ganti data sedia ada (${have} rekod unit, murid, perjumpaan, program dan lain-lain akan dipadam). Akaun guru kekal.</span></label>
    ${R.warn.length?`<div class="alert" style="margin-top:12px"><b>Perhatian</b><br>${R.warn.map(esc).join('<br>')}</div>`:''}
-   <p class="mut">Akaun guru baharu mendapat kata laluan sementara rawak yang dipaparkan sekali selepas import. Tetapan sekolah, markah peringkat dan markah jawatan akan diselaraskan dengan fail ini.</p>`,
+   <p class="mut">Akaun guru baharu mendapat kata laluan sementara lalai 12345678 (diminta ditukar semasa log masuk pertama). Tetapan sekolah, markah peringkat dan markah jawatan akan diselaraskan dengan fail ini.</p>`,
    foot:`<button class="btn ghost" onclick="SCH=null;closeModal()">Batal</button><button class="btn" onclick="doSekolah()">Import sekarang</button>`})
 }
 async function doSekolah(){

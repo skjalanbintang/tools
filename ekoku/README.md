@@ -14,7 +14,7 @@ Aplikasi web satu halaman untuk merekod perjumpaan unit kokurikulum, kehadiran m
 
 Buka `index.html` dalam pelayar. Selagi `firebase-config.js` kosong, eKOKU berjalan dalam **mod demo**: data contoh dimuatkan dan disimpan dalam pelayar anda sahaja.
 
-Log masuk pertama: **Pentadbir Sistem** dengan kata laluan `admin123`. Anda akan diminta menukar kata laluan sebelum meneruskan.
+Log masuk pertama: **Pentadbir Sistem** dengan kata laluan `12345678`. Anda akan diminta menukar kata laluan sebelum meneruskan.
 
 ## Sambung ke Firebase
 
@@ -102,3 +102,7 @@ Apabila eKOKU dihoskan di dalam folder `ekoku/` pada tapak ICT Hub (`.../destarx
 ## Log masuk
 
 Skrin log masuk mempunyai dua tab. **Pentadbir** (tab pertama dan lalai) memilih nama pentadbir daripada senarai dan memasukkan kata laluan. **Guru** log masuk menggunakan **No. kad pengenalan** dan kata laluan yang dijana admin (satu demi satu di Data guru, atau pukal melalui import Excel / CSV; kata laluan sementara dipaparkan sekali selepas import). Senarai nama guru tidak lagi dipaparkan pada skrin log masuk. No. KP diperlukan bagi setiap akaun guru dan mestilah unik; baris import tanpa No. KP ditolak. Fail MENU.xlsx tiada No. KP guru, jadi lengkapkan melalui import CSV (dipadankan mengikut nama).
+
+## Kata laluan lalai dan reset pukal
+
+Kata laluan sementara lalai bagi semua akaun baharu (import pukal, tambah guru tanpa mengisi kata laluan, dan akaun Pentadbir Sistem) ialah **12345678**. Pengguna diminta menukarnya pada log masuk pertama dan kata laluan lalai tidak diterima sebagai kata laluan baharu. Di Pengurusan & Admin > Data guru, admin boleh **tick** nama guru (atau tick semua) dan klik **Reset kata laluan** untuk mengembalikan akaun terpilih kepada 12345678 serta memaksa tukar semula semasa log masuk seterusnya.
