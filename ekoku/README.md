@@ -90,3 +90,7 @@ Import guru pukal (Excel / CSV) menerima lajur unit: `unit beruniform`, `unit ke
 
 - **Logo sekolah:** muat naik di Pengurusan & Admin > Setup sistem > Profil sekolah (dikecilkan automatik kepada 256px). Dipaparkan pada skrin log masuk, bar sisi dan kepala cetakan laporan.
 - **Peratusan keseluruhan kehadiran** (Utama, Rumusan Kehadiran, cetakan dan CSV) hanya mengira 3 komponen: Badan Beruniform, Kelab & Persatuan, dan Sukan & Permainan. Rumah Sukan tidak dikira, tetapi masih dipaparkan sebagai kad komponen sendiri apabila ditapis.
+
+## Muat turun JPEG rumusan kehadiran
+
+Halaman Rumusan Kehadiran mempunyai butang **Muat turun JPEG** (selain Cetak/PDF dan CSV). Ia menjana satu imej A4 (2480 x 3508 piksel, 300 dpi) yang meringkaskan paparan semasa: logo dan nama sekolah, peratusan keseluruhan, kad setiap komponen, trend, taburan murid dan kehadiran setiap unit. Ikut penapis komponen yang dipilih. Imej dilukis terus pada kanvas, tanpa pustaka luar.

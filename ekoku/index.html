@@ -813,7 +813,7 @@ function lineChart(ser,N){
 }
 function vRumusan(){
   const v=V(),kat=v.kat||'',D=attData(),us=D.units.filter(x=>!kat||x.k===kat),ks=kat?[kat]:KK,TG=CFG.bilPerjumpaan,A=aggOvr(us),UC=us.filter(x=>kira(x.k)||kat==='RS');
-  const head=pageHead('Rumusan kehadiran','Ringkasan kehadiran murid bagi setiap unit, dikelompokkan mengikut komponen kategori.',`<button class="btn ghost" onclick="exportRum()">${ic('down',16)}Muat turun CSV</button><button class="btn" onclick="printRum()">${ic('print',16)}Cetak</button>`);
+  const head=pageHead('Rumusan kehadiran','Ringkasan kehadiran murid bagi setiap unit, dikelompokkan mengikut komponen kategori.',`<button class="btn ghost" onclick="exportRum()">${ic('down',16)}Muat turun CSV</button><button class="btn ghost" onclick="exportRumJpg()">${ic('down',16)}Muat turun JPEG</button><button class="btn" onclick="printRum()">${ic('print',16)}Cetak</button>`);
   const filt=`<div class="tools">${fSel('kat',katOpts(),'Semua komponen')}</div>`;
   if(!A.s)return head+filt+`<div class="card">${empty('Belum ada data kehadiran','Rekod laporan perjumpaan dan tandakan kehadiran murid untuk melihat rumusan di sini.',`<button class="btn" onclick="location.hash='#/perjumpaan'">${ic('plus',16)}Laporan perjumpaan</button>`)}</div>`;
   const bad=A.s-A.h,act=UC.filter(x=>D.units.some(y=>y.k===x.k&&y.mtg>0)),tgt=act.length*TG;
@@ -841,6 +841,73 @@ const byNama2=(a,b)=>byNama(a.u,b.u);
 function exportRum(){
   const rows=rumRows(),A=aggOvr(rows);
   downloadCsv('rumusan-kehadiran.csv',[['Komponen','Unit','Bil. murid','Perjumpaan direkod','Sasaran','Kehadiran','Jumlah slot','Peratus'],...rows.map(x=>[KAT[x.k].n,x.u.nama,x.ahli,x.mtg,CFG.bilPerjumpaan,x.h,x.slot,x.p==null?'':x.p.toFixed(2)]),['Keseluruhan (tidak termasuk Rumah Sukan)','','','','',A.h,A.s,A.p==null?'':A.p.toFixed(2)]])
+}
+/* ---- Rumusan kehadiran sebagai satu imej JPEG A4 ---- */
+async function exportRumJpg(){
+  const v=V(),kat=v.kat||'',D=attData(),us=D.units.filter(x=>!kat||x.k===kat),ks=kat?[kat]:KK,TG=CFG.bilPerjumpaan;
+  const A=aggOvr(us),UC=us.filter(x=>kira(x.k)||kat==='RS');
+  if(!A.s){toast('Belum ada data kehadiran untuk dijadikan imej.','err');return}
+  const W=1240,H=1754,SC=2,cv=document.createElement('canvas');cv.width=W*SC;cv.height=H*SC;const c=cv.getContext('2d');c.scale(SC,SC);
+  const FF=getComputedStyle(document.body).fontFamily||'sans-serif',F=(w,s)=>`${w} ${s}px ${FF}`;
+  const KC={BB:'#0a8a7a',KP:'#3b72b8',SP:'#b0720f',RS:'#b4486a'},G9='#043d2f',G6='#0a9468',G3='#7fdcb8',ROSE='#e0607e',MUT='#5d6f68',LINE='#dfe9e4',BANDC=['#12b37f','#7fdcb8','#d9a937','#e0607e'];
+  const rr=(x,y,w,h,r)=>{c.beginPath();c.roundRect(x,y,w,h,r)};
+  const T=(t,x,y,font,col,al='left')=>{c.font=font;c.fillStyle=col;c.textAlign=al;c.textBaseline='alphabetic';c.fillText(t,x,y)};
+  const fit=(t,w,font)=>{c.font=font;if(c.measureText(t).width<=w)return t;while(t.length>1&&c.measureText(t+'…').width>w)t=t.slice(0,-1);return t+'…'};
+  const ring=(cx,cy,r,lw,p,col)=>{c.lineWidth=lw;c.lineCap='round';c.strokeStyle=LINE;c.beginPath();c.arc(cx,cy,r,0,Math.PI*2);c.stroke();if(p>0){c.strokeStyle=col;c.beginPath();c.arc(cx,cy,r,-Math.PI/2,-Math.PI/2+Math.PI*2*Math.min(p,100)/100);c.stroke()}};
+  const card=(x,y,w,h)=>{rr(x,y,w,h,18);c.fillStyle='#fff';c.fill();c.lineWidth=1.5;c.strokeStyle=LINE;c.stroke()};
+  c.fillStyle='#f5faf7';c.fillRect(0,0,W,H);
+  /* kepala */
+  c.fillStyle=G9;c.fillRect(0,0,W,150);
+  let tx=50;
+  if(CFG.logo){try{const im=await new Promise((o,e)=>{const i=new Image();i.onload=()=>o(i);i.onerror=e;i.src=CFG.logo});const k=Math.min(96/im.width,96/im.height);rr(50,27,96,96,16);c.fillStyle='#fff';c.fill();c.drawImage(im,50+(96-im.width*k)/2,27+(96-im.height*k)/2,im.width*k,im.height*k);tx=166}catch{}}
+  T(fit(CFG.namaSekolah,W-tx-50,F(800,34)),tx,62,F(800,34),'#fff');
+  T('RUMUSAN KEHADIRAN PERJUMPAAN UNIT KOKURIKULUM',tx,96,F(700,20),G3);
+  T(`Sesi ${CFG.sesi}${kat?`  •  ${KAT[kat].n}`:''}  •  Dijana ${new Date().toLocaleDateString('ms-MY',{day:'numeric',month:'long',year:'numeric'})}`,tx,124,F(500,16),'#cfe9dd');
+  /* hero */
+  let y=172;card(50,y,W-100,210);
+  ring(170,y+105,70,16,A.p,G6);T(rp(A.p),170,y+112,F(800,28),G9,'center');T('kehadiran',170,y+136,F(500,14),MUT,'center');
+  const act=UC.filter(x=>D.units.some(z=>z.k===x.k&&z.mtg>0)),tgt=act.length*TG,bad=A.s-A.h;
+  T(`Kehadiran keseluruhan${kat?`, ${KAT[kat].n}`:' semua unit'}`,280,y+44,F(800,24),G9);
+  T(kat==='RS'||kat?'':'Tidak termasuk Rumah Sukan',280,y+68,F(500,14),MUT);
+  [[A.h.toLocaleString('ms-MY'),'kehadiran direkod'],[`${A.mt} / ${tgt}`,'perjumpaan direkod'],[A.b[0],'murid hadir penuh'],[A.b[3],'murid bawah 50%']].forEach(([a,b],i)=>{const x=280+i*225;T(String(a),x,y+112,F(800,28),G9);T(b,x,y+134,F(500,14),MUT)});
+  rr(280,y+156,W-380,16,8);c.fillStyle=LINE;c.fill();rr(280,y+156,(W-380)*A.h/A.s,16,8);c.fillStyle=G3;c.fill();
+  T(`Hadir ${A.h}`,280,y+192,F(600,14),G6);T(`Tidak hadir ${bad}`,400,y+192,F(600,14),ROSE);T(`daripada ${A.s} slot (murid × perjumpaan)`,W-70,y+192,F(500,14),MUT,'right');
+  /* kad komponen */
+  y=402;const kw=(W-100-(ks.length-1)*16)/ks.length;
+  ks.forEach((k,i)=>{const a=aggAtt(us.filter(x=>x.k===k)),x=50+i*(kw+16);card(x,y,kw,112);ring(x+52,y+56,28,8,a.p||0,KC[k]);T(a.p==null?'-':rp(a.p),x+52,y+60,F(800,a.p==null?14:12),G9,'center');
+    c.fillStyle=KC[k];rr(x+96,y+22,10,10,3);c.fill();T(fit(KAT[k].n,kw-124,F(800,15)),x+112,y+32,F(800,15),KC[k]);T(`${a.n} unit`,x+96,y+60,F(700,16),G9);T(a.s?`${a.h} / ${a.s} kehadiran`:'Belum ada perjumpaan',x+96,y+84,F(500,13),MUT)});
+  /* trend */
+  y=534;const cw=660;card(50,y,cw,290);T('Trend kehadiran mengikut perjumpaan',72,y+34,F(800,18),G9);
+  const maxB=Math.max(TG,1,...us.flatMap(x=>x.per.map(t=>t.bil))),L=110,R=50+cw-24,Tp=y+58,B=y+226,px=i=>maxB<2?(L+R)/2:L+(R-L)*i/(maxB-1),py=p=>B-(B-Tp)*p/100;
+  [0,25,50,75,100].forEach(g=>{c.strokeStyle=LINE;c.lineWidth=1;c.beginPath();c.moveTo(L,py(g));c.lineTo(R,py(g));c.stroke();T(g+'%',L-10,py(g)+4,F(500,12),MUT,'right')});
+  for(let i=0;i<maxB;i++)T('Bil '+(i+1),px(i),B+22,F(500,12),MUT,'center');
+  ks.forEach(k=>{const pts=Array.from({length:maxB},(_,i)=>{let n=0,t=0;us.filter(x=>x.k===k).forEach(x=>x.per.filter(q=>q.bil===i+1).forEach(q=>{n+=q.n;t+=q.tot}));return t?n/t*100:null});
+    c.strokeStyle=KC[k];c.lineWidth=3;c.lineJoin='round';c.beginPath();let st=false;pts.forEach((p,i)=>{if(p==null)return;st?c.lineTo(px(i),py(p)):c.moveTo(px(i),py(p));st=true});c.stroke();
+    pts.forEach((p,i)=>{if(p==null)return;c.beginPath();c.arc(px(i),py(p),4.5,0,7);c.fillStyle=KC[k];c.fill()})});
+  let lx=72;ks.forEach(k=>{c.fillStyle=KC[k];c.fillRect(lx,y+268,12,12);T(KAT[k].n,lx+18,y+279,F(500,12),MUT);c.font=F(500,12);lx+=c.measureText(KAT[k].n).width+44});
+  /* taburan */
+  const dx=50+cw+16,dw=W-100-cw-16;card(dx,y,dw,290);T('Taburan kehadiran murid',dx+22,y+34,F(800,18),G9);T('Mengikut peratus kehadiran setiap murid',dx+22,y+56,F(500,13),MUT);
+  const tot=A.b.reduce((a,b)=>a+b,0)||1;let bx=dx+22;const bw=dw-44;A.b.forEach((n,i)=>{const w=bw*n/tot;if(w>0){c.fillStyle=BANDC[i];c.fillRect(bx,y+78,w,22);bx+=w}});
+  A.b.forEach((n,i)=>{const yy=y+136+i*40;c.fillStyle=BANDC[i];rr(dx+22,yy-12,14,14,4);c.fill();T(BANDS[i][0],dx+46,yy,F(600,15),G9);T(`${n}  (${rp(n/tot*100)})`,dx+dw-22,yy,F(800,15),G9,'right')});
+  /* unit */
+  y=848;const items=[];ks.forEach(k=>{const g=us.filter(x=>x.k===k).sort((a,b)=>(b.p??-1)-(a.p??-1)||byNama(a.u,b.u));if(!g.length)return;const a=aggAtt(g);items.push({h:1,k,a});g.forEach(x=>items.push({k,x}))});
+  const avail=1690-y-30,cols=2,per=Math.ceil((items.length+1)/cols),rowH=Math.max(17,Math.min(44,avail/per)),colW=(W-100-30)/2;
+  T('Kehadiran setiap unit mengikut komponen',50,y+20,F(800,20),G9);y+=36;
+  let col=0,row=0,lastK=null;
+  const hdr=(k,a,cont)=>{const x=50+col*(colW+30),yy=y+row*rowH;c.fillStyle=KC[k];rr(x,yy+rowH*0.18,8,rowH*0.64,3);c.fill();T(KAT[k].n+(cont?' (sambungan)':''),x+18,yy+rowH*0.68,F(800,Math.min(17,rowH*0.5)),KC[k]);if(a)T('Purata '+rp(a.p),x+colW,yy+rowH*0.68,F(700,Math.min(15,rowH*0.45)),MUT,'right');row++};
+  for(const it of items){
+    if(row>=per||(it.h&&row>=per-2)){col++;row=0;if(col>=cols)break;if(!it.h)hdr(it.k,null,1)}
+    if(it.h){hdr(it.k,it.a);lastK=it.k;continue}
+    const x=50+col*(colW+30),yy=y+row*rowH,fs=Math.min(15,rowH*0.46),nm=fit(it.x.u.nama,235,F(700,fs));
+    T(nm,x+18,yy+rowH*0.64,F(700,fs),G9);
+    const bx0=x+270,bw0=colW-270-80;rr(bx0,yy+rowH*0.3,bw0,rowH*0.34,rowH*0.17);c.fillStyle=LINE;c.fill();
+    if(it.x.slot){rr(bx0,yy+rowH*0.3,Math.max(bw0*it.x.p/100,rowH*0.34),rowH*0.34,rowH*0.17);c.fillStyle=KC[it.k];c.fill()}
+    T(it.x.slot?rp(it.x.p):'Tiada data',x+colW,yy+rowH*0.64,F(800,fs),it.x.slot?(it.x.p>=80?G6:it.x.p>=50?'#b0720f':ROSE):MUT,'right');row++}
+  /* kaki */
+  c.fillStyle=LINE;c.fillRect(50,1706,W-100,1);T(`eKOKU, ${CFG.namaSekolah}, sesi ${CFG.sesi}`,50,1734,F(500,13),MUT);T('Peratusan keseluruhan mengira Badan Beruniform, Kelab & Persatuan dan Sukan & Permainan sahaja.',W-50,1734,F(500,13),MUT,'right');
+  const blob=await new Promise(r=>cv.toBlob(r,'image/jpeg',.92));
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='rumusan-kehadiran.jpg';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),3000);
+  return blob
 }
 function printRum(){
   const rows=rumRows(),A=aggOvr(rows),kat=V().kat||'',TG=CFG.bilPerjumpaan;
