@@ -721,7 +721,7 @@ function attData(){
   amemo={ver,units};return amemo
 }
 const aggAtt=a=>{let h=0,s=0,mt=0;const b=[0,0,0,0];a.forEach(x=>{h+=x.h;s+=x.slot;mt+=x.mtg;x.bands.forEach((n,i)=>b[i]+=n)});return {h,s,mt,b,p:s?h/s*100:null,n:a.length}};
-const rp=x=>x==null?'-':Math.round(x)+'%';
+const rp=x=>x==null?'-':(+x).toFixed(2)+'%';
 const tone=p=>p==null?'gray':p>=80?'':p>=50?'gold':'rose';
 function lineChart(ser,N){
   const W=620,H=250,L=40,R=14,Tp=14,B=30,iw=W-L-R,ih=H-Tp-B,x=i=>L+(N<2?iw/2:iw*i/(N-1)),y=p=>Tp+ih*(1-p/100);
@@ -730,7 +730,7 @@ function lineChart(ser,N){
   const lines=ser.map(s=>{const pts=s.pts.map((p,i)=>p==null?null:[x(i),y(p),p,i]).filter(Boolean);if(!pts.length)return '';
     const d=pts.map((q,i)=>(i?'L':'M')+q[0].toFixed(1)+' '+q[1].toFixed(1)).join(' '),
       area=ser.length===1&&pts.length>1?`<path d="${d} L${pts[pts.length-1][0].toFixed(1)} ${y(0)} L${pts[0][0].toFixed(1)} ${y(0)}Z" style="fill:var(--kc);opacity:.13"/>`:'';
-    return `<g class="k-${s.k}">${area}<path d="${d}" class="ln"/>${pts.map(q=>`<circle cx="${q[0].toFixed(1)}" cy="${q[1].toFixed(1)}" r="4.5" class="dt"><title>${esc(KAT[s.k].n)}, bil. ${q[3]+1}: ${Math.round(q[2])}%</title></circle>`).join('')}</g>`}).join('');
+    return `<g class="k-${s.k}">${area}<path d="${d}" class="ln"/>${pts.map(q=>`<circle cx="${q[0].toFixed(1)}" cy="${q[1].toFixed(1)}" r="4.5" class="dt"><title>${esc(KAT[s.k].n)}, bil. ${q[3]+1}: ${rp(q[2])}</title></circle>`).join('')}</g>`}).join('');
   return `<svg class="lc" viewBox="0 0 ${W} ${H}" role="img" aria-label="Graf trend kehadiran mengikut bilangan perjumpaan">${grid}${xl}${lines}</svg>`
 }
 function vRumusan(){
@@ -738,31 +738,31 @@ function vRumusan(){
   const head=pageHead('Rumusan kehadiran','Ringkasan kehadiran murid bagi setiap unit, dikelompokkan mengikut komponen kategori.',`<button class="btn ghost" onclick="exportRum()">${ic('down',16)}Muat turun CSV</button><button class="btn" onclick="printRum()">${ic('print',16)}Cetak</button>`);
   const filt=`<div class="tools">${fSel('kat',katOpts(),'Semua komponen')}</div>`;
   if(!A.s)return head+filt+`<div class="card">${empty('Belum ada data kehadiran','Rekod laporan perjumpaan dan tandakan kehadiran murid untuk melihat rumusan di sini.',`<button class="btn" onclick="location.hash='#/perjumpaan'">${ic('plus',16)}Laporan perjumpaan</button>`)}</div>`;
-  const pct=Math.round(A.p),bad=A.s-A.h,act=us.filter(x=>D.units.some(y=>y.k===x.k&&y.mtg>0)),tgt=act.length*TG;
-  const hero=`<div class="rk"><div class="rw">${ring(A.p,170,16)}<div class="rc"><b><span class="cnt" data-v="${pct}">${pct}</span>%</b><small>kehadiran</small></div></div>
+  const bad=A.s-A.h,act=us.filter(x=>D.units.some(y=>y.k===x.k&&y.mtg>0)),tgt=act.length*TG;
+  const hero=`<div class="rk"><div class="rw">${ring(A.p,170,16)}<div class="rc"><b>${rp(A.p)}</b><small>kehadiran</small></div></div>
    <div><h2>Kehadiran keseluruhan${kat?`, ${esc(KAT[kat].n)}`:' semua unit'}</h2><p>${act.length} unit aktif, ${A.mt} perjumpaan direkod daripada sasaran ${tgt}.${act.length<A.n?` ${A.n-act.length} unit dalam komponen tanpa perjumpaan tidak dikira.`:''}</p>
    <div class="rk-g"><div><b>${A.h.toLocaleString('ms-MY')}</b><small>kehadiran direkod</small></div><div><b>${A.mt} / ${tgt}</b><small>perjumpaan direkod</small></div><div><b>${A.b[0]}</b><small>murid hadir penuh</small></div><div><b>${A.b[3]}</b><small>murid bawah 50%</small></div></div>
    <div class="bar lg" role="img" aria-label="Hadir ${A.h}, tidak hadir ${bad}"><i style="width:${A.h/A.s*100}%;background:var(--zam-300)"></i><i style="width:${bad/A.s*100}%;background:#f08aa2"></i></div>
    <div class="lg2"><span><i style="background:var(--zam-300)"></i>Hadir ${A.h}</span><span><i style="background:#f08aa2"></i>Tidak hadir ${bad}</span><span>daripada ${A.s} slot (murid × perjumpaan)</span></div></div></div>`;
-  const kcs=ks.map(k=>{const a=aggAtt(us.filter(x=>x.k===k));return `<div class="kcard kr k-${k}"><div class="rw">${ring(a.p||0,92,10,'var(--kc)','var(--line2)')}<div class="rc"><b>${a.p==null?'-':Math.round(a.p)+'%'}</b></div></div><div><span class="kt k-${k}">${esc(KAT[k].n)}</span><b class="n">${a.n} unit</b><small>${a.s?`${a.h} / ${a.s} kehadiran`:'Belum ada perjumpaan'}</small></div></div>`}).join('');
+  const kcs=ks.map(k=>{const a=aggAtt(us.filter(x=>x.k===k));return `<div class="kcard kr k-${k}"><div class="rw">${ring(a.p||0,92,10,'var(--kc)','var(--line2)')}<div class="rc"><b>${rp(a.p)}</b></div></div><div><span class="kt k-${k}">${esc(KAT[k].n)}</span><b class="n">${a.n} unit</b><small>${a.s?`${a.h} / ${a.s} kehadiran`:'Belum ada perjumpaan'}</small></div></div>`}).join('');
   const maxB=Math.max(TG,1,...us.flatMap(x=>x.per.map(t=>t.bil))),ser=ks.map(k=>({k,pts:Array.from({length:maxB},(_,i)=>{let n=0,t=0;us.filter(x=>x.k===k).forEach(x=>x.per.filter(q=>q.bil===i+1).forEach(q=>{n+=q.n;t+=q.tot}));return t?n/t*100:null})}));
   const tot=A.b.reduce((a,b)=>a+b,0)||1;
   const trend=`<div class="card"><h3 style="margin:0 0 8px">Trend kehadiran mengikut bilangan perjumpaan</h3>${lineChart(ser,maxB)}<div class="lgd">${ks.map(k=>`<span class="k-${k}"><i></i>${esc(KAT[k].n)}</span>`).join('')}</div></div>`;
   const dist=`<div class="card"><h3 style="margin:0">Taburan kehadiran murid</h3><small class="mut">Mengikut peratus kehadiran setiap murid dalam unitnya</small>
    <div class="bar lg" style="margin-top:14px">${A.b.map((n,i)=>`<i style="width:${n/tot*100}%;background:${BANDS[i][1]}" title="${BANDS[i][0]}: ${n}"></i>`).join('')}</div>
-   <div class="bd">${A.b.map((n,i)=>`<span class="s" style="background:${BANDS[i][1]}"></span><em>${BANDS[i][0]}</em><b>${n} <small>(${Math.round(n/tot*100)}%)</small></b>`).join('')}</div></div>`;
+   <div class="bd">${A.b.map((n,i)=>`<span class="s" style="background:${BANDS[i][1]}"></span><em>${BANDS[i][0]}</em><b>${n} <small>(${rp(n/tot*100)})</small></b>`).join('')}</div></div>`;
   const secs=ks.map(k=>{const g=us.filter(x=>x.k===k).sort((a,b)=>(b.p??-1)-(a.p??-1)||byNama(a.u,b.u));if(!g.length)return '';const a=aggAtt(g);
     return `<div class="card k-${k}"><div class="uh"><h3>${kchip(k)}<span>Kehadiran setiap unit</span></h3><span class="badge ${tone(a.p)}">Purata ${rp(a.p)}</span></div>`+
      g.map(x=>`<div class="ur"><div class="un"><b>${esc(x.u.nama)}</b><small>${x.ahli} murid, ${x.mtg} / ${TG} perjumpaan</small></div><div class="bx">${x.slot?bar(x.p,'var(--kc)'):'<div class="bar"></div>'}</div><div class="uv">${x.slot?`<span class="badge ${tone(x.p)}">${rp(x.p)}</span>`:'<span class="badge gray">Tiada data</span>'}</div></div>`).join('')+`</div>`}).join('');
   const low=us.flatMap(x=>x.low).sort((a,b)=>a.p-b.p||byNama(a.m,b.m)).slice(0,10);
-  const attn=low.length?`<div class="card"><div class="uh"><h3>${ic('badge',18)}<span>Murid perlu perhatian</span></h3><span class="badge rose">${A.b[3]} murid bawah 50%</span></div>`+tbl(['Murid','Unit','c:Hadir','c:%'],low.map(r=>[nmCell(r.m),esc(unitNm(r.uid)),`${r.c} / ${r.n}`,`<span class="badge rose">${Math.round(r.p)}%</span>`]),'')+(A.b[3]>low.length?`<small class="mut">Dipaparkan ${low.length} paling rendah. Senarai penuh ada dalam halaman Kehadiran Perjumpaan.</small>`:'')+`</div>`:'';
+  const attn=low.length?`<div class="card"><div class="uh"><h3>${ic('badge',18)}<span>Murid perlu perhatian</span></h3><span class="badge rose">${A.b[3]} murid bawah 50%</span></div>`+tbl(['Murid','Unit','c:Hadir','c:%'],low.map(r=>[nmCell(r.m),esc(unitNm(r.uid)),`${r.c} / ${r.n}`,`<span class="badge rose">${rp(r.p)}</span>`]),'')+(A.b[3]>low.length?`<small class="mut">Dipaparkan ${low.length} paling rendah. Senarai penuh ada dalam halaman Kehadiran Perjumpaan.</small>`:'')+`</div>`:'';
   return head+filt+hero+`<div class="kcards">${kcs}</div><div class="two">${trend}${dist}</div>${secs}${attn}`
 }
 function rumRows(){const kat=V().kat||'',D=attData();return KK.filter(k=>!kat||k===kat).flatMap(k=>D.units.filter(x=>x.k===k).sort(byNama2).map(x=>({k,...x})))}
 const byNama2=(a,b)=>byNama(a.u,b.u);
 function exportRum(){
   const rows=rumRows(),A=aggAtt(rows);
-  downloadCsv('rumusan-kehadiran.csv',[['Komponen','Unit','Bil. murid','Perjumpaan direkod','Sasaran','Kehadiran','Jumlah slot','Peratus'],...rows.map(x=>[KAT[x.k].n,x.u.nama,x.ahli,x.mtg,CFG.bilPerjumpaan,x.h,x.slot,x.p==null?'':Math.round(x.p*10)/10]),['Keseluruhan','','','','',A.h,A.s,A.p==null?'':Math.round(A.p*10)/10]])
+  downloadCsv('rumusan-kehadiran.csv',[['Komponen','Unit','Bil. murid','Perjumpaan direkod','Sasaran','Kehadiran','Jumlah slot','Peratus'],...rows.map(x=>[KAT[x.k].n,x.u.nama,x.ahli,x.mtg,CFG.bilPerjumpaan,x.h,x.slot,x.p==null?'':x.p.toFixed(2)]),['Keseluruhan','','','','',A.h,A.s,A.p==null?'':A.p.toFixed(2)]])
 }
 function printRum(){
   const rows=rumRows(),A=aggAtt(rows),kat=V().kat||'',TG=CFG.bilPerjumpaan;
