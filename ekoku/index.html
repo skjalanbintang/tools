@@ -44,6 +44,7 @@ aside{position:fixed;inset:0 auto 0 0;width:256px;background:linear-gradient(180
 .brand{display:flex;gap:11px;align-items:center;padding:4px 8px 18px}
 .brand b{font:800 18px var(--fd);color:#fff;display:block;line-height:1.1}
 .brand small{font-size:11.5px;color:#86cdb0;display:block;max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#hubback{}.hubback{display:flex;gap:10px;align-items:center;margin:0 0 12px;padding:9px 12px;border-radius:10px;border:1px solid #ffffff26;color:#d7f3e7;text-decoration:none;font-weight:600;font-size:13.5px;transition:background .15s}.hubback:hover{background:#ffffff14;color:#fff}.hubback[hidden]{display:none}.hubback.lg{margin:14px 0 0;justify-content:center;border-color:var(--line);color:var(--zam-700)}.hubback.lg:hover{background:var(--zam-50);color:var(--zam-800)}.hubback small{display:block;font-weight:400;opacity:.7;font-size:11.5px}
 #nav{display:flex;flex-direction:column;gap:2px;overflow:auto}
 #nav a{display:flex;gap:11px;align-items:center;padding:9px 12px;border-radius:10px;text-decoration:none;color:#bfe6d6;font-weight:500;position:relative;transition:background .15s,color .15s}
 #nav a:hover{background:#ffffff12;color:#fff}
@@ -271,6 +272,7 @@ dialog::backdrop{background:#021a13aa;backdrop-filter:blur(3px)}
       <button class="btn" style="width:100%;justify-content:center;margin-top:6px">Log masuk</button>
       <div class="lerr" id="lg-err" role="alert"></div>
       <small id="lg-mode"></small>
+      <a class="hubback lg" id="hubBack2" href="../index.html" hidden></a>
     </form>
   </div>
 </div>
@@ -278,6 +280,7 @@ dialog::backdrop{background:#021a13aa;backdrop-filter:blur(3px)}
 <div id="app">
   <aside id="side">
     <div class="brand"><div class="logo" id="side-logo"></div><div><b>eKOKU</b><small id="side-school"></small></div></div>
+    <a class="hubback" id="hubBack" href="../index.html" hidden></a>
     <nav id="nav" aria-label="Menu utama"></nav>
     <div class="me">
       <div class="row"><div class="av" id="me-av"></div><div><b id="me-n"></b><small id="me-r"></small></div></div>
@@ -341,6 +344,7 @@ const P={
  users:'<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.5-3.5 3-5.5 6.5-5.5s6 2 6.5 5.5M16 4.5a3.5 3.5 0 0 1 0 7M18 14.8c2 .6 3.2 2.3 3.5 5.2"/>',
  down:'<path d="M12 3v12m0 0-4-4m4 4 4-4M4 21h16"/>',
  up:'<path d="M12 15V3m0 0L8 7m4-4 4 4M4 21h16"/>',
+ back:'<path d="M15 18l-6-6 6-6"/><path d="M9 12h11"/>',
  key:'<circle cx="8" cy="15" r="4"/><path d="m11 12 9-9M16 7l3 3"/>',
  pin:'<path d="M12 21s7-6.2 7-11a7 7 0 0 0-14 0c0 4.8 7 11 7 11z"/><circle cx="12" cy="10" r="2.5"/>',
  leaf:'<path d="M5 19c0-8 5-14 15-14 0 10-6 15-14 15"/><path d="M5 19c3-5 6-8 10-10"/>',
@@ -583,6 +587,7 @@ function render(){
   $$('.cnt').forEach(el=>{const to=+el.dataset.v;if(!was||!to||reduceMotion()){el.textContent=to;return}const t0=performance.now(),st=t=>{const k=Math.min(1,(t-t0)/750);el.textContent=Math.round(to*(1-Math.pow(1-k,3)));if(k<1)requestAnimationFrame(st)};requestAnimationFrame(st)})
 }
 addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='k'&&ME){e.preventDefault();openSearch()}});
+(()=>{const a=$('#hubBack'),b2=$('#hubBack2'),fill=()=>{a.innerHTML=b2.innerHTML=`${ic('back',16)}<span>Kembali ke ICT Hub</span>`;a.hidden=b2.hidden=false};if(location.protocol!=='file:'&&/\/ekoku\//.test(location.pathname))fill();window.__showHubBack=fill})();
 $('#nav').addEventListener('click',()=>document.body.classList.remove('nav-open'));
 
 /* pembantu paparan */

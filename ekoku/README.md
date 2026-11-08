@@ -94,3 +94,7 @@ Import guru pukal (Excel / CSV) menerima lajur unit: `unit beruniform`, `unit ke
 ## Muat turun JPEG rumusan kehadiran
 
 Halaman Rumusan Kehadiran mempunyai butang **Muat turun JPEG** (selain Cetak/PDF dan CSV). Ia menjana satu imej A4 (2480 x 3508 piksel, 300 dpi) yang meringkaskan paparan semasa: logo dan nama sekolah, peratusan keseluruhan, kad setiap komponen, trend, taburan murid dan kehadiran setiap unit. Ikut penapis komponen yang dipilih. Imej dilukis terus pada kanvas, tanpa pustaka luar.
+
+## Kembali ke ICT Hub
+
+Apabila eKOKU dihoskan di dalam folder `ekoku/` pada tapak ICT Hub (`.../destarx/ekoku/index.html`), butang **Kembali ke ICT Hub** dipaparkan di bahagian atas bar sisi (juga dalam menu telefon) dan di bawah borang log masuk. Ia menuju ke `../index.html`. Butang ini disembunyikan jika aplikasi dibuka daripada lokasi lain atau secara fail setempat.
