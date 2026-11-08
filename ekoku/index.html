@@ -149,7 +149,7 @@ button.tile:hover{transform:translateY(-2px);border-color:var(--zam-500)}
 .chip{display:flex;gap:8px;align-items:center;padding:8px 12px;border:1px solid var(--line);border-radius:12px;background:var(--card);transition:border-color .15s,background .15s}
 .chip:hover{border-color:var(--zam-500)}.chip.on{border-color:var(--zam-600);background:var(--zam-50);box-shadow:0 0 0 3px var(--ring)}
 .chip small{font-size:12px}
-.stepper{display:flex;gap:6px;margin:0 0 16px}.stepper .st{flex:1;display:flex;gap:8px;align-items:center;justify-content:center;padding:9px 6px;border:1px solid var(--line);border-radius:12px;background:var(--card);color:var(--mut);font:600 13px var(--fb);cursor:pointer}.stepper .st i{width:22px;height:22px;border-radius:50%;background:var(--line);color:#fff;display:grid;place-items:center;font-style:normal;font-size:12px}.stepper .st.done i{background:var(--zam-500)}.stepper .st.on{border-color:var(--zam-600);background:var(--zam-50);color:var(--zam-700,#0b6b4f);box-shadow:0 0 0 3px var(--ring)}.stepper .st.on i{background:var(--zam-600)}.sp[hidden]{display:none}.sgrp{margin:14px 0 6px;display:flex;flex-direction:column;gap:2px}.sgrp span{color:var(--mut);font-size:13px}.img.wide{max-width:360px;margin:0 0 14px}.img.wide .addimg{aspect-ratio:16/7}.ro{padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:var(--zam-50);font-weight:600}.sig-pad{position:relative}.sig-pad canvas{width:100%;height:110px;border:1px dashed var(--zam-500);border-radius:12px;background:#fff;touch-action:none;display:block}.sig-pad .btn{position:absolute;right:6px;top:6px}.imgs{display:grid;grid-template-columns:1fr 1fr;gap:12px}.img{display:flex;flex-direction:column;gap:8px}.img img{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:12px;border:1px solid var(--line)}.img textarea{min-height:60px}.addimg{display:flex;flex-direction:column;gap:4px;align-items:center;justify-content:center;aspect-ratio:4/3;border:2px dashed var(--line);border-radius:12px;color:var(--zam-600);cursor:pointer;text-align:center;padding:8px}.addimg:hover{border-color:var(--zam-500);background:var(--zam-50)}.addimg small{color:var(--mut)}
+.stepper{display:flex;gap:6px;margin:0 0 16px}.stepper .st{flex:1;display:flex;gap:8px;align-items:center;justify-content:center;padding:9px 6px;border:1px solid var(--line);border-radius:12px;background:var(--card);color:var(--mut);font:600 13px var(--fb);cursor:pointer}.stepper .st i{width:22px;height:22px;border-radius:50%;background:var(--line);color:#fff;display:grid;place-items:center;font-style:normal;font-size:12px}.stepper .st.done i{background:var(--zam-500)}.stepper .st.on{border-color:var(--zam-600);background:var(--zam-50);color:var(--zam-700,#0b6b4f);box-shadow:0 0 0 3px var(--ring)}.stepper .st.on i{background:var(--zam-600)}.sp[hidden]{display:none}.ukgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px 12px}.ukgrid label{display:flex;flex-direction:column;gap:3px;font-size:12px;color:var(--mut)}@media(max-width:560px){.ukgrid{grid-template-columns:1fr}}.sgrp{margin:14px 0 6px;display:flex;flex-direction:column;gap:2px}.sgrp span{color:var(--mut);font-size:13px}.img.wide{max-width:360px;margin:0 0 14px}.img.wide .addimg{aspect-ratio:16/7}.ro{padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:var(--zam-50);font-weight:600}.sig-pad{position:relative}.sig-pad canvas{width:100%;height:110px;border:1px dashed var(--zam-500);border-radius:12px;background:#fff;touch-action:none;display:block}.sig-pad .btn{position:absolute;right:6px;top:6px}.imgs{display:grid;grid-template-columns:1fr 1fr;gap:12px}.img{display:flex;flex-direction:column;gap:8px}.img img{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:12px;border:1px solid var(--line)}.img textarea{min-height:60px}.addimg{display:flex;flex-direction:column;gap:4px;align-items:center;justify-content:center;aspect-ratio:4/3;border:2px dashed var(--line);border-radius:12px;color:var(--zam-600);cursor:pointer;text-align:center;padding:8px}.addimg:hover{border-color:var(--zam-500);background:var(--zam-50)}.addimg small{color:var(--mut)}
 @media(max-width:560px){.stepper .st span{display:none}.addimg small{display:none}.mf .btn{padding-inline:14px}}
 .sec{margin:18px 0 8px;font:700 15px var(--fd);display:flex;gap:8px;align-items:center}
 /* dialog */
@@ -1082,7 +1082,13 @@ function unitForm(id){
   const u=id?get('unit',id):{guruIds:[]};
   modal({title:id?'Edit unit':'Tambah unit',body:`<form id="f" onsubmit="event.preventDefault();saveUnit('${id||''}')">${F('Nama unit *',tx('nama',u.nama||'',{req:1,ph:'Contoh: PENGAKAP'}))}${F('Kategori *',sel('kategori',katOpts(),u.kategori||'',{req:1}))}${F('Guru penasihat',`<div class="pick-list" style="max-height:150px">${guruOpts().map(([i,n])=>`<label class="pk"><input type="checkbox" name="guruIds" value="${i}"${(u.guruIds||[]).includes(i)?' checked':''}><span>${esc(n)}</span></label>`).join('')}</div>`)}</form>`,foot:`<button class="btn ghost" onclick="closeModal()">Batal</button><button class="btn" form="f">Simpan unit</button>`})
 }
-function saveUnit(id){const f=readForm($('#f'));const bad=[].concat(f.guruIds||[]).map(i=>get('guru',i)).filter(g=>g&&(g.komponen||[]).length&&!g.komponen.includes(f.kategori));if(bad.length){toast(bad.map(g=>g.nama).join(', ')+' tidak dilantik dalam komponen '+KAT[f.kategori].n+'. Kemas kini di Data guru.','err');return}closeModal();run(save('unit',{...(id?get('unit',id):{}),nama:f.nama.trim(),kategori:f.kategori,guruIds:[].concat(f.guruIds||[])}),'Unit disimpan')}
+function saveUnit(id){
+  const f=readForm($('#f')),old=new Set(id?(get('unit',id).guruIds||[]):[]),ids=[].concat(f.guruIds||[]);
+  for(const gid of ids){if(old.has(gid)&&(id&&get('unit',id).kategori===f.kategori))continue;const g=get('guru',gid);
+    const oth=S.unit.filter(u=>u.id!==id&&(u.guruIds||[]).includes(gid));
+    const same=oth.find(u=>u.kategori===f.kategori);if(same){toast(`${g.nama} sudah ditetapkan pada unit ${same.nama} dalam komponen ${KAT[f.kategori].n}. Satu komponen hanya satu unit.`,'err');return}
+    if(!new Set([...oth.map(u=>u.kategori),f.kategori]).has(undefined)&&new Set([...oth.map(u=>u.kategori),f.kategori]).size>3){toast(`${g.nama} sudah dilantik dalam 3 komponen (maksimum).`,'err');return}}
+  closeModal();run(save('unit',{...(id?get('unit',id):{}),nama:f.nama.trim(),kategori:f.kategori,guruIds:ids}),'Unit disimpan')}
 function delUnit(id){const n=membersOf(id).length;ask(`Padam unit ${esc(unitNm(id))}?${n?` ${n} ahli akan kehilangan keahlian unit ini.`:''}`,async()=>{const u=get('unit',id),ch=S.murid.filter(m=>m.u?.[u.kategori]===id).map(m=>{const x={...m,u:{...m.u}};delete x.u[u.kategori];return x});await run(saveMany('murid',ch));run(remove('unit',id),'Unit dipadam')})}
 function unitAhli(id){const u=get('unit',id);MS.unit=id;modal({title:'Urus ahli unit',sub:`${esc(u.nama)}. Murid yang dipilih akan dipindahkan daripada unit ${esc(KAT[u.kategori].n)} lain.`,wide:true,body:pickBody(mItems(S.murid),new Set(membersOf(id).map(m=>m.id))),foot:`<button class="btn ghost" onclick="closeModal()">Batal</button><button class="btn" onclick="saveAhli()">Simpan ahli</button>`});pickCount()}
 function saveAhli(){
@@ -1092,21 +1098,32 @@ function saveAhli(){
 }
 function admGuru(){
   return `<div class="card"><div class="tools"><div style="flex:1"></div><button class="btn ghost" onclick="guruTemplate()">${ic('down',16)}Templat CSV</button><label class="btn soft" style="cursor:pointer">${ic('up',16)}Import guru (Excel / CSV)<input type="file" accept=".csv,.xlsx,.xls" hidden onchange="importGuru(this)"></label><button class="btn" onclick="guruForm()">${ic('plus',16)}Tambah guru</button></div>`+
-  tbl(['Nama','No. KP','Peranan','Komponen','Unit penasihat',''],S.guru.slice().sort(byNama).map(g=>[avName(g.nama),esc(g.nokp||'-'),`<span class="badge ${g.peranan==='admin'?'gold':''}">${g.peranan==='admin'?'Pentadbir':'Guru'}</span>${g.tukar?' <span class="badge gray">Menunggu log masuk pertama</span>':''}`,gKomp(g),esc(S.unit.filter(u=>(u.guruIds||[]).includes(g.id)).map(u=>u.nama).join(', ')||'-'),rowAct(ibtn(`guruForm('${g.id}')`,'edit','Edit'),ibtn(`delGuru('${g.id}')`,'trash','Padam'))]),empty('Belum ada guru','Tambah guru supaya mereka boleh log masuk.'))+`</div>`
+  tbl(['Nama','No. KP','Peranan','Komponen & unit',''],S.guru.slice().sort(byNama).map(g=>[avName(g.nama),esc(g.nokp||'-'),`<span class="badge ${g.peranan==='admin'?'gold':''}">${g.peranan==='admin'?'Pentadbir':'Guru'}</span>${g.tukar?' <span class="badge gray">Menunggu log masuk pertama</span>':''}`,gUnits(g.id),rowAct(ibtn(`guruForm('${g.id}')`,'edit','Edit'),ibtn(`delGuru('${g.id}')`,'trash','Padam'))]),empty('Belum ada guru','Tambah guru supaya mereka boleh log masuk.'))+`</div>`
 }
-function gKomp(g){const k=g.komponen||[];return k.length?k.map(x=>kchip(x)).join(' '):'<span class="mut">Belum ditetapkan</span>'}
-function kompLimit(box){const n=$$('input[name=komponen]:checked',box).length;$$('input[name=komponen]',box).forEach(i=>{if(!i.checked)i.disabled=n>=3});const c=$('#kompN');if(c)c.textContent=n+' / 3'}
+function gUnits(gid){const us=S.unit.filter(u=>(u.guruIds||[]).includes(gid)).sort((a,b)=>KK.indexOf(a.kategori)-KK.indexOf(b.kategori)||byNama(a,b));return us.length?us.map(u=>`<div style="margin:2px 0">${kchip(u.kategori)} ${esc(u.nama)}</div>`).join(''):'<span class="mut">Belum ditetapkan</span>'}
+function guruUnitOf(gid,k){return (S.unit.find(u=>u.kategori===k&&(u.guruIds||[]).includes(gid))||{}).id||''}
+function kompLimit(){const sl=$$('#ukBox select'),n=sl.filter(x=>x.value).length;sl.forEach(x=>{if(!x.value)x.disabled=n>=3});const c=$('#kompN');if(c)c.textContent=n+' / 3'}
+/* tetapkan unit guru: satu unit bagi setiap komponen, maksimum 3 komponen. picks={BB:unitId,...} */
+function applyGuruUnits(gid,picks){
+  const out=[];
+  for(const k of KK){if(!(k in picks))continue;
+    for(const u of S.unit.filter(x=>x.kategori===k)){const has=(u.guruIds||[]).includes(gid),want=picks[k]===u.id;
+      if(has&&!want)out.push({...u,guruIds:u.guruIds.filter(x=>x!==gid)});else if(!has&&want)out.push({...u,guruIds:[...(u.guruIds||[]),gid]})}}
+  return out
+}
 function guruForm(id){
   const g=id?get('guru',id):{peranan:'guru'};
-  modal({title:id?'Edit guru':'Tambah guru',body:`<form id="f" onsubmit="event.preventDefault();saveGuru('${id||''}')">${F('Nama *',tx('nama',g.nama||'',{req:1}))}${F('No. KP',tx('nokp',g.nokp||''))}${F('Peranan',sel('peranan',[['guru','Guru'],['admin','Pentadbir']],g.peranan,{ph:null}))}${F('Komponen dilantik (maksimum 3) <small id="kompN" class="mut"></small>',`<div class="chips" id="kompBox">${KK.map(k=>`<label class="chip"><input type="checkbox" name="komponen" value="${k}"${(g.komponen||[]).includes(k)?' checked':''} onchange="kompLimit($('#kompBox'))"><small>${KAT[k].n}</small></label>`).join('')}</div>`)}${F(id?'Kata laluan baharu (kosongkan jika tidak diubah)':'Kata laluan sementara * (guru akan menukarnya semasa log masuk pertama)',`<input class="in" name="pw" type="password" minlength="6" autocomplete="new-password" ${id?'':'required'}>`)}</form>`,foot:`<button class="btn ghost" onclick="closeModal()">Batal</button><button class="btn" form="f">Simpan guru</button>`});kompLimit($('#kompBox'))
+  modal({title:id?'Edit guru':'Tambah guru',body:`<form id="f" onsubmit="event.preventDefault();saveGuru('${id||''}')">${F('Nama *',tx('nama',g.nama||'',{req:1}))}${F('No. KP',tx('nokp',g.nokp||''))}${F('Peranan',sel('peranan',[['guru','Guru'],['admin','Pentadbir']],g.peranan,{ph:null}))}${F('Komponen dan unit (maksimum 3 komponen, satu unit bagi setiap komponen) <small id="kompN" class="mut"></small>',`<div id="ukBox" class="ukgrid">${KK.map(k=>`<label><span>${KAT[k].n}</span>${sel('uk_'+k,S.unit.filter(u=>u.kategori===k).sort(byNama).map(u=>[u.id,u.nama]),id?guruUnitOf(id,k):'',{ph:'Tiada'}).replace('<select','<select onchange="kompLimit()"')}</label>`).join('')}</div>`)}${F(id?'Kata laluan baharu (kosongkan jika tidak diubah)':'Kata laluan sementara * (guru akan menukarnya semasa log masuk pertama)',`<input class="in" name="pw" type="password" minlength="6" autocomplete="new-password" ${id?'':'required'}>`)}</form>`,foot:`<button class="btn ghost" onclick="closeModal()">Batal</button><button class="btn" form="f">Simpan guru</button>`});kompLimit()
 }
 async function saveGuru(id){
-  const f=readForm($('#f')),o={...(id?get('guru',id):{}),nama:f.nama.trim(),nokp:f.nokp.trim(),peranan:f.peranan,komponen:[].concat(f.komponen||[])};
-  if(o.komponen.length>3){toast('Seorang guru boleh dilantik dalam maksimum 3 komponen.','err');return}
-  if(id&&o.komponen.length){const bad=S.unit.filter(u=>(u.guruIds||[]).includes(id)&&!o.komponen.includes(u.kategori));if(bad.length){toast('Guru ini masih ditetapkan pada unit '+bad.map(u=>u.nama).join(', ')+' di luar komponen dipilih. Keluarkan dahulu di Daftar Unit.','err');return}}
+  const f=readForm($('#f')),o={...(id?get('guru',id):{}),nama:f.nama.trim(),nokp:f.nokp.trim(),peranan:f.peranan};delete o.komponen;
+  if(!id)o.id=newId();
+  const picks={};KK.forEach(k=>{picks[k]=f['uk_'+k]||''});
+  if(Object.values(picks).filter(Boolean).length>3){toast('Seorang guru boleh dilantik dalam maksimum 3 komponen.','err');return}
   if(id&&o.peranan!=='admin'&&S.guru.filter(g=>g.peranan==='admin'&&g.id!==id).length===0){toast('Mesti ada sekurang-kurangnya seorang pentadbir.','err');return}
   if(f.pw){o.salt=rnd();o.hash=await sha(o.salt+f.pw);o.tukar=true}
-  closeModal();run(save('guru',o),'Guru disimpan')
+  const us=applyGuruUnits(o.id,picks);
+  closeModal();run((async()=>{await save('guru',o);if(us.length)await saveMany('unit',us)})(),'Guru disimpan')
 }
 function delGuru(id){
   if(id===ME.id){toast('Anda tidak boleh memadam akaun yang sedang digunakan.','err');return}
@@ -1118,12 +1135,14 @@ function delGuru(id){
 let GCRED=null;
 const PWCH='abcdefghjkmnpqrstuvwxyz23456789';
 const tmpPw=()=>Array.from(crypto.getRandomValues(new Uint8Array(8)),b=>PWCH[b%PWCH.length]).join('');
-function guruTemplate(){downloadCsv('templat-guru.csv',[['nama','nokp','peranan'],['CIKGU AMINAH BINTI HASSAN','800101015555','guru'],['CIKGU RAZAK BIN ISMAIL','820202025555','guru']])}
+function guruTemplate(){downloadCsv('templat-guru.csv',[['nama','nokp','peranan','unit beruniform','unit kelab & persatuan','unit sukan & permainan','unit rumah sukan'],['CIKGU AMINAH BINTI HASSAN','800101015555','guru','PENGAKAP','BAHASA INGGERIS','',''],['CIKGU RAZAK BIN ISMAIL','820202025555','guru','','','BOLA SEPAK','MERAH']])}
 async function importGuru(inp){
   const file=inp.files[0];inp.value='';if(!file)return;let rows;
   try{rows=await readSheet(file)}catch(e){toast('Fail tidak dapat dibaca: '+e.message,'err');return}
   const norm=x=>String(x).toLowerCase().replace(/[^a-z0-9]/g,''),hd=(rows[0]||[]).map(norm),ci=a=>hd.findIndex(h=>a.includes(h));
   const cN=ci(['nama','namaguru','name']),cK=ci(['nokp','kp','nokadpengenalan','nomborkp','ic']),cP=ci(['peranan','role']);
+  const cU={};hd.forEach((h,i)=>{const k=/rumah/.test(h)?'RS':/beruniform/.test(h)?'BB':/kelab|persatuan/.test(h)?'KP':/sukan|permainan/.test(h)?'SP':'';if(k&&!(k in cU))cU[k]=i});
+  const uByName=new Map(S.unit.map(u=>[u.kategori+'|'+sp(u.nama).toUpperCase(),u]));const warn=[];
   if(cN<0){toast('Lajur "nama" diperlukan. Muat turun templat untuk rujukan.','err');return}
   const byKp=new Map(S.guru.filter(g=>g.nokp).map(g=>[g.nokp,g])),byNm=new Map(S.guru.map(g=>[g.nama.trim().toUpperCase(),g])),seen=new Set(),out=[];let upd=0,skip=0;
   for(const r of rows.slice(1)){
@@ -1131,21 +1150,28 @@ async function importGuru(inp){
     if(!nama){skip++;continue}
     const key=nokp||nama.toUpperCase();if(seen.has(key)){skip++;continue}seen.add(key);
     const pr=cP>=0?String(r[cP]||'').trim().toLowerCase():'',role=/^(admin|pentadbir)/.test(pr)?'admin':'guru',old=(nokp&&byKp.get(nokp))||byNm.get(nama.toUpperCase());
-    if(old){upd++;out.push({...old,nama,nokp:nokp||old.nokp||'',peranan:old.id===ME.id?old.peranan:(pr?role:old.peranan)})}
-    else out.push({nama,nokp,peranan:role,_pw:tmpPw()})
+    const picks={};for(const k of KK){if(!(k in cU))continue;const nm=sp(r[cU[k]]);if(!nm)continue;const u=uByName.get(k+'|'+nm.toUpperCase());if(u)picks[k]=u.id;else warn.push(`${nama}: unit "${nm}" tidak dijumpai dalam ${KAT[k].n}`)}
+    if(Object.keys(picks).length>3){const keep=Object.keys(picks).slice(0,3);warn.push(`${nama}: lebih daripada 3 komponen, hanya ${keep.map(k=>KAT[k].n).join(', ')} digunakan`);Object.keys(picks).forEach(k=>{if(!keep.includes(k))delete picks[k]})}
+    if(old){upd++;out.push({...old,nama,nokp:nokp||old.nokp||'',peranan:old.id===ME.id?old.peranan:(pr?role:old.peranan),_u:picks})}
+    else out.push({id:newId(),nama,nokp,peranan:role,_pw:tmpPw(),_u:picks})
   }
   const final=[...S.guru.filter(g=>!out.some(o=>o.id===g.id)),...out];
   if(!final.some(g=>g.peranan==='admin')){toast('Import dibatalkan: mesti ada sekurang-kurangnya seorang pentadbir.','err');return}
   GCRED={list:out};
-  const baru=out.length-upd;
-  modal({title:'Sahkan import guru',body:`<p><b>${baru}</b> akaun guru baharu akan dicipta dan <b>${upd}</b> akaun sedia ada dikemas kini (dipadankan melalui No. KP, atau nama jika No. KP tiada). Kata laluan sedia ada tidak diubah.${skip?` ${skip} baris dilangkau (tiada nama atau pendua).`:''}</p>${baru?'<p class="mut">Kata laluan sementara dijana rawak bagi setiap akaun baharu. Ia dipaparkan sekali sahaja selepas import supaya anda boleh memuat turunnya.</p>':''}${out.slice(0,5).map(o=>`<p class="mut" style="margin:2px 0">${esc(o.nama)} ${o.peranan==='admin'?'(Pentadbir)':''}${o._pw?'':' (kemas kini)'}</p>`).join('')}${out.length>5?`<p class="mut">dan ${out.length-5} lagi</p>`:''}`,
+  const baru=out.length-upd,nu=out.filter(o=>Object.keys(o._u||{}).length).length;
+  modal({title:'Sahkan import guru',body:`<p><b>${baru}</b> akaun guru baharu akan dicipta dan <b>${upd}</b> akaun sedia ada dikemas kini (dipadankan melalui No. KP, atau nama jika No. KP tiada). Kata laluan sedia ada tidak diubah.${skip?` ${skip} baris dilangkau (tiada nama atau pendua).`:''}${nu?` Unit ditetapkan bagi <b>${nu}</b> guru.`:''}</p>${warn.length?`<div class="alert"><b>${warn.length} amaran:</b><br>${warn.slice(0,8).map(esc).join('<br>')}${warn.length>8?`<br>dan ${warn.length-8} lagi`:''}</div>`:''}${baru?'<p class="mut">Kata laluan sementara dijana rawak bagi setiap akaun baharu. Ia dipaparkan sekali sahaja selepas import supaya anda boleh memuat turunnya.</p>':''}${out.slice(0,5).map(o=>`<p class="mut" style="margin:2px 0">${esc(o.nama)} ${o.peranan==='admin'?'(Pentadbir)':''}${o._pw?'':' (kemas kini)'}</p>`).join('')}${out.length>5?`<p class="mut">dan ${out.length-5} lagi</p>`:''}`,
    foot:`<button class="btn ghost" onclick="GCRED=null;closeModal()">Batal</button><button class="btn" ${out.length?'':'disabled'} onclick="doGuruImport()">Import ${out.length} guru</button>`})
 }
 async function doGuruImport(){
   const list=GCRED.list,creds=[],save=[];closeModal();
   try{
-    for(const o of list){const x={...o};delete x._pw;if(o._pw){x.salt=rnd();x.hash=await sha(x.salt+o._pw);x.tukar=true;creds.push([x.nama,x.nokp,o._pw])}save.push(x)}
-    await saveMany('guru',save)
+    for(const o of list){const x={...o};delete x._pw;delete x._u;if(o._pw){x.salt=rnd();x.hash=await sha(x.salt+o._pw);x.tukar=true;creds.push([x.nama,x.nokp,o._pw])}save.push(x)}
+    await saveMany('guru',save);
+    /* gabung perubahan: kira semula setiap unit daripada semua tetapan guru */
+    const fin=new Map(S.unit.map(u=>[u.id,new Set(u.guruIds||[])]));
+    for(const o of list)for(const k of KK){if(!o._u||!(k in o._u))continue;for(const u of S.unit.filter(x=>x.kategori===k)){const st=fin.get(u.id);if(o._u[k]===u.id)st.add(o.id);else st.delete(o.id)}}
+    const chg=S.unit.filter(u=>{const a=[...(u.guruIds||[])].sort().join(),b=[...fin.get(u.id)].sort().join();return a!==b}).map(u=>({...u,guruIds:[...fin.get(u.id)]}));
+    await saveMany('unit',chg)
   }catch(e){toast('Import gagal: '+e.message,'err');GCRED=null;return}
   GCRED={creds};
   if(!creds.length){GCRED=null;toast(`${save.length} akaun guru dikemas kini`);return}

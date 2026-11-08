@@ -80,6 +80,8 @@ Borang 5 langkah supaya mudah diisi (terutama di telefon), mengikut medan lapora
 
 Senarai **Kemahiran Masa Hadapan** diurus oleh admin di Pengurusan & Admin > Setup sistem (tambah, ubah, buang elemen). Senarai awal ialah cadangan; sila laraskan mengikut garis panduan sekolah.
 
-## Komponen guru
+## Komponen dan unit guru
 
-Di Pengurusan & Admin > Data guru, seorang guru boleh dilantik dalam lebih daripada satu komponen (Badan Beruniform, Kelab & Persatuan, Sukan & Permainan, Rumah Sukan), **maksimum 3**. Guru yang sudah ada komponen hanya boleh ditetapkan pada unit dalam komponen itu (Daftar Unit). Guru yang belum ditetapkan komponen tidak disekat.
+Seorang guru boleh dilantik dalam **maksimum 3 komponen**, dan dalam setiap komponen hanya **satu unit**. Tetapkan di Pengurusan & Admin > Data guru (borang guru: satu dropdown unit bagi setiap komponen) atau di Daftar Unit. Sistem menolak unit kedua dalam komponen yang sama atau komponen keempat.
+
+Import guru pukal (Excel / CSV) menerima lajur unit: `unit beruniform`, `unit kelab & persatuan`, `unit sukan & permainan`, `unit rumah sukan` (nama unit mesti sama dengan yang didaftarkan; huruf besar/kecil tidak penting). Lebih daripada 3 komponen dalam satu baris: tiga yang pertama digunakan. Sel kosong tidak mengubah tetapan unit sedia ada. Muat turun templat CSV untuk contoh.
