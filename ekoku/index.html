@@ -102,6 +102,7 @@ textarea.in{resize:vertical;min-height:84px}
 .card>h3{font-size:17px;margin-bottom:12px}
 .wrap{overflow-x:auto}
 .tbl{width:100%;border-collapse:collapse}
+.sortb{background:none;border:0;font:inherit;color:inherit;cursor:pointer;display:inline-flex;gap:5px;align-items:center;padding:0}.sortb i{font-style:normal;font-size:10px;opacity:.45}.sortb.on{color:var(--zam-700)}.sortb.on i{opacity:1}.sortb:hover{color:var(--zam-700)}.tbl th.c .sortb,.tbl th.r .sortb{justify-content:inherit}
 .tbl th{text-align:left;font-weight:600;font-size:12.5px;color:var(--mut);padding:9px 12px;border-bottom:1px solid var(--line);white-space:nowrap}
 .tbl td{padding:10px 12px;border-bottom:1px solid var(--line2);vertical-align:middle}
 .tbl tbody tr{transition:background .12s}.tbl tbody tr:hover{background:var(--zam-50)}
@@ -563,6 +564,7 @@ function routeChange(){
 }
 addEventListener('hashchange',routeChange);
 function U(k,v){V()[k]=v;V().lim=undefined;clearTimeout(U.t);U.t=setTimeout(schedule,130)}
+function srt(k,first='asc'){const v=V();if(v.sk===k)v.sd=v.sd==='asc'?'desc':'asc';else{v.sk=k;v.sd=first}v.lim=undefined;schedule()}
 function T(k,v){V()[k]=v;V().lim=undefined;schedule()}
 function render(){
   if(!ME){if(!$('#login').hidden)fillLogin();return}
@@ -597,7 +599,8 @@ const katOpts=()=>KK.map(k=>[k,KAT[k].n]);
 function tbl(heads,rows,emptyHtml){
   if(!rows.length)return emptyHtml||empty('Tiada rekod','Tiada data untuk dipaparkan.');
   const lim=V().lim||60,show=rows.slice(0,lim);
-  return `<div class="wrap"><table class="tbl"><thead><tr>${heads.map(h=>`<th${/^(r|c):/.test(h)?` class="${h[0]}"`:''}>${h.replace(/^(r|c):/,'')}</th>`).join('')}</tr></thead><tbody>${show.map(r=>`<tr>${r.map((c,i)=>{const hd=heads[i]||'';return `<td${/^(r|c):/.test(hd)?` class="${hd[0]}"`:''}>${c}</td>`}).join('')}</tr>`).join('')}</tbody></table></div>${rows.length>lim?`<div style="text-align:center;margin-top:12px"><button class="btn ghost" onclick="V().lim=${lim+60};schedule()">Papar lagi (${rows.length-lim} baki)</button></div>`:''}`
+  const v0=V(),th=h=>{const m=/^((?:r|c):)?(.*)\|(\w+)$/.exec(h);if(!m)return `<th${/^(r|c):/.test(h)?` class="${h[0]}"`:''}>${h.replace(/^(r|c):/,'')}</th>`;const on=v0.sk===m[3],d=on?v0.sd:'';return `<th${m[1]?` class="${m[1][0]}"`:''} aria-sort="${d==='asc'?'ascending':d==='desc'?'descending':'none'}"><button type="button" class="sortb${on?' on':''}" onclick="srt('${m[3]}')" title="Susun ikut ${esc(m[2])}">${m[2]}<i>${d==='asc'?'▲':d==='desc'?'▼':'⇅'}</i></button></th>`};
+  return `<div class="wrap"><table class="tbl"><thead><tr>${heads.map(th).join('')}</tr></thead><tbody>${show.map(r=>`<tr>${r.map((c,i)=>{const hd=heads[i]||'';return `<td${/^(r|c):/.test(hd)?` class="${hd[0]}"`:''}>${c}</td>`}).join('')}</tr>`).join('')}</tbody></table></div>${rows.length>lim?`<div style="text-align:center;margin-top:12px"><button class="btn ghost" onclick="V().lim=${lim+60};schedule()">Papar lagi (${rows.length-lim} baki)</button></div>`:''}`
 }
 const rowAct=(...b)=>`<div class="acts">${b.join('')}</div>`;
 const ibtn=(fn,icon,label,cls='ghost')=>`<button class="btn ${cls} sm ic-only" onclick="${fn}" aria-label="${label}" title="${label}">${ic(icon,15)}</button>`;
@@ -651,10 +654,12 @@ function vPerjumpaan(){
    tabsH('tab',[['rekod','Rekod perjumpaan'],['analisis','Analisis & semakan']],tab)+(tab==='rekod'?mtgList():mtgMatrix())
 }
 function mtgList(){
-  const v=V(),q=(v.q||'').toLowerCase();
-  let l=S.perjumpaan.filter(t=>(!v.kat||get('unit',t.unitId)?.kategori===v.kat)&&(!v.unit||t.unitId===v.unit)&&(!q||(unitNm(t.unitId)+' '+t.aktiviti+' '+t.ringkasan).toLowerCase().includes(q))).sort((a,b)=>(b.tarikh||'').localeCompare(a.tarikh||''));
+  const v=V(),q=(v.q||'').toLowerCase(),sk=v.sk||'tarikh',sd=(v.sk?v.sd:'desc')==='asc'?1:-1;
+  let l=S.perjumpaan.filter(t=>(!v.kat||get('unit',t.unitId)?.kategori===v.kat)&&(!v.unit||t.unitId===v.unit)&&(!q||(unitNm(t.unitId)+' '+t.aktiviti+' '+t.ringkasan).toLowerCase().includes(q)));
+  const key={tarikh:t=>t.tarikh||'',unit:t=>unitNm(t.unitId)||'',komp:t=>KK.indexOf(get('unit',t.unitId)?.kategori),bil:t=>+t.bil||0,aktiviti:t=>t.aktiviti||'',hadir:t=>(t.hadir||[]).length,pct:t=>{const n=membersOf(t.unitId).length;return n?(t.hadir||[]).length/n:-1}}[sk]||(t=>t.tarikh||'');
+  l.sort((a,b)=>{const x=key(a),y=key(b),c=typeof x==='number'?x-y:String(x).localeCompare(String(y),'ms',{numeric:true});return c*sd||(b.tarikh||'').localeCompare(a.tarikh||'')});
   return `<div class="card"><div class="tools">${qIn('Cari aktiviti atau unit')}${fSel('kat',katOpts(),'Semua kategori')}${fSel('unit',unitOpts(v.kat),'Semua unit')}</div>`+
-   tbl(['Tarikh','Unit','c:Bil','Aktiviti','c:Hadir',''],l.map(t=>{const n=membersOf(t.unitId).length,h=(t.hadir||[]).length;return [fmtD(t.tarikh),`<b>${esc(unitNm(t.unitId))}</b> ${kchip(get('unit',t.unitId)?.kategori)}`,t.bil,esc(t.aktiviti),`${h} / ${n}`,rowAct(ibtn(`printMtg('${t.id}')`,'print','Cetak'),ibtn(`mtgForm('${t.id}')`,'edit','Edit'),ibtn(`delItem('perjumpaan','${t.id}')`,'trash','Padam'))]}),
+   tbl(['Tarikh|tarikh','Unit|unit','Komponen|komp','c:Bil|bil','Aktiviti|aktiviti','c:Hadir|hadir','c:%|pct',''],l.map(t=>{const n=membersOf(t.unitId).length,h=(t.hadir||[]).length;return [fmtD(t.tarikh),`<b>${esc(unitNm(t.unitId))}</b>`,kchip(get('unit',t.unitId)?.kategori),t.bil,esc(t.aktiviti),`${h} / ${n}`,n?rp(h/n*100):'-',rowAct(ibtn(`printMtg('${t.id}')`,'print','Cetak'),ibtn(`mtgForm('${t.id}')`,'edit','Edit'),ibtn(`delItem('perjumpaan','${t.id}')`,'trash','Padam'))]}),
     empty('Belum ada laporan perjumpaan','Rekodkan perjumpaan unit pertama anda.',`<button class="btn" onclick="mtgForm()">${ic('plus',16)}Laporan perjumpaan</button>`))+`</div>`
 }
 function mtgMatrix(){
