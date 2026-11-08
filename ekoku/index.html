@@ -617,7 +617,7 @@ const pHead=t=>`<h1>${t}</h1><h2>${esc(CFG.namaSekolah)}${CFG.alamat?`<br><span 
 function vUtama(){
   const {M}=stats(),N=CFG.bilPerjumpaan,m=S.murid,L=m.filter(x=>x.jantina==='Lelaki').length,Pn=m.filter(x=>x.jantina==='Perempuan').length,tot=m.length;
   let done=0;for(const u of S.unit)done+=Math.min(N,new Set(S.perjumpaan.filter(t=>t.unitId===u.id).map(t=>+t.bil)).size);
-  const need=S.unit.length*N,pct=need?Math.round(done/need*100):0,first=(ME.nama||'').split(' ')[0];
+  const actK=new Set(S.perjumpaan.map(t=>get('unit',t.unitId)?.kategori)),need=(actK.size?S.unit.filter(u=>actK.has(u.kategori)):S.unit).length*N,pct=need?Math.round(done/need*100):0,first=(ME.nama||'').split(' ')[0];
   const nAch=[...M.values()].reduce((a,s)=>a+s.ach.length,0),v=V(),kat=v.kat||'',units=S.unit.filter(u=>!kat||u.kategori===kat).sort(byNama);
   const pcs=[...M.values()].map(pctOf).filter(x=>x!=null),avg=pcs.length?Math.round(pcs.reduce((a,b)=>a+b,0)/pcs.length):0;
   const kcs=KK.map(k=>{const us=S.unit.filter(u=>u.kategori===k),ahli=new Set(us.flatMap(u=>membersOf(u.id).map(x=>x.id))).size;let h=0,d=0;for(const u of us){const ts=S.perjumpaan.filter(t=>t.unitId===u.id);d+=membersOf(u.id).length*ts.length;h+=ts.reduce((a,t)=>a+(t.hadir||[]).length,0)}return {k,n:us.length,ahli,p:d?Math.round(h/d*100):null}});
@@ -738,9 +738,9 @@ function vRumusan(){
   const head=pageHead('Rumusan kehadiran','Ringkasan kehadiran murid bagi setiap unit, dikelompokkan mengikut komponen kategori.',`<button class="btn ghost" onclick="exportRum()">${ic('down',16)}Muat turun CSV</button><button class="btn" onclick="printRum()">${ic('print',16)}Cetak</button>`);
   const filt=`<div class="tools">${fSel('kat',katOpts(),'Semua komponen')}</div>`;
   if(!A.s)return head+filt+`<div class="card">${empty('Belum ada data kehadiran','Rekod laporan perjumpaan dan tandakan kehadiran murid untuk melihat rumusan di sini.',`<button class="btn" onclick="location.hash='#/perjumpaan'">${ic('plus',16)}Laporan perjumpaan</button>`)}</div>`;
-  const pct=Math.round(A.p),bad=A.s-A.h,tgt=us.length*TG;
+  const pct=Math.round(A.p),bad=A.s-A.h,act=us.filter(x=>D.units.some(y=>y.k===x.k&&y.mtg>0)),tgt=act.length*TG;
   const hero=`<div class="rk"><div class="rw">${ring(A.p,170,16)}<div class="rc"><b><span class="cnt" data-v="${pct}">${pct}</span>%</b><small>kehadiran</small></div></div>
-   <div><h2>Kehadiran keseluruhan${kat?`, ${esc(KAT[kat].n)}`:' semua unit'}</h2><p>${A.n} unit, ${A.mt} perjumpaan direkod daripada sasaran ${tgt}.</p>
+   <div><h2>Kehadiran keseluruhan${kat?`, ${esc(KAT[kat].n)}`:' semua unit'}</h2><p>${act.length} unit aktif, ${A.mt} perjumpaan direkod daripada sasaran ${tgt}.${act.length<A.n?` ${A.n-act.length} unit dalam komponen tanpa perjumpaan tidak dikira.`:''}</p>
    <div class="rk-g"><div><b>${A.h.toLocaleString('ms-MY')}</b><small>kehadiran direkod</small></div><div><b>${A.mt} / ${tgt}</b><small>perjumpaan direkod</small></div><div><b>${A.b[0]}</b><small>murid hadir penuh</small></div><div><b>${A.b[3]}</b><small>murid bawah 50%</small></div></div>
    <div class="bar lg" role="img" aria-label="Hadir ${A.h}, tidak hadir ${bad}"><i style="width:${A.h/A.s*100}%;background:var(--zam-300)"></i><i style="width:${bad/A.s*100}%;background:#f08aa2"></i></div>
    <div class="lg2"><span><i style="background:var(--zam-300)"></i>Hadir ${A.h}</span><span><i style="background:#f08aa2"></i>Tidak hadir ${bad}</span><span>daripada ${A.s} slot (murid × perjumpaan)</span></div></div></div>`;
@@ -940,7 +940,7 @@ function vAdmin(){
 }
 const editRow=(a,n,m)=>`<div class="editrow"><input class="in" name="${a}n" value="${esc(n)}" placeholder="Nama" required><input class="in" name="${a}m" type="number" min="0" value="${m}" placeholder="Markah" aria-label="Markah"><button type="button" class="btn ghost sm ic-only" onclick="this.parentNode.remove()" aria-label="Buang">${ic('trash',15)}</button></div>`;
 function admSetup(){
-  return `<form onsubmit="event.preventDefault();saveSetup(this)"><div class="card"><h3>Profil sekolah</h3><div class="g2">${F('Nama sekolah',tx('namaSekolah',CFG.namaSekolah,{req:1}))}${F('Sesi',tx('sesi',CFG.sesi,{req:1}))}</div>${F('Alamat',tx('alamat',CFG.alamat))}${F('Bilangan perjumpaan yang disasarkan bagi setiap unit',tx('bil',CFG.bilPerjumpaan,{type:'number',min:1,req:1}),'')}</div>
+  return `${schoolCard()}<form onsubmit="event.preventDefault();saveSetup(this)"><div class="card"><h3>Profil sekolah</h3><div class="g2">${F('Nama sekolah',tx('namaSekolah',CFG.namaSekolah,{req:1}))}${F('Sesi',tx('sesi',CFG.sesi,{req:1}))}</div>${F('Alamat',tx('alamat',CFG.alamat))}${F('Bilangan perjumpaan yang disasarkan bagi setiap unit',tx('bil',CFG.bilPerjumpaan,{type:'number',min:1,req:1}),'')}</div>
   <div class="g2" style="gap:16px"><div class="card"><h3>Peringkat program dan markah</h3><div id="rows-p">${CFG.peringkat.map(p=>editRow('p',p.n,p.m)).join('')}</div><button type="button" class="btn ghost sm" onclick="addRow('p')">${ic('plus',14)}Tambah peringkat</button></div>
   <div class="card"><h3>Jawatan dan markah</h3><div id="rows-j">${CFG.jawatan.map(p=>editRow('j',p.n,p.m)).join('')}</div><button type="button" class="btn ghost sm" onclick="addRow('j')">${ic('plus',14)}Tambah jawatan</button></div></div>
   <p class="mut">Markah murid dikira daripada jawatan yang dipegang dan markah peringkat bagi setiap program selesai yang disertai. Nilai lalai ialah cadangan awal, sila laraskan mengikut garis panduan sekolah.</p><button class="btn">Simpan tetapan</button></form>`
@@ -1067,9 +1067,124 @@ async function doGuruImport(){
   }catch(e){toast('Import gagal: '+e.message,'err');GCRED=null;return}
   GCRED={creds};
   if(!creds.length){GCRED=null;toast(`${save.length} akaun guru dikemas kini`);return}
-  modal({title:'Import selesai',sub:`${creds.length} akaun baharu dicipta`,wide:true,
-   body:`<div class="alert">Kata laluan sementara ini dipaparkan sekali sahaja. Muat turun fail sekarang dan edarkan kepada setiap guru secara peribadi. Guru akan diminta menukarnya semasa log masuk pertama.</div>`+tbl(['Nama','No. KP','Kata laluan sementara'],creds.map(c=>[avName(c[0]),esc(c[1]||'-'),`<span class="cred">${esc(c[2])}</span>`])),
+  showCreds(creds,`${creds.length} akaun baharu dicipta`)
+}
+function showCreds(creds,sub,note=''){
+  GCRED={creds};
+  modal({title:'Import selesai',sub,wide:true,
+   body:note+`<div class="alert">Kata laluan sementara ini dipaparkan sekali sahaja. Muat turun fail sekarang dan edarkan kepada setiap guru secara peribadi. Guru akan diminta menukarnya semasa log masuk pertama.</div>`+tbl(['Nama','No. KP','Kata laluan sementara'],creds.map(c=>[avName(c[0]),esc(c[1]||'-'),`<span class="cred">${esc(c[2])}</span>`])),
    foot:`<button class="btn ghost" onclick="GCRED=null;closeModal()">Tutup</button><button class="btn" onclick="downloadCsv('kata-laluan-sementara.csv',[['Nama','No. KP','Kata laluan sementara'],...GCRED.creds])">${ic('down',16)}Muat turun CSV</button>`})
+}
+
+/* ---------- import data sekolah (fail MENU.xlsx daripada aplikasi rekod kokurikulum sedia ada) ---------- */
+const SCH_SHEETS=['START','APDM','DATA INDUK','GURU','MAKLUMAT UNIT','KEHADIRAN','KEHADIRAN UNIT','LAPORAN MINGGUAN','JAWATANKUASA','DAFTAR','LAPORAN PROGRAM','PENCAPAIAN MURID','EXTRA KURIKULUM','MAKLUMAT EXTRA KURIKULUM','DATA PENCAPAIAN','DATA JAWATAN'];
+let SCH=null;
+const sp=v=>String(v??'').replace(/\s+/g,' ').trim();
+const slug=v=>sp(v).toLowerCase().replace(/&/g,' dan ').replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');
+const tcase=v=>sp(v).toLowerCase().replace(/(^|[\s/(-])([a-z])/g,(m,a,b)=>a+b.toUpperCase()).replace(/\b(ajk|ppki|pss)\b/gi,x=>x.toUpperCase());
+function isoOf(v){
+  if(v==null||v==='')return '';
+  if(v instanceof Date)return isNaN(v)?'':`${v.getFullYear()}-${String(v.getMonth()+1).padStart(2,'0')}-${String(v.getDate()).padStart(2,'0')}`;
+  if(typeof v==='number'&&v>20000&&v<80000)return new Date(Date.UTC(1899,11,30)+Math.round(v)*864e5).toISOString().slice(0,10);
+  const t=String(v).trim();let m=t.match(/^\d{4}-\d{2}-\d{2}/);if(m)return m[0];
+  m=t.match(/^(\d{1,2})[\/-](\d{1,2})[\/-](\d{4})$/);return m?`${m[3]}-${m[2].padStart(2,'0')}-${m[1].padStart(2,'0')}`:''
+}
+async function readWorkbook(file){
+  if(!window.XLSX)await loadScript('https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js');
+  const wb=XLSX.read(await file.arrayBuffer(),{type:'array',sheets:SCH_SHEETS}),W={};
+  for(const n of wb.SheetNames){const ws=wb.Sheets[n];if(ws&&SCH_SHEETS.includes(n))W[n]=XLSX.utils.sheet_to_json(ws,{header:1,raw:true,defval:null,blankrows:false})}
+  return W
+}
+const KATSRC={UNIT:'BB',KELAB:'KP',SUKAN:'SP',RUMAH:'RS'};
+const HSRC={PENYERTAAN:'Penyertaan',JOHAN:'Johan','NAIB JOHAN':'Naib Johan',KETIGA:'Ketiga',KEMPAT:'Saguhati',KELIMA:'Saguhati',SAGUHATI:'Saguhati'};
+function buildSchool(W,opt){
+  const rec=n=>{const t=W[n]||[],h=(t[0]||[]).map(x=>sp(x).toUpperCase());return t.slice(1).map(r=>{const o={};h.forEach((k,i)=>{if(k&&!(k in o))o[k]=r[i]});return o})};
+  const ex=opt.replace?{unit:[],murid:[],perjumpaan:[],jawatan:[],program:[],ekstra:[]}:S,warn=[],st={};
+  /* unit */
+  const units=new Map(),exU=new Map(ex.unit.map(u=>[u.kategori+'|'+sp(u.nama).toUpperCase(),u]));
+  const unitOf=(k,nm,create=true)=>{nm=sp(nm).toUpperCase();if(!nm)return null;const key=k+'|'+nm;let u=units.get(key);if(!u){if(!create)return null;const o=exU.get(key);u={...(o||{}),id:o?.id||'u-'+slug(nm),nama:o?.nama||nm,kategori:k,guruIds:[...(o?.guruIds||[])]};units.set(key,u)}return u};
+  for(const r of rec('MAKLUMAT UNIT')){const k=KATSRC[sp(r['KATEGORI']).toUpperCase()];if(k)unitOf(k,r['NAMA UNIT'])}
+  /* murid: DATA INDUK (murid kokurikulum), butiran daripada APDM */
+  const ap=new Map(rec('APDM').map(r=>[sp(r['NO. KP']),r])),exM=new Map(ex.murid.map(m=>[m.nokp,m])),murid=new Map();
+  const NUM={SATU:1,DUA:2,TIGA:3,EMPAT:4,LIMA:5,ENAM:6},tingk=v=>{v=sp(v).toUpperCase();const m=v.match(/^TAHUN (\w+)$/);return m&&NUM[m[1]]?'Tahun '+NUM[m[1]]:tcase(v)};
+  const put=(kp,a,i,u)=>{const o=exM.get(kp),j=sp(a?.['JANTINA']||i?.['JANTINA']).toUpperCase()[0];murid.set(kp,{...(o||{}),id:o?.id||'m'+kp,nama:sp(a?.['NAMA']||i?.['NAMA']),nokp:kp,jantina:j==='L'?'Lelaki':j==='P'?'Perempuan':(o?.jantina||''),tingkatan:tingk(a?.['KETERANGAN TINGKATAN TAHUN']||i?.['TAHUN/TINGKATAN']||''),kelas:tcase(a?.['NAMA KELAS']||i?.['NAMA KELAS']||''),u:{...(o?.u||{}),...u}})};
+  let noApdm=0;
+  for(const r of rec('DATA INDUK')){const kp=sp(r['NO KP']);if(!kp||!sp(r['NAMA']))continue;const a=ap.get(kp);if(!a)noApdm++;const u={};for(const [c,k] of [['UNIT','BB'],['KELAB','KP'],['SUKAN','SP'],['RUMAH','RS']]){const x=unitOf(k,r[c]);if(x)u[k]=x.id}put(kp,a,r,u)}
+  st.kokoMurid=murid.size;
+  if(opt.all)for(const [kp,a] of ap)if(kp&&!murid.has(kp))put(kp,a,null,{});
+  if(noApdm)warn.push(`${noApdm} murid tiada dalam lembaran APDM (butiran diambil daripada DATA INDUK).`);
+  /* guru dan guru penasihat unit */
+  const exG=new Map(S.guru.map(g=>[sp(g.nama).toUpperCase(),g])),guru=new Map();
+  for(const r of rec('GURU')){const nm=sp(r['NAMA GURU']);if(!nm)continue;const key=nm.toUpperCase();let g=guru.get(key);if(!g){const o=exG.get(key);g={id:o?.id||'g-'+slug(nm).slice(0,60),nama:o?.nama||nm,isNew:!o};guru.set(key,g)}
+    for(const [c,k] of [['UNIT','BB'],['KELAB','KP'],['SUKAN','SP'],['RUMAH','RS']]){const un=unitOf(k,r[c]);if(un&&!un.guruIds.includes(g.id))un.guruIds.push(g.id)}}
+  /* perjumpaan dan kehadiran */
+  const byName=new Map([...units.values()].map(u=>[u.nama,u])),keh=new Map(rec('KEHADIRAN').map(r=>[sp(r['ID KEHADIRAN']),r])),exT=new Map(ex.perjumpaan.map(t=>[t.unitId+'|'+t.bil,t])),mt=new Map(),skipU={};
+  const getMt=(u,bil)=>{const key=u.id+'|'+bil;let m=mt.get(key);if(!m){const o=exT.get(key);m={...(o||{}),id:o?.id||`t-${u.id.slice(2)}-${bil}`,unitId:u.id,bil,hadir:new Set(o?.hadir||[])};mt.set(key,m)}return m};
+  for(const r of rec('LAPORAN MINGGUAN')){const nm=sp(r['NAMA UNIT']).toUpperCase(),u=byName.get(nm),bil=parseInt(r['MINGGU']);if(!nm||!bil)continue;if(!u){skipU[nm]=(skipU[nm]||0)+1;continue}
+    const m=getMt(u,bil),ref=sp(r['REFLEKSI DAN IMPAK']),akt=String(r['AKTIVITI']??'').trim();m.tarikh=isoOf(r['TARIKH PERJUMPAAN']);m.aktiviti=sp(r['TAJUK AKTIVITI']);m.ringkasan=akt+(ref?`${akt?'\n\n':''}Refleksi dan impak: ${ref}`:'')}
+  let unk=0,nonMem=0,slots=0;
+  for(const r of rec('KEHADIRAN UNIT')){const p=keh.get(sp(r['ID KEHADIRAN']));if(!p)continue;const nm=sp(p['NAMA UNIT']).toUpperCase(),u=byName.get(nm),bil=parseInt(p['MINGGU']),kps=String(r['NO KP']??'').split(/[,\s]+/).filter(Boolean);if(!nm||!bil||!kps.length)continue;
+    if(!u){skipU[nm]=(skipU[nm]||0)+1;continue}
+    const m=getMt(u,bil);for(const kp of kps){const x=murid.get(kp);if(!x){unk++;continue}if(x.u?.[u.kategori]!==u.id){nonMem++;continue}m.hadir.add(x.id);slots++}}
+  const perjumpaan=[...mt.values()].map(m=>({...m,hadir:[...m.hadir],tarikh:m.tarikh||'',aktiviti:m.aktiviti||'(Laporan belum diisi)',ringkasan:m.ringkasan||'',tempat:m.tempat||''}));
+  st.slots=slots;st.tanpaLaporan=perjumpaan.filter(m=>!m.tarikh).length;
+  for(const [n,c] of Object.entries(skipU))warn.push(`Unit "${n}" tiada dalam senarai unit, ${c} rekod perjumpaan dilangkau.`);
+  if(unk)warn.push(`${unk} kehadiran dilangkau kerana murid tiada dalam senarai murid yang diimport.`);
+  if(nonMem)warn.push(`${nonMem} kehadiran dilangkau kerana murid bukan ahli unit tersebut dalam DATA INDUK.`);
+  if(st.tanpaLaporan)warn.push(`${st.tanpaLaporan} perjumpaan ada kehadiran tetapi belum ada laporan mingguan (tarikh dan aktiviti kosong).`);
+  /* tetapan: peringkat dan jawatan */
+  const cfg={},sr=(W['START']||[])[1];if(sr&&sp(sr[4]))cfg.namaSekolah=sp(sr[4]);
+  const maxB=Math.max(0,...perjumpaan.map(m=>m.bil));if(maxB)cfg.bilPerjumpaan=maxB;
+  const dts=perjumpaan.map(m=>m.tarikh).filter(Boolean).sort();if(dts.length)cfg.sesi=dts[0].slice(0,4);
+  const per=[];for(const r of rec('DATA PENCAPAIAN')){if(+r['PENGLIBATAN']!==1)continue;const n=tcase(r['PERINGKAT']);if(n&&!per.some(x=>x.n===n))per.push({n,m:+r['MARKAH PENGLIBATAN']||0})}if(per.length)cfg.peringkat=per;
+  const jw=rec('DATA JAWATAN').filter(r=>sp(r['JAWATAN'])).sort((a,b)=>(+a['NO']||0)-(+b['NO']||0)).map(r=>({n:tcase(r['JAWATAN']),m:+r['MARKAH']||0}));if(jw.length)cfg.jawatan=jw;
+  /* jawatankuasa */
+  const jaw=new Map();let jSkip=0;
+  for(const r of rec('JAWATANKUASA')){const u=byName.get(sp(r['NAMA UNIT']).toUpperCase()),m=murid.get(sp(r['NO KP'])),jn=tcase(r['JAWATAN']);if(!jn)continue;if(!u||!m){jSkip++;continue}const id=`j-${u.id.slice(2)}-${m.nokp}-${slug(jn)}`;jaw.set(id,{id,unitId:u.id,muridId:m.id,jawatan:jn,catatan:''})}
+  if(jSkip)warn.push(`${jSkip} lantikan jawatankuasa dilangkau (unit atau murid tidak dikenali).`);
+  /* program dan keputusan peserta */
+  const DA=new Map(rec('DAFTAR').map(r=>[sp(r['ID PROGRAM']),r])),LP=new Map(rec('LAPORAN PROGRAM').map(r=>[sp(r['ID PROGRAM']),r])),pes=new Map();let pSkip=0,lowAward=0;
+  for(const r of rec('PENCAPAIAN MURID')){const pid=sp(r['ID PROGRAM']),m=murid.get(sp(r['NO KP']));if(!pid)continue;if(!m){pSkip++;continue}const h=sp(r['PENCAPAIAN']).toUpperCase();if(h==='KEMPAT'||h==='KELIMA')lowAward++;(pes.get(pid)||pes.set(pid,new Map()).get(pid)).set(m.id,HSRC[h]||'Penyertaan')}
+  const program=[];
+  for(const pid of new Set([...DA.keys(),...LP.keys()])){if(!pid)continue;const done=LP.has(pid),a=LP.get(pid)||DA.get(pid),k=KATSRC[sp(a['KATEGORI']).toUpperCase()]||'SP',u=unitOf(k,a['ANJURAN UNIT'],false),hs=pes.get(pid)||new Map(),mula=isoOf(a['TARIKH']);
+    program.push({id:'p-'+pid,nama:sp(a['PROGRAM']),kategori:k,unitId:u?.id||'',peringkat:tcase(a['PERINGKAT']),mula,tamat:isoOf(a['HINGGA'])||mula,tempat:sp(a['TEMPAT']),penganjur:sp(a['ANJURAN']),guruIds:[],pesertaIds:[...hs.keys()],status:done?'selesai':'daftar',...(done?{laporan:{ringkasan:'Diimport daripada rekod program sedia ada.',isu:'',hasil:Object.fromEntries(hs)}}:{})})}
+  if(pSkip)warn.push(`${pSkip} peserta program dilangkau kerana tiada dalam senarai murid yang diimport.`);
+  if(lowAward)warn.push(`${lowAward} pencapaian Kempat/Kelima dipetakan sebagai Saguhati.`);
+  /* ekstra kurikulum */
+  const exn=new Map(rec('EXTRA KURIKULUM').map(r=>[sp(r['ID EXTRA KURI']),tcase(r['EXTRA KURI'])])),eks=new Map();
+  for(const r of rec('MAKLUMAT EXTRA KURIKULUM')){const nm=exn.get(sp(r['ID EXTRA KURI'])),m=murid.get(sp(r['NO KP']));if(!nm||!m)continue;(eks.get(nm)||eks.set(nm,{id:'e-'+slug(nm),nama:nm,kategori:'Perkhidmatan Sekolah',peringkat:'Sekolah',muridIds:[]}).get(nm)).muridIds.push(m.id)}
+  const eSkip=rec('MAKLUMAT EXTRA KURIKULUM').length-[...eks.values()].reduce((n,e)=>n+e.muridIds.length,0);if(eSkip>0)warn.push(`${eSkip} rekod ekstra kurikulum dilangkau kerana murid tiada dalam senarai murid yang diimport.`);
+  return {cfg,unit:[...units.values()],murid:[...murid.values()],guru:[...guru.values()],perjumpaan,jawatan:[...jaw.values()],program,ekstra:[...eks.values()],warn,st}
+}
+const schoolCard=()=>`<div class="card"><div class="uh"><h3>${ic('up',18)}<span>Import data sekolah</span></h3><label class="btn" style="cursor:pointer">${ic('up',16)}Pilih fail MENU.xlsx<input type="file" accept=".xlsx,.xls" hidden onchange="importSekolah(this)"></label></div><p class="mut" style="margin:0">Muatkan fail MENU.xlsx daripada aplikasi rekod kokurikulum sedia ada: unit, murid, guru penasihat, perjumpaan dan kehadiran, jawatankuasa, program serta markah jawatan dan peringkat. Fail dibaca dalam pelayar anda sahaja dan tidak dimuat naik ke mana-mana kecuali pangkalan data eKOKU anda. Memerlukan sambungan internet untuk memuatkan pembaca Excel.</p></div>`;
+async function importSekolah(inp){
+  const file=inp.files[0];inp.value='';if(!file)return;
+  modal({title:'Membaca fail…',body:'<p>Sila tunggu sebentar.</p>',noClose:true});
+  try{const W=await readWorkbook(file);if(!W['DATA INDUK']&&!W['APDM']){closeModal();toast('Ini bukan fail MENU.xlsx (lembaran DATA INDUK atau APDM tiada).','err');return}
+    SCH={W,opt:{replace:S.unit.length+S.murid.length>0,all:false}};sekolahPreview()}
+  catch(e){closeModal();toast('Fail tidak dapat dibaca: '+e.message,'err')}
+}
+function sekolahPreview(){
+  const R=SCH.res=buildSchool(SCH.W,SCH.opt),have=COLS.filter(c=>c!=='guru').reduce((a,c)=>a+S[c].length,0),gn=R.guru.filter(g=>g.isNew).length,nh=R.perjumpaan.reduce((a,m)=>a+m.hadir.length,0);
+  const row=(a,b)=>`<tr><td>${a}</td><td style="text-align:right"><b>${b}</b></td></tr>`;
+  modal({title:'Sahkan import data sekolah',wide:true,body:`<div class="wrap"><table class="tbl"><tbody>${row('Unit',R.unit.length)}${row('Murid',R.murid.length)}${row('Guru',`${gn} akaun baharu, ${R.guru.length-gn} sedia ada`)}${row('Perjumpaan',R.perjumpaan.length)}${row('Kehadiran murid direkod',nh)}${row('Jawatankuasa',R.jawatan.length)}${row('Program',`${R.program.length} (${R.program.reduce((a,p)=>a+p.pesertaIds.length,0)} peserta)`)}${row('Ekstra kurikulum',R.ekstra.length)}${row('Tetapan',`${R.cfg.bilPerjumpaan||'-'} perjumpaan, ${(R.cfg.peringkat||[]).length} peringkat, ${(R.cfg.jawatan||[]).length} jawatan`)}</tbody></table></div>
+   <label class="pk" style="padding:10px 0 2px"><input type="checkbox" ${SCH.opt.all?'checked':''} onchange="SCH.opt.all=this.checked;sekolahPreview()"><span>Masukkan juga murid Tahun 1 hingga 3 dan prasekolah daripada APDM (tanpa keahlian unit)</span></label>
+   <label class="pk" style="padding:2px 0"><input type="checkbox" ${SCH.opt.replace?'checked':''} onchange="SCH.opt.replace=this.checked;sekolahPreview()"><span>Ganti data sedia ada (${have} rekod unit, murid, perjumpaan, program dan lain-lain akan dipadam). Akaun guru kekal.</span></label>
+   ${R.warn.length?`<div class="alert" style="margin-top:12px"><b>Perhatian</b><br>${R.warn.map(esc).join('<br>')}</div>`:''}
+   <p class="mut">Akaun guru baharu mendapat kata laluan sementara rawak yang dipaparkan sekali selepas import. Tetapan sekolah, markah peringkat dan markah jawatan akan diselaraskan dengan fail ini.</p>`,
+   foot:`<button class="btn ghost" onclick="SCH=null;closeModal()">Batal</button><button class="btn" onclick="doSekolah()">Import sekarang</button>`})
+}
+async function doSekolah(){
+  const R=SCH.res,rep=SCH.opt.replace;modal({title:'Mengimport data…',body:'<p>Sila jangan tutup halaman ini.</p>',noClose:true});
+  const creds=[];
+  try{
+    if(rep)for(const c of ['perjumpaan','program','jawatan','ekstra','pencapaian','murid','unit'])await removeMany(c,S[c].map(x=>x.id));
+    const gs=[];for(const g of R.guru){if(!g.isNew)continue;const pw=tmpPw(),salt=rnd();gs.push({id:g.id,nama:g.nama,nokp:'',peranan:'guru',salt,hash:await sha(salt+pw),tukar:true});creds.push([g.nama,'',pw])}
+    await saveMany('guru',gs);await saveMany('unit',R.unit);await saveMany('murid',R.murid);await saveMany('perjumpaan',R.perjumpaan);await saveMany('jawatan',R.jawatan);await saveMany('program',R.program);await saveMany('ekstra',R.ekstra);await saveCfg(R.cfg)
+  }catch(e){closeModal();toast('Import gagal: '+e.message,'err');return}
+  SCH=null;
+  if(creds.length)showCreds(creds,`${creds.length} akaun guru baharu`,`<p>Data sekolah berjaya diimport: ${R.unit.length} unit, ${R.murid.length} murid, ${R.perjumpaan.length} perjumpaan.</p>`);
+  else{closeModal();toast('Data sekolah berjaya diimport')}
 }
 
 /* ---------- carian pantas ---------- */

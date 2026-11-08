@@ -46,6 +46,12 @@ Markah murid dikira daripada markah jawatan yang dipegang dan markah peringkat b
 
 Menu **Rumusan Kehadiran** memaparkan graf kehadiran keseluruhan (cincin peratus, hadir berbanding tidak hadir), perbandingan antara empat komponen (Badan Beruniform, Kelab & Persatuan, Sukan & Permainan, Rumah Sukan), trend mengikut bilangan perjumpaan, taburan kehadiran murid, bar kehadiran bagi setiap unit dalam setiap komponen, dan senarai murid bawah 50%. Penapis komponen, muat turun CSV dan cetakan disediakan. Peratus dikira sebagai jumlah kehadiran dibahagi (bilangan murid × perjumpaan direkod); murid dalam beberapa unit dikira dalam setiap unitnya.
 
+## Import data sekolah (MENU.xlsx)
+
+**Pengurusan & Admin > Setup sistem > Pilih fail MENU.xlsx** memuatkan fail eksport aplikasi rekod kokurikulum sedia ada: unit (`MAKLUMAT UNIT`), murid (`DATA INDUK` dengan butiran `APDM`), guru dan guru penasihat unit (`GURU`), perjumpaan dan kehadiran mingguan (`LAPORAN MINGGUAN`, `KEHADIRAN`, `KEHADIRAN UNIT`), jawatankuasa, program dan keputusan peserta, ekstra kurikulum, serta markah jawatan dan peringkat (`DATA JAWATAN`, `DATA PENCAPAIAN`). Satu paparan pratonton menyenaraikan bilangan rekod dan apa yang dilangkau sebelum anda mengesahkan. Import boleh diulang tanpa membuat rekod berganda. Akaun guru baharu mendapat kata laluan sementara rawak yang dipaparkan sekali.
+
+Fail dibaca dalam pelayar dan hanya ditulis ke pangkalan data eKOKU anda. **Jangan letakkan fail MENU.xlsx atau data murid dalam repo GitHub awam.**
+
 ## Daftar guru secara pukal
 
 **Pengurusan & Admin > Data guru > Import guru (Excel / CSV)**.
