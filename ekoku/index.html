@@ -92,6 +92,7 @@ textarea.in{resize:vertical;min-height:84px}
 .g2{display:grid;grid-template-columns:1fr 1fr;gap:0 12px}.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:0 12px}
 .tools{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;align-items:center}
 .tools .in{width:auto;min-width:150px;flex:0 1 auto}
+.ktabs .kd{width:9px;height:9px;border-radius:3px;background:var(--kc)}.ktabs button.on{box-shadow:var(--sh),inset 0 -3px 0 var(--kc)}.ktabs{max-width:100%}@media(max-width:560px){.tabs.ktabs{display:grid;grid-template-columns:1fr 1fr;width:100%}.tabs.ktabs button{justify-content:center;padding:8px 6px;font-size:13px}}
 .tabs{display:inline-flex;gap:3px;background:var(--line2);padding:4px;border-radius:12px;margin-bottom:16px;flex-wrap:wrap}
 .tabs button{border:0;background:transparent;padding:7px 14px;border-radius:9px;font-weight:600;color:var(--mut);display:flex;gap:6px;align-items:center;transition:background .15s,color .15s}
 .tabs button.on{background:var(--card);color:var(--ink);box-shadow:var(--sh)}
@@ -764,7 +765,7 @@ function printMtg(id){
 }
 
 /* ---------- Kehadiran ---------- */
-function kehKat(k){const v=V();v.kat=k;v.unit='';schedule()}
+function kehKat(k){const v=V();v.kat=k;v.unit='';v.kls='';v.q='';schedule()}
 function vKehadiran(){
   const v=V(),kat=v.kat||'BB',us=S.unit.filter(u=>u.kategori===kat).sort(byNama),{M,byUnit}=stats(),uid=us.find(u=>u.id===v.unit)?v.unit:((us.find(u=>(byUnit.get(u.id)||[]).length)||us[0])?.id||'');
   const ts=(byUnit.get(uid)||[]).slice().sort((a,b)=>a.bil-b.bil),byBil=new Map(ts.map(t=>[+t.bil,t])),maxB=Math.max(CFG.bilPerjumpaan,...ts.map(t=>+t.bil),0),cols=Array.from({length:maxB},(_,i)=>i+1);
@@ -772,7 +773,8 @@ function vKehadiran(){
   const ms=all.filter(m=>(!v.kls||kelasOf(m)===v.kls)&&(!q||(m.nama+' '+m.nokp).toLowerCase().includes(q))).sort(byNama);
   const pcts=ms.map(m=>pctOf(M.get(m.id))).filter(x=>x!=null),avg=pcts.length?Math.round(pcts.reduce((a,b)=>a+b,0)/pcts.length):0,full=pcts.filter(x=>x===100).length;
   const head=pageHead('Kehadiran perjumpaan','Matriks kehadiran murid bagi setiap perjumpaan unit.',`<button class="btn soft" onclick="location.hash='#/rumusan'">${ic('chart',16)}Rumusan kehadiran</button><button class="btn ghost" onclick="exportKeh('${uid}')">${ic('down',16)}Muat turun CSV</button>`);
-  return head+`<div class="card"><div class="tools"><select class="in" onchange="kehKat(this.value)" aria-label="Kategori">${katOpts().map(([a,b])=>`<option value="${a}"${a===kat?' selected':''}>${b}</option>`).join('')}</select><select class="in" onchange="T('unit',this.value)" aria-label="Unit">${us.map(u=>`<option value="${u.id}"${u.id===uid?' selected':''}>${esc(u.nama)}</option>`).join('')}</select>${fSel('kls',tings,'Semua kelas')}${qIn('Cari nama atau No. KP')}</div>
+  const ktabs=`<div class="tabs ktabs" role="tablist">${KK.map(k=>`<button role="tab" aria-selected="${k===kat}" class="k-${k}${k===kat?' on':''}" onclick="kehKat('${k}')"><i class="kd"></i>${esc(KAT[k].n)}<b>${S.unit.filter(u=>u.kategori===k).length}</b></button>`).join('')}</div>`;
+  return head+ktabs+`<div class="card"><div class="tools"><select class="in" onchange="T('unit',this.value)" aria-label="Unit">${us.map(u=>`<option value="${u.id}"${u.id===uid?' selected':''}>${esc(u.nama)}</option>`).join('')}</select>${fSel('kls',tings,'Semua kelas')}${qIn('Cari nama atau No. KP')}</div>
   <div class="stats" style="margin:0 0 14px"><div class="tile"><span class="i">${ic('users')}</span><div><b>${all.length}</b><span>Jumlah murid</span></div></div><div class="tile"><span class="i">${ic('check')}</span><div><b>${avg}%</b><span>Purata hadir</span></div></div><div class="tile"><span class="i">${ic('clip')}</span><div><b>${ts.length}</b><span>Perjumpaan direkod</span></div></div><div class="tile gold"><span class="i">${ic('badge')}</span><div><b>${full}</b><span>Hadir penuh</span></div></div></div>`+
   tbl(['Bil','Nama',...cols.map(c=>'c:'+c),'c:Hadir','c:%'],ms.map((m,i)=>{const s=M.get(m.id),p=pctOf(s);return [i+1,nmCell(m),...cols.map(b=>{const t=byBil.get(b);return !t?'<span class="na">–</span>':(t.hadir||[]).includes(m.id)?'<span class="ok">✓</span>':'<span class="no">✗</span>'}),s?`${s.hadir} / ${s.mtg}`:'-',p==null?'-':`<span class="badge ${p>=80?'':p>=50?'gold':'rose'}">${p}%</span>`]}),
   us.length?empty('Tiada murid','Unit ini belum mempunyai ahli yang sepadan dengan penapis.'):empty('Belum ada unit dalam kategori ini','Tambah unit di Pengurusan & Admin.'))+`</div>`
