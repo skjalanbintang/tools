@@ -79,3 +79,7 @@ Koleksi Firestore: `guru`, `murid`, `unit`, `perjumpaan`, `program`, `jawatan`, 
 Borang 5 langkah supaya mudah diisi (terutama di telefon), mengikut medan laporan mingguan sistem rujukan: **Maklumat** (unit, bil., tarikh, masa, tempat, guru pembimbing: tick guru yang ditetapkan pada unit itu sahaja), **Kehadiran**, **Laporan** (tajuk, huraian, PikeBM, **kemahiran masa hadapan**, kemahiran berfikir + kata kerja KBAT (hanya kata kerja bagi tahap yang dipilih) + gambar KBAT, nilai sivik, refleksi dan impak + gambar laporan murid), **Gambar** (gambar 1-4; dikecilkan automatik) dan **Pengesahan** (disediakan oleh: pilih seorang daripada senarai; disemak oleh Guru Penolong Kanan Kokurikulum; disahkan oleh Guru Besar / Pengetua; semuanya dengan tandatangan jari/tetikus). Langkah tidak boleh dilangkau jika medan wajib kosong. Cetakan memuatkan semua medan, gambar dan tandatangan.
 
 Senarai **Kemahiran Masa Hadapan** diurus oleh admin di Pengurusan & Admin > Setup sistem (tambah, ubah, buang elemen). Senarai awal ialah cadangan; sila laraskan mengikut garis panduan sekolah.
+
+## Komponen guru
+
+Di Pengurusan & Admin > Data guru, seorang guru boleh dilantik dalam lebih daripada satu komponen (Badan Beruniform, Kelab & Persatuan, Sukan & Permainan, Rumah Sukan), **maksimum 3**. Guru yang sudah ada komponen hanya boleh ditetapkan pada unit dalam komponen itu (Daftar Unit). Guru yang belum ditetapkan komponen tidak disekat.
